@@ -15,6 +15,11 @@ class _SettingScreenState extends State<SettingScreen> {
     super.initState();
     enableNotifications = false;
   }
+  
+  @override
+  void dispose(){
+    super.dispose();
+  }
 
 
   @override
