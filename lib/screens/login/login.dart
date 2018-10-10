@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:shuttler_ios/screens/home/home.dart';
+import 'package:shuttler_ios/screens/setting/setting.dart';
 
 bool _isLogging = false;
 
@@ -14,118 +16,148 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
   // of the TextField!
   static final passwordController = new TextEditingController();
   static final emailController = new TextEditingController();
+  bool showPassword;
+  String showPasswordURL = "assets/icons/2.0x/ic_eye_off@2x.png";
 
+  @override
+  initState() {
+    super.initState();
+    showPassword = false;
+  }
 
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(
-        title: Text("Login"),
-      ),
-      body: Center(
-        child: Form(
+    return new Material(
+      child: Form(
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                    color: Colors.red,
-                  )),
-                  child: Text("Type your Email")),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 30.0),
+                child: Opacity(
+                  opacity: 1.0,
+                  child: Image.asset(
+                    "assets/icons/2.0x/ic_logo@2x.png", scale: 2.0,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 50.0),
+                child: Text("Don't Miss The Shuttle Any More!", style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black38),)
+              ),
               emailInput(),
-              Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                    color: Colors.red,
-                  )),
-                  child: Text("Type your password")),
               passwordInput(),
               loginButton(),
-              switchPageButton()
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.only(bottom: 30.0),
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: Text("Don't have an acocunt yet? ", style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0)),
+                      ),
+                      Text("Sign Up", style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: Color.fromRGBO(242, 1, 75, 1.0),))
+                    ],),
+                ),
+              )
             ]
           ),
-        )
+        ),
       )
     );
   }
 
-  Widget switchPageButton() {
-    return Padding(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        child: Material(
-          borderRadius: BorderRadius.circular(30.0),
-          shadowColor: Colors.lightBlueAccent.shade100,
-          elevation: 5.0,
-          child: MaterialButton(
-            minWidth: 200.0,
-            height: 42.0,
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
-            },
-            // color: Colors.lightBlueAccent,
-            child: Text('Go to Home', style: TextStyle(color: Colors.black)),
-          ),
-        ));
-  }
+  
 
   Widget loginButton() {
     return Padding(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: Material(
-        borderRadius: BorderRadius.circular(30.0),
-        shadowColor: Colors.lightBlueAccent.shade100,
-        elevation: 5.0,
-        child: MaterialButton(
-          minWidth: 200.0,
-          height: 42.0,
-          onPressed: () { },
-          // color: Colors.lightBlueAccent,
-          child: Text('Log In', style: TextStyle(color: Colors.black)),
+      padding: EdgeInsets.symmetric(vertical: 50.0),
+      child: Container(
+        child: CupertinoButton(
+          pressedOpacity: 0.5,
+          borderRadius: BorderRadius.circular(30.0),
+          color: Color(0xFFF2014B),
+          onPressed: () {
+            // TODO Implement this function
+            Navigator.push(context, MaterialPageRoute(builder: (context) => SettingScreen()),);
+          },
+          child: Text("Sign In")
         ),
-      ));
+      ),
+    );
   }
 
   Widget emailInput() {
     return Container(
-        margin: const EdgeInsets.all(10.0),
-        width: 250.0,
-        // color: const Color(0xFF00FF00),
-        child: TextFormField(
-          controller: emailController,
-          keyboardType: TextInputType.emailAddress,
-          validator: (email) => (email.contains("@")) ? "No @ found" : "Valid",
-          autofocus: false,
-          decoration: InputDecoration(
-            hintText: 'Email',
-            contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      padding: const EdgeInsets.only(top: 50.0),
+      margin: const EdgeInsets.all(10.0),
+      width: 250.0,
+      child: TextFormField(
+        style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, color: Colors.black, decoration: TextDecoration.none),
+        controller: emailController,
+        keyboardType: TextInputType.emailAddress,
+        validator: (email) => (email.contains("@")) ? "No @ found" : "Valid",
+        autofocus: false,
+        decoration: InputDecoration(
+          prefixIcon: Container(
+            margin: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 0.0),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0.0, 2.0, 10.0, 0.0),
+              // padding: const EdgeInsetsDirectional.only(start: 10.0),
+              child: Image.asset("assets/icons/2.0x/ic_user@2x.png", scale: 1.5,),
+            ),
           ),
-        ));
+          contentPadding: EdgeInsets.fromLTRB(0.0, 20.0, 10.0, 5.0),
+          hintStyle: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.grey[500]),
+          hintText: "Username",
+        ),
+      ));
   }
 
   Widget passwordInput() {
     return Container(
       margin: const EdgeInsets.all(10.0),
       width: 250.0,
-      // color: const Color(0xFF00FF00),
       child: TextFormField(
-          controller: passwordController,
-          autofocus: false,
-          keyboardType: TextInputType.text,
-          // initialValue: 'dsd',
-          obscureText: true,
-          decoration: InputDecoration(
-            hintText: 'Password',
-            contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-          )),
+        style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+        controller: passwordController,
+        keyboardType: TextInputType.text,
+        obscureText: showPassword,
+        decoration: InputDecoration(
+          prefixIcon: Container(
+            margin: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 0.0),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0.0, 2.0, 10.0, 0.0),
+              child: Image.asset("assets/icons/2.0x/ic_lock@2x.png", scale: 1.5,),
+            ),
+          ),
+          contentPadding: EdgeInsets.fromLTRB(0.0, 20.0, 10.0, 5.0),
+          hintStyle: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.grey[500] ),
+          hintText: 'Password',
+          suffixIcon: Container(
+            margin: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 0.0),
+            child: CupertinoButton(
+              onPressed: () {
+                setState(() {
+                  showPassword = !showPassword;
+                  if(showPassword) { showPasswordURL = "assets/icons/2.0x/ic_eye_off@2x.png"; }  
+                  else { showPasswordURL = "assets/icons/2.0x/ic_eye_on@2x.png"; }
+                });
+              },
+               child: Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 0.0),
+                // padding: const EdgeInsetsDirectional.only(start: 10.0),
+                child: Image.asset(showPasswordURL, scale: 1.5,),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
