@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'package:shuttler_ios/screens/setting/setting.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreen createState() => _HomeScreen();
@@ -23,15 +25,23 @@ class _HomeScreen extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Shuttle Status", style: TextStyle(color: Colors.black),),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text("Shuttle Status", style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 25.0, color: Colors.black54),),
+        ),
         elevation: 2.0,
         titleSpacing: 0.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black,),
-        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              CupertinoIcons.ellipsis,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => SettingScreen()));
+            },
+          )
+        ],
         backgroundColor: Colors.white,
       ),
       body: Container(

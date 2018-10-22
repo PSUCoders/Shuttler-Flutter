@@ -1,3 +1,9 @@
+
+RegExp username = RegExp(r"\b[A-Za-z]{5}[0-9]{3}\b");
+RegExp email = RegExp(r"\b[A-Za-z]{5}[0-9]{3}\@plattsburgh.edu\b");
+RegExp password = RegExp(r"\b[A-Za-z0-9]\!\@\#\$\%\^\&\*\~\(\)\\\b");
+
+
 bool isDate(String str) {
   try {
     DateTime.parse(str);
@@ -23,4 +29,15 @@ bool isName(String name){
   RegExp _alpha = new RegExp(r'^[a-zA-Z]+$');
   
   return _alpha.hasMatch(name);
+}
+
+bool isPlattsburgh(String login) {
+  return (username.hasMatch(login.toLowerCase()) || email.hasMatch(login.toLowerCase()));
+}
+
+
+bool isStudentID(String login) {
+  // print(username.hasMatch(login));
+  if (login.length != 8) return false;
+  return username.hasMatch(login);
 }

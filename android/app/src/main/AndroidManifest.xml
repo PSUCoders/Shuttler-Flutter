@@ -17,6 +17,9 @@
         android:label="Shuttler"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round">
+        <meta-data 
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAoih3-6DvYmtyJjS_o20yJkdJxbHJZ9KQ"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
