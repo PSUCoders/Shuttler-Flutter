@@ -7,3 +7,5 @@
 build/
 
 .flutter-plugins
+android/app/src/main/AndroidManifest.xml
+android/app/google-services.json
