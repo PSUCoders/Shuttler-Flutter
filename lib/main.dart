@@ -42,15 +42,14 @@ class Shuttler extends StatelessWidget {
   final Widget home;
   final FirebaseApp app;
 
-  Shuttler(bool isLoggin, this.app) : home = (isLoggin ? HomeScreen() : LoginWithEmailScreen());
+  Shuttler(bool isLoggin, this.app) : home = (isLoggin ? HomeScreen() : SignInScreen());
 
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Your Occasions',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primaryColor: Color(0xFFF2014B),textSelectionHandleColor:  Color(0xFFF2014B)),
       home: home,
     );
   }

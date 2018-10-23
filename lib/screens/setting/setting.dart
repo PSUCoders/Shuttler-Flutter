@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'package:firebase_database/firebase_database.dart';
+
 import 'package:shuttler_ios/screens/login/login.dart';
+import 'package:shuttler_ios/utilities/dataset.dart';
 
 const double _fontSize = 16.0;
+
+List _places = ['Campus', 'Walmart', 'Target', 'Matket32', 'Unknown Place'];
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -11,59 +16,44 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  List _places = ['ACC', 'Walmart', 'Target', 'Matket32', 'Unknown Place'];
   bool enableNotifications;
   List<DropdownMenuItem<String>> _dropDownMenuItems;
   String _currentPlace;
   int _timeAhead;
+  DatabaseReference userNotificationRef; // Users/notifications
 
   @override
   initState() {
     super.initState();
-    enableNotifications = false;
+    enableNotifications = Dataset.currentUser.value.notifications['enabled'];
     _dropDownMenuItems = getDropDownMenuItems();
-    _currentPlace = _dropDownMenuItems[0].value;
-    _timeAhead = 5;
+    _currentPlace = _dropDownMenuItems[_places.indexOf(Dataset.currentUser.value.notifications['notifyLocation'])].value;
+    _timeAhead = Dataset.currentUser.value.notifications['timeAhead'];
+    userNotificationRef = FirebaseDatabase.instance.reference().child('Users/${Dataset.currentUser.value.key}/notifications');
+    // userNotificationRef.onChildChanged.listen(_onEntryChanged);
   }
+
+  // _onEntryChanged(Event event) {
+  //   print("DEBUG event snapshot : ${event.snapshot.key}");
+  //   print("DEBUG event snapshot : ${event.snapshot.value}");
+  //   setState(() {
+  //     if (event.snapshot.key == "enabled") { enableNotifications = event.snapshot.value; }
+  //     if (event.snapshot.key == "notifyLocation") { _currentPlace = event.snapshot.value; }
+  //     if (event.snapshot.key == "timeAhead") { _timeAhead = event.snapshot.value; }
+  //   });
+  // }
+
   
   @override
   void dispose(){
     super.dispose();
   }
 
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Settings", style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 25.0, color: Colors.black54),),
-          elevation: 2.0,
-          titleSpacing: 0.0,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back_ios, color: Colors.black,),
-          ),
-          backgroundColor: Colors.white,
-        ),
-        body: Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
-          child: ListView(
-            children: <Widget>[
-              enableNotificationSwitch(),
-              notifyButton(),
-              timeAheadButton(),
-              // setTimeButton(),
-              logoutButton(),
-            ],
-          ),
-        ),
-        bottomSheet: bottomMenu(),
-      ),
-    );
+  void onChangedSwitch(bool value) {
+    setState(() {
+      enableNotifications = value;
+    });
+    // userNotificationRef.child('enabled').set(value);
   }
 
   Widget enableNotificationSwitch() {
@@ -94,11 +84,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 alignment: Alignment.centerRight,
                 color: Colors.white,
                 child: CupertinoSwitch(
-                  onChanged: (value) {
-                    setState(() {
-                      enableNotifications = value;
-                    });
-                  },
+                  onChanged: onChangedSwitch,
                   value: enableNotifications,
                 )
               ),
@@ -109,6 +95,13 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
   
+  void changedDropDownItem(String selectedPlace) {
+    setState(() {
+      _currentPlace = selectedPlace;
+    });
+    // userNotificationRef.child('notifyLocation').set(selectedPlace);
+  }
+
   Widget notifyButton() {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 15.0),
@@ -184,6 +177,10 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
+  void onChangedTimeAhead(int value) {
+    userNotificationRef.child('timeAhead').set(value);
+  }
+
   Widget setTimeButton() {
     return Container(
       child: Padding(
@@ -196,6 +193,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   setState(() {
                     if(_timeAhead == 1) {return;}
                     --_timeAhead;
+                    // onChangedTimeAhead(_timeAhead);
                   });
                 },
                 child: Icon(
@@ -230,6 +228,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 onPressed: () { 
                   setState(() {
                     ++_timeAhead;
+                    // onChangedTimeAhead(_timeAhead);
                   });
                 },
                 child: Icon(
@@ -337,13 +336,11 @@ class _SettingScreenState extends State<SettingScreen> {
     return items;
   }
 
-  void changedDropDownItem(String selectedPlace) {
-    setState(() {
-      _currentPlace = selectedPlace;
-    });
-  }
-
-  void applySetting() {
+  void applySetting() async {
+    userNotificationRef.child('enabled').set(enableNotifications);
+    userNotificationRef.child('notifyLocation').set(_currentPlace);
+    userNotificationRef.child('timeAhead').set(_timeAhead);
+    Dataset.currentUser.value.notifications = (await userNotificationRef.once()).value;
     Navigator.pop(context);
   }
 
@@ -352,7 +349,42 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   void logOut() {
-    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => LoginWithEmailScreen()));
+    Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => SignInScreen()), (Route<dynamic> route) => false);
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Settings", style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 25.0, color: Colors.black54),),
+          elevation: 2.0,
+          titleSpacing: 0.0,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios, color: Colors.black,),
+          ),
+          backgroundColor: Colors.white,
+        ),
+        body: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+          child: ListView(
+            children: <Widget>[
+              enableNotificationSwitch(),
+              notifyButton(),
+              timeAheadButton(),
+              // setTimeButton(),
+              logoutButton(),
+            ],
+          ),
+        ),
+        bottomSheet: bottomMenu(),
+      ),
+    );
+  }
+
 
 }

@@ -1,4 +1,11 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+const Map<String, dynamic> defaultNotifications = {
+  "enabled" : true,
+  "notifyLocation" : "Campus",
+  "timeAhead" : 5
+};
 
 class User {
   String key;
@@ -8,6 +15,11 @@ class User {
   Map notifications;
 
   User();
+  User.fromFirebase(FirebaseUser firebaseUser) 
+    : key = firebaseUser.uid,
+      email = firebaseUser.email,
+      username = firebaseUser.email.substring(0, 8),
+      notifications = defaultNotifications;
   User.fromSnapshot(DataSnapshot snapshot) 
     : key = snapshot.key,
       email = snapshot.value["email"],

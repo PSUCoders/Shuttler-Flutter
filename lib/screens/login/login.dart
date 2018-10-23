@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:shuttler_ios/utilities/dataset.dart';
 import 'package:shuttler_ios/models/user.dart';
-import 'package:shuttler_ios/utilities/config.dart';
 import 'package:shuttler_ios/screens/home/home.dart';
+import 'package:shuttler_ios/screens/login/signup.dart';
 import 'package:shuttler_ios/screens/login/verify.dart';
 import 'package:shuttler_ios/utilities/validator.dart';
 
-bool _isLogging = false;
+const Color primaryColor1 = Color(0xFFF2014B);
 
 const String ERROR_CODE_00 = "User is not registered";
 const String ERROR_CODE_01 = "The password is invalid or the user does not have a password";
@@ -19,34 +19,37 @@ const String ERROR_CODE_02 = "The email address is badly formatted";
 const String ERROR_CODE_03 = "There is no user record corresponding to this identifier. The user may have been deleted";
 const String ERROR_CODE_04 = "Given String is empty or null";
 
-class LoginWithEmailScreen extends StatefulWidget {
+class SignInScreen extends StatefulWidget {
   @override
-  _LoginWithEmailScreenState createState() => _LoginWithEmailScreenState();
+  _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   // TODO detect Enter key to go to next form field
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  static final passwordController = new TextEditingController();
-  static final emailController = new TextEditingController();
+  TextEditingController emailController;
+  TextEditingController passwordController;
   FocusNode emailNode;
   FocusNode passwordNode;
   String emailErrorMessage;
   String passwordErrorMessage;
   bool showPassword;
-  String showPasswordURL = "assets/icons/2.0x/ic_eye_off@2x.png";
+  String showPasswordURL;
   FirebaseUser user;
 
 
   @override
   initState() {
     super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
     emailNode = FocusNode();
     passwordNode = FocusNode();
     emailErrorMessage = "Invalid email or username";
     passwordErrorMessage = "Invalid password";
     showPassword = false;
+    showPasswordURL = "assets/icons/3.0x/ic_eye_off@3x.png";
     // test();
   }
   
@@ -65,11 +68,13 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
 
       // Convert to email when user type username instead of email
       String signInEmail = (isStudentID(emailController.text) ? emailController.text + "@plattsburgh.edu" : emailController.text);
-      print("DEBUG signin email : " + signInEmail);
+      // print("DEBUG signin email : " + signInEmail);
       var userFirebase = await _auth.signInWithEmailAndPassword(email: signInEmail, password: passwordController.text);
-      print(userFirebase);
+      // print(userFirebase);
+      
 
       if(userFirebase.isEmailVerified) {
+        Dataset.currentUser.value = User.fromFirebase(userFirebase);
         Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => HomeScreen()),);
       }
       else {
@@ -133,20 +138,11 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
     return User.fromSnapshot(snapshot);
   }
 
-  void signIn() async {
-    print("DEBUG signIn pressed");
-    // user = await getUser(emailController.text);
-    
-
-  }
-
   Future<DataSnapshot> getSnapshot(String child) async {
     DataSnapshot snapshot;
     final FirebaseDatabase database = FirebaseDatabase.instance; 
     snapshot = await database.reference().child(child).once();
-
     return snapshot;
-
   }
 
   void showSnackbar(String text) {
@@ -156,8 +152,10 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
   }
 
   Widget signInButton() {
-    return Container(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 60.0),
       child: CupertinoButton(
+        padding: EdgeInsets.all(0.0),
         pressedOpacity: 0.5,
         borderRadius: BorderRadius.circular(30.0),
         color: Color(0xFFF2014B),
@@ -168,10 +166,12 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
   }
 
   Widget emailInput() {
+    final Size screenSize = MediaQuery.of(context).size;
+
     return Container(
       padding: const EdgeInsets.only(top: 50.0),
       margin: const EdgeInsets.all(10.0),
-      width: 250.0,
+      width: screenSize.width * 4 / 5,
       child: TextFormField(
         style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, color: Colors.black, decoration: TextDecoration.none),
         controller: emailController,
@@ -190,11 +190,11 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 2.0, 10.0, 0.0),
               // padding: const EdgeInsetsDirectional.only(start: 10.0),
-              child: Image.asset("assets/icons/2.0x/ic_user@2x.png", scale: 1.5,),
+              child: Image.asset("assets/icons/3.0x/ic_user@3x.png", scale: 3.0,),
             ),
           ),
           contentPadding: EdgeInsets.fromLTRB(0.0, 20.0, 10.0, 5.0),
-          hintStyle: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.grey[500]),
+          // hintStyle: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.grey[500]),
           // hintText: "Username",
           labelText: "Username",
         ),
@@ -202,14 +202,16 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
   }
 
   Widget passwordInput() {
+    final Size screenSize = MediaQuery.of(context).size;
+
     return Container(
       margin: const EdgeInsets.all(10.0),
-      width: 250.0,
+      width: screenSize.width * 4 / 5,
       child: TextFormField(
         style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, color: Colors.black),
         controller: passwordController,
         keyboardType: TextInputType.text,
-        obscureText: showPassword,
+        obscureText: !showPassword,
         validator: validatePassword,
         focusNode: passwordNode,
         textInputAction: TextInputAction.done,
@@ -218,26 +220,25 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
             margin: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 0.0),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 2.0, 10.0, 0.0),
-              child: Image.asset("assets/icons/2.0x/ic_lock@2x.png", scale: 1.5,),
+              child: Image.asset("assets/icons/3.0x/ic_lock@3x.png", scale: 3.0,),
             ),
           ),
           contentPadding: EdgeInsets.fromLTRB(0.0, 20.0, 10.0, 5.0),
-          hintStyle: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.grey[500] ),
-          hintText: 'Password',
+          labelText: "Password",
           suffixIcon: Container(
             margin: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 0.0),
             child: CupertinoButton(
               onPressed: () {
                 setState(() {
                   showPassword = !showPassword;
-                  if(showPassword) { showPasswordURL = "assets/icons/2.0x/ic_eye_off@2x.png"; }  
-                  else { showPasswordURL = "assets/icons/2.0x/ic_eye_on@2x.png"; }
+                  if (!showPassword) { showPasswordURL = "assets/icons/3.0x/ic_eye_off@3x.png"; }  
+                  else { showPasswordURL = "assets/icons/3.0x/ic_eye_on@3x.png"; }
                 });
               },
                child: Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 0.0),
                 // padding: const EdgeInsetsDirectional.only(start: 10.0),
-                child: Image.asset(showPasswordURL, scale: 1.5,),
+                child: Image.asset(showPasswordURL, scale: 3.0,),
               ),
             ),
           ),
@@ -250,77 +251,61 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primaryColor: Color(0xFFF2014B),textSelectionHandleColor:  Color(0xFFF2014B)),
-      home: Scaffold(
-        key: _scaffoldKey,
-        body: new Material(
-          child: Center(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      key: _scaffoldKey,
+      body: new Material(
+        child: Center(
+          child: Form(
+            key: _formKey,
+            child: SizedBox(
+              width: screenSize.width * 4 / 5,
+                child: ListView(
                 children: <Widget>[
-                  Opacity(
-                    opacity: 1.0,
+                  SizedBox(height: screenSize.height/10,),
+                  SizedBox(
+                    height: 100.0,
                     child: Image.asset(
-                      "assets/icons/2.0x/ic_logo@2x.png", scale: 2.0,
+                      "assets/icons/3.0x/ic_logo@3x.png", scale: 3.0, fit: BoxFit.fitHeight,
                     ),
                   ),
-                  SizedBox(height: 30.0,),
-                  Text("Don't Miss The Shuttle Any More!", style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black38),),
+                  SizedBox(height: screenSize.height/10,),
+                  Text("Don't Miss The Shuttle Any More!", textAlign: TextAlign.center,
+                    style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 18.0, color: Colors.black54),
+                  ),
                   emailInput(),
                   passwordInput(),
-                  SizedBox(
-                    height: 50.0,
-                  ),
+                  SizedBox(height: screenSize.height/20,),
                   signInButton(),
+
+                  SizedBox(height: 100.0,),
+
                   SizedBox(
-                    // height: 20.0,
-                    child: IconButton(
-                      icon: Icon(Icons.add_circle),
-                      onPressed: submitForm,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  SizedBox(
-                    // height: 20.0,
-                    child: IconButton(
-                      icon: Icon(Icons.pause_circle_outline),
-                      onPressed: () {
-                        print("DEBUG user: $user");
-                        submitForm();
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  SizedBox(
-                    // height: 20.0,
-                    child: IconButton(
-                      icon: Icon(Icons.navigate_next),
-                      onPressed: () {
-                        if (user == null) return;
-                        Navigator.push(context, CupertinoPageRoute(builder: (context) => VerifyAccountScreen(user)),);
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    // height: 20.0,
-                    child: FlatButton(
-                      onPressed: () { showSnackbar("DSD"); },
-                      child: Text("Show Snackbar"),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("First time using Shuttler? ",
+                          style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.normal , color: Colors.black)
+                        ),
+                        CupertinoButton(
+                          padding: EdgeInsets.all(0.0),
+                          pressedOpacity: 0.5,
+                          onPressed: () {
+                            emailController.clear();
+                            passwordController.clear();
+                            Navigator.push(context, CupertinoPageRoute(builder: (context) => SignUpScreen()),);
+                          },
+                          child: Text("Register", 
+                            style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: primaryColor1)
+                          ),
+                        )
+                      ],
                     )
-                  )
+                  ),
                 ]
               ),
             ),
-          )
-        ),
+          ),
+        )
       ),
     );
   }

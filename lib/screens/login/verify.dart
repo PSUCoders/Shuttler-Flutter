@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:shuttler_ios/models/user.dart';
+import 'package:shuttler_ios/utilities/dataset.dart';
 import 'package:shuttler_ios/screens/home/home.dart';
 
 String message = 
@@ -47,6 +50,8 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
     FirebaseUser user = await auth.currentUser();
     await user.reload();
     if(user.isEmailVerified) {
+      Dataset.currentUser.value = User.fromFirebase(user);
+      await addUserToDatabase(Dataset.currentUser.value);
       setState(() {
         hasVerified = true;
         _verificationTimer = null;
@@ -57,6 +62,11 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
     }
   }
 
+  Future<void> addUserToDatabase(User user) async {
+    DatabaseReference newUserRef =  FirebaseDatabase.instance.reference().child('Users/${user.key}');
+    newUserRef.set(Dataset.currentUser.value.toJson());
+  }
+
   void verifying() async {
     widget.user.sendEmailVerification();
     
@@ -65,8 +75,8 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
     }
   }
 
-  void verifyDone() {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => HomeScreen()),);
+  void verifyDone() async {
+    Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => HomeScreen()), (Route<dynamic> route) => false);
   }
 
   @override
