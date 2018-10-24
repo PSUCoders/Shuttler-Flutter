@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:shuttler_ios/screens/login/login.dart';
 import 'package:shuttler_ios/utilities/dataset.dart';
@@ -30,23 +31,16 @@ class _SettingScreenState extends State<SettingScreen> {
     _currentPlace = _dropDownMenuItems[_places.indexOf(Dataset.currentUser.value.notifications['notifyLocation'])].value;
     _timeAhead = Dataset.currentUser.value.notifications['timeAhead'];
     userNotificationRef = FirebaseDatabase.instance.reference().child('Users/${Dataset.currentUser.value.key}/notifications');
-    // userNotificationRef.onChildChanged.listen(_onEntryChanged);
   }
-
-  // _onEntryChanged(Event event) {
-  //   print("DEBUG event snapshot : ${event.snapshot.key}");
-  //   print("DEBUG event snapshot : ${event.snapshot.value}");
-  //   setState(() {
-  //     if (event.snapshot.key == "enabled") { enableNotifications = event.snapshot.value; }
-  //     if (event.snapshot.key == "notifyLocation") { _currentPlace = event.snapshot.value; }
-  //     if (event.snapshot.key == "timeAhead") { _timeAhead = event.snapshot.value; }
-  //   });
-  // }
-
   
   @override
   void dispose(){
     super.dispose();
+    enableNotifications = null;
+    _dropDownMenuItems = null;
+    _currentPlace = null;
+    _timeAhead = null;
+    userNotificationRef = null;
   }
 
   void onChangedSwitch(bool value) {
@@ -340,6 +334,7 @@ class _SettingScreenState extends State<SettingScreen> {
     userNotificationRef.child('enabled').set(enableNotifications);
     userNotificationRef.child('notifyLocation').set(_currentPlace);
     userNotificationRef.child('timeAhead').set(_timeAhead);
+    print((await userNotificationRef.once()).value);
     Dataset.currentUser.value.notifications = (await userNotificationRef.once()).value;
     Navigator.pop(context);
   }
@@ -348,7 +343,9 @@ class _SettingScreenState extends State<SettingScreen> {
     Navigator.pop(context);
   }
 
-  void logOut() {
+  void logOut() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    await auth.signOut();
     Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => SignInScreen()), (Route<dynamic> route) => false);
   }
 

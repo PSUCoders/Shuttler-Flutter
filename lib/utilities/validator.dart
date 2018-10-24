@@ -32,7 +32,10 @@ bool isName(String name){
 }
 
 bool isPlattsburgh(String login) {
-  return (username.hasMatch(login.toLowerCase()) || email.hasMatch(login.toLowerCase()));
+  if(login.length == 8) {
+    return username.hasMatch(login.toLowerCase());
+  }
+  return email.hasMatch(login.toLowerCase());
 }
 
 

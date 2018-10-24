@@ -71,10 +71,10 @@ class _SignInScreenState extends State<SignInScreen> {
       // print("DEBUG signin email : " + signInEmail);
       var userFirebase = await _auth.signInWithEmailAndPassword(email: signInEmail, password: passwordController.text);
       // print(userFirebase);
-      
-
+    
       if(userFirebase.isEmailVerified) {
-        Dataset.currentUser.value = User.fromFirebase(userFirebase);
+        DataSnapshot snapshot =  await FirebaseDatabase.instance.reference().child('Users/${userFirebase.uid}').once();
+        Dataset.currentUser.value = User.fromSnapshot(snapshot);
         Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => HomeScreen()),);
       }
       else {
@@ -113,12 +113,16 @@ class _SignInScreenState extends State<SignInScreen> {
 
   String validateEmail(String input) {
     if(isPlattsburgh(input)) {
+      print("DEBUG: isPlattsburgh true");
       return null;
     }
     return emailErrorMessage;
   }
 
   String validatePassword(String input) {
+    if(passwordErrorMessage != "Invalid password") {
+      return passwordErrorMessage;
+    }
     if(isPassword(input)) {
       return null;
     }
@@ -196,7 +200,7 @@ class _SignInScreenState extends State<SignInScreen> {
           contentPadding: EdgeInsets.fromLTRB(0.0, 20.0, 10.0, 5.0),
           // hintStyle: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.grey[500]),
           // hintText: "Username",
-          labelText: "Username",
+          labelText: "Username or email",
         ),
       ));
   }
@@ -290,8 +294,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           padding: EdgeInsets.all(0.0),
                           pressedOpacity: 0.5,
                           onPressed: () {
-                            emailController.clear();
-                            passwordController.clear();
+                            this._formKey.currentState.reset();
                             Navigator.push(context, CupertinoPageRoute(builder: (context) => SignUpScreen()),);
                           },
                           child: Text("Register", 
