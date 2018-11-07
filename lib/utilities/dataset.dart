@@ -17,6 +17,7 @@ class Data<T> {
 class Dataset {
   // static List<Event> _allEvents;
   static Data<User> currentUser = Data<User>();
+  static Data<String> token = Data<String>();
 }
 
 void main() {

@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:shuttler_ios/screens/login/login.dart';
 import 'package:shuttler_ios/utilities/dataset.dart';
+// import 'package:shuttler_ios/screens/home/map.dart';
 
 const double _fontSize = 16.0;
 
@@ -22,11 +24,30 @@ class _SettingScreenState extends State<SettingScreen> {
   String _currentPlace;
   int _timeAhead;
   DatabaseReference userNotificationRef; // Users/notifications
+  FirebaseMessaging _firebaseMessaging;
+  String _token;
 
   @override
   initState() {
     super.initState();
-    enableNotifications = Dataset.currentUser.value.notifications['enabled'];
+    enableNotifications = false;
+    _firebaseMessaging = FirebaseMessaging();
+    // _firebaseMessaging.getToken().then((token) {
+    //   print(Dataset.currentUser.value.notifications);
+    //   Map tokenRef = Dataset.currentUser.value.notifications["tokens"];
+    //   if(tokenRef.containsKey(token)) {
+    //     token = token;
+    //     setState(() {
+    //       enableNotifications = true;
+    //     });
+    //   }
+    // });
+    // print(Dataset.token.value);
+    // print("token is " + Dataset.token.value);
+    _token = Dataset.token.value;
+    // print(Dataset.currentUser.value.notifications["tokens"][_token]);
+    // print(Dataset.currentUser.value.notifications[Dataset.token.value]);
+    enableNotifications = Dataset.currentUser.value.notifications["tokens"][_token];
     _dropDownMenuItems = getDropDownMenuItems();
     _currentPlace = _dropDownMenuItems[_places.indexOf(Dataset.currentUser.value.notifications['notifyLocation'])].value;
     _timeAhead = Dataset.currentUser.value.notifications['timeAhead'];
@@ -331,10 +352,18 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   void applySetting() async {
-    userNotificationRef.child('enabled').set(enableNotifications);
+    // userNotificationRef.child('enabled').set(enableNotifications);
     userNotificationRef.child('notifyLocation').set(_currentPlace);
     userNotificationRef.child('timeAhead').set(_timeAhead);
+    if(enableNotifications) {
+      userNotificationRef.child("tokens/$_token").set(true);
+    }
+    else {
+      userNotificationRef.child("tokens/$_token").set(false);
+    }
+
     print((await userNotificationRef.once()).value);
+
     Dataset.currentUser.value.notifications = (await userNotificationRef.once()).value;
     Navigator.pop(context);
   }
@@ -343,9 +372,16 @@ class _SettingScreenState extends State<SettingScreen> {
     Navigator.pop(context);
   }
 
+  Future<void> removeNotificationToken() async {
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    var token = await firebaseMessaging.getToken();
+    userNotificationRef.child(token).remove();
+  }
+
   void logOut() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     await auth.signOut();
+    removeNotificationToken();
     Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => SignInScreen()), (Route<dynamic> route) => false);
   }
 
@@ -373,8 +409,13 @@ class _SettingScreenState extends State<SettingScreen> {
               enableNotificationSwitch(),
               notifyButton(),
               timeAheadButton(),
-              // setTimeButton(),
               logoutButton(),
+              FlatButton(
+                onPressed: () {    
+                  // Navigator.of(context).push(CupertinoPageRoute(builder: (context) => Map()));
+                },
+                child: Text("Show Map")
+              )
             ],
           ),
         ),

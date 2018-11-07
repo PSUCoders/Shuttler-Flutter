@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:shuttler_ios/utilities/dataset.dart';
 import 'package:shuttler_ios/models/user.dart';
@@ -37,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
   bool showPassword;
   String showPasswordURL;
   FirebaseUser user;
-
+  FirebaseMessaging _firebaseMessaging;
 
   @override
   initState() {
@@ -50,7 +51,7 @@ class _SignInScreenState extends State<SignInScreen> {
     passwordErrorMessage = "Invalid password";
     showPassword = false;
     showPasswordURL = "assets/icons/3.0x/ic_eye_off@3x.png";
-    // test();
+    _firebaseMessaging = FirebaseMessaging();
   }
   
   @override
@@ -73,8 +74,26 @@ class _SignInScreenState extends State<SignInScreen> {
       // print(userFirebase);
     
       if(userFirebase.isEmailVerified) {
+        var token = await _firebaseMessaging.getToken();
+        // print(token);
         DataSnapshot snapshot =  await FirebaseDatabase.instance.reference().child('Users/${userFirebase.uid}').once();
-        Dataset.currentUser.value = User.fromSnapshot(snapshot);
+        
+        // print("DEBUG: marker 1");
+        /// Check whether the token of the current device is saved on database or not
+        /// If not, save it.
+        Map notiTokens = snapshot.value;
+        // print("DEBUG: marker 2");
+        // print(notiTokens);
+        if(!notiTokens.containsKey(token)) {
+          DatabaseReference tokenRef =  FirebaseDatabase.instance.reference().child('Users/${userFirebase.uid}/notifications/tokens/$token');
+          tokenRef.set(true);
+          snapshot =  await FirebaseDatabase.instance.reference().child('Users/${userFirebase.uid}').once();
+        }
+
+        User u = User.fromSnapshot(snapshot);
+        Dataset.currentUser.value = u;
+        Dataset.token.value = token;
+        print("token is " + Dataset.token.value);
         Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => HomeScreen()),);
       }
       else {
@@ -102,6 +121,7 @@ class _SignInScreenState extends State<SignInScreen> {
         print("Unhandled Error!");
         passwordErrorMessage = "Invalid password";
         emailErrorMessage = "Invalid email";
+        showSnackbar("Unhandled Error!");
       }
 
       if(this._formKey.currentState.validate()) {
@@ -257,58 +277,63 @@ class _SignInScreenState extends State<SignInScreen> {
 
     return Scaffold(
       key: _scaffoldKey,
-      body: new Material(
-        child: Center(
-          child: Form(
-            key: _formKey,
-            child: SizedBox(
-              width: screenSize.width * 4 / 5,
-                child: ListView(
-                children: <Widget>[
-                  SizedBox(height: screenSize.height/10,),
-                  SizedBox(
-                    height: 100.0,
-                    child: Image.asset(
-                      "assets/icons/3.0x/ic_logo@3x.png", scale: 3.0, fit: BoxFit.fitHeight,
-                    ),
-                  ),
-                  SizedBox(height: screenSize.height/10,),
-                  Text("Don't Miss The Shuttle Any More!", textAlign: TextAlign.center,
-                    style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 18.0, color: Colors.black54),
-                  ),
-                  emailInput(),
-                  passwordInput(),
-                  SizedBox(height: screenSize.height/20,),
-                  signInButton(),
-
-                  SizedBox(height: 100.0,),
-
-                  SizedBox(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Form(
+                key: _formKey,
+                child: SizedBox(
+                  width: screenSize.width * 4 / 5,
+                    child: ListView(
                       children: <Widget>[
-                        Text("First time using Shuttler? ",
-                          style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.normal , color: Colors.black)
-                        ),
-                        CupertinoButton(
-                          padding: EdgeInsets.all(0.0),
-                          pressedOpacity: 0.5,
-                          onPressed: () {
-                            this._formKey.currentState.reset();
-                            Navigator.push(context, CupertinoPageRoute(builder: (context) => SignUpScreen()),);
-                          },
-                          child: Text("Register", 
-                            style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: primaryColor1)
+                        SizedBox(height: screenSize.height/10,),
+                        SizedBox(
+                          height: 100.0,
+                          child: Image.asset(
+                            "assets/icons/3.0x/ic_logo@3x.png", scale: 3.0, fit: BoxFit.fitHeight,
                           ),
-                        )
-                      ],
-                    )
+                        ),
+                        SizedBox(height: screenSize.height/10,),
+                        Text("Don't Miss The Shuttle Any More!", textAlign: TextAlign.center,
+                          style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 18.0, color: Colors.black54),
+                        ),
+                        emailInput(),
+                        passwordInput(),
+                        SizedBox(height: screenSize.height/20,),
+                        signInButton(),
+
+                        SizedBox(height: 100.0,),
+
+                        
+                      ]
                   ),
-                ]
+                ),
               ),
             ),
-          ),
-        )
+            SizedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("First time using Shuttler? ",
+                    style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.normal , color: Colors.black)
+                  ),
+                  CupertinoButton(
+                    padding: EdgeInsets.all(0.0),
+                    pressedOpacity: 0.5,
+                    onPressed: () {
+                      this._formKey.currentState.reset();
+                      Navigator.push(context, CupertinoPageRoute(builder: (context) => SignUpScreen()),);
+                    },
+                    child: Text("Register", 
+                      style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: primaryColor1)
+                    ),
+                  )
+                ],
+              )
+            ),
+          ],
+        ),
       ),
     );
   }

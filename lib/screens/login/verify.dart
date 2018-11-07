@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:shuttler_ios/models/user.dart';
 import 'package:shuttler_ios/utilities/dataset.dart';
@@ -31,6 +32,7 @@ class VerifyAccountScreen extends StatefulWidget {
 class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
   bool hasVerified;
   Timer _verificationTimer;
+  FirebaseMessaging _firebaseMessaging;
   
   @override
   initState() {
@@ -38,6 +40,7 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
     hasVerified = false;
     _verificationTimer = null;
     verifying();
+    _firebaseMessaging = FirebaseMessaging();
   }
 
   @override
@@ -50,7 +53,14 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
     FirebaseUser user = await auth.currentUser();
     await user.reload();
     if(user.isEmailVerified) {
-      Dataset.currentUser.value = User.fromFirebase(user);
+      String token = await _firebaseMessaging.getToken();
+      User u = User.fromFirebase(user);
+      Map tokens = u.notifications["tokens"];
+      tokens[token] = true;
+      print(u.notifications);
+
+      Dataset.token.value = token;
+      Dataset.currentUser.value = u;
       await addUserToDatabase(Dataset.currentUser.value);
       setState(() {
         hasVerified = true;

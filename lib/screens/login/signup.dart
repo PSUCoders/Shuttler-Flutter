@@ -110,7 +110,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> saveUser(FirebaseUser firebaseUser) async {
     User user = User.fromFirebase(firebaseUser);
     DatabaseReference usersRef = FirebaseDatabase.instance.reference().child('Users');
-    await usersRef.set(user);
+    print(user);
+    usersRef.set(user);
   }
 
   void submitForm() async {
@@ -118,7 +119,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       FirebaseAuth auth = FirebaseAuth.instance;
       String signUpEmail = (isStudentID(emailController.text) ? emailController.text + "@plattsburgh.edu" : emailController.text);
       FirebaseUser user = await auth.createUserWithEmailAndPassword(email: signUpEmail, password: passwordController.text);
-      await saveUser(user);
+      // print("DEBUG: before saving User");
+      // await saveUser(user);
+      // print("DEBUG: after saving User");
       Navigator.push(context, CupertinoPageRoute(builder: (context) => VerifyAccountScreen(user)));
 
     }
@@ -178,7 +181,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ));
   }
 
-  Widget signInButton() {
+  Widget signUpButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 60.0),
       child: CupertinoButton(
@@ -200,12 +203,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       margin: const EdgeInsets.all(10.0),
       width: screenSize.width * 4 / 5,
       child: TextFormField(
-        // key: _emailKey,
         style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, color: Colors.black, decoration: TextDecoration.none),
         controller: emailController,
         keyboardType: TextInputType.emailAddress,
         validator: validateEmail,
-        autovalidate: true,
+        // autovalidate: true,
         autofocus: false,
         focusNode: emailNode,
         textInputAction: TextInputAction.next,
@@ -298,62 +300,65 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primaryColor: Color(0xFFF2014B),textSelectionHandleColor:  Color(0xFFF2014B)),
-      home: Scaffold(
-        key: _scaffoldKey,
-        body: new Material(
-          child: Center(
-            child: Form(
-              key: _formKey,
-              child: SizedBox(
-                width: screenSize.width * 4 / 5,
-                child: ListView(
-                  children: <Widget>[
-                    SizedBox(height: screenSize.height/10,),
-                    SizedBox(
-                      height: 100.0,
-                      child: Image.asset(
-                        "assets/icons/3.0x/ic_logo@3x.png", scale: 3.0, fit: BoxFit.fitHeight,
-                      ),
-                    ),
-                    SizedBox(height: screenSize.height/10,),
-                    Text("Don't Miss The Shuttle Any More!", textAlign: TextAlign.center,
-                      style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 18.0, color: Colors.black54),
-                    ),
-                    emailInput(),
-                    passwordInput(),
-                    password2Input(),
-                    SizedBox(height: screenSize.height/20,),
-                    signInButton(),
-                    SizedBox(height: 50.0,),
-                    SizedBox(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("Already registered? ",
-                            style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.normal , color: Colors.black)
+    return Scaffold(
+      key: _scaffoldKey,
+      body: new Material(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: Form(
+                  key: _formKey,
+                  child: SizedBox(
+                    width: screenSize.width * 4 / 5,
+                    child: ListView(
+                      children: <Widget>[
+                        SizedBox(height: screenSize.height/10,),
+                        SizedBox(
+                          height: 100.0,
+                          child: Image.asset(
+                            "assets/icons/3.0x/ic_logo@3x.png", scale: 3.0, fit: BoxFit.fitHeight,
                           ),
-                          CupertinoButton(
-                            padding: EdgeInsets.all(0.0),
-                            pressedOpacity: 0.5,
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text("Sign in", 
-                              style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: primaryColor1)
-                            ),
-                          )
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: screenSize.height/10,),
+                        Text("Don't Miss The Shuttle Any More!", textAlign: TextAlign.center,
+                          style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 18.0, color: Colors.black54),
+                        ),
+                        emailInput(),
+                        passwordInput(),
+                        password2Input(),
+                        SizedBox(height: screenSize.height/20,),
+                        signUpButton(),
+                        SizedBox(height: 50.0,),
+                        
+                      ]
                     ),
-                  ]
+                  ),
                 ),
               ),
-            ),
-          )
-        ),
+              SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Already registered? ",
+                      style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.normal , color: Colors.black)
+                    ),
+                    CupertinoButton(
+                      padding: EdgeInsets.all(0.0),
+                      pressedOpacity: 0.5,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Sign in", 
+                        style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: primaryColor1)
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
       ),
     );
   }

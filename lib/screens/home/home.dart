@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:shuttler_ios/screens/setting/setting.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,10 +12,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
+  FirebaseMessaging _firebaseMessaging;
 
   @override
   void initState() {
     super.initState();
+    _firebaseMessaging = FirebaseMessaging()
+      ..configure(
+        onMessage: (message) {
+          print("on message $message");
+        },
+        onLaunch: (message) {
+          print("on launch $message");
+        },
+        onResume: (message) {
+          print("on resume $message");
+        }
+      );
+    _firebaseMessaging.getToken().then((token) => print("token is: " + token));
   }
 
   @override

@@ -1,8 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-const Map<String, dynamic> defaultNotifications = {
-  "enabled" : true,
+Map<String, dynamic> defaultNotifications = {
+  "tokens" : { },
   "notifyLocation" : "Campus",
   "timeAhead" : 5
 };
