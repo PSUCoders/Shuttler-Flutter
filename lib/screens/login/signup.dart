@@ -118,12 +118,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     try {
       FirebaseAuth auth = FirebaseAuth.instance;
       String signUpEmail = (isStudentID(emailController.text) ? emailController.text + "@plattsburgh.edu" : emailController.text);
-      FirebaseUser user = await auth.createUserWithEmailAndPassword(email: signUpEmail, password: passwordController.text);
-      // print("DEBUG: before saving User");
-      // await saveUser(user);
-      // print("DEBUG: after saving User");
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => VerifyAccountScreen(user)));
-
+      
+      bool validationResult = this._formKey.currentState.validate();
+      if(validationResult) {
+        this._formKey.currentState.save();
+        
+        FirebaseUser user = await auth.createUserWithEmailAndPassword(email: signUpEmail, password: passwordController.text);
+        Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => VerifyAccountScreen(user)));
+      }
+      
     }
     catch (e) {
       print("An error occurs");
@@ -133,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         passwordErrorMessage = "Password should be at least 6 characters";
         password2ErrorMessage = null;
         password2Controller.clear();
-        FocusScope.of(context).requestFocus(passwordNode);
+        // FocusScope.of(context).requestFocus(passwordNode);
       }
       else if (e.toString().contains(ERROR_CODE_06)) {
         passwordController.clear();
@@ -144,12 +147,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return;
       }
 
-      print("this was ran");
+      this._formKey.currentState.validate();
 
-      if(this._formKey.currentState.validate()) {
-        this._formKey.currentState.save();
-      }
-      
+      // print("this was ran");
     }
   }
 
@@ -295,6 +295,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
+  Widget _buildBottomSheet() {
+    return  SizedBox(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Already registered? ",
+            style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.normal , color: Colors.black)
+          ),
+          CupertinoButton(
+            padding: EdgeInsets.all(0.0),
+            pressedOpacity: 0.5,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Sign in", 
+              style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: primaryColor1)
+            ),
+          )
+        ],
+      ),
+    );
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -329,33 +352,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         password2Input(),
                         SizedBox(height: screenSize.height/20,),
                         signUpButton(),
-                        SizedBox(height: 50.0,),
                         
                       ]
                     ),
                   ),
                 ),
               ),
-              SizedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Already registered? ",
-                      style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.normal , color: Colors.black)
-                    ),
-                    CupertinoButton(
-                      padding: EdgeInsets.all(0.0),
-                      pressedOpacity: 0.5,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text("Sign in", 
-                        style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 16.0, fontWeight: FontWeight.bold, color: primaryColor1)
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              _buildBottomSheet(),
             ],
           ),
         )

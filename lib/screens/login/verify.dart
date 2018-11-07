@@ -62,10 +62,12 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
       Dataset.token.value = token;
       Dataset.currentUser.value = u;
       await addUserToDatabase(Dataset.currentUser.value);
-      setState(() {
-        hasVerified = true;
-        _verificationTimer = null;
-      });
+      if (this.mounted) {
+        setState(() {
+          hasVerified = true;
+          _verificationTimer = null;
+        });
+      }
     }
     else {
       _verificationTimer = Timer(Duration(seconds: 2), _handleTimer);
