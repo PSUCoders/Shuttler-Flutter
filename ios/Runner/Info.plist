@@ -43,5 +43,7 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
     <string>Using location to display on a map</string>
+	<key>io.flutter.embedded_views_preview</key>
+	<string>YES</string>
 </dict>
 </plist>

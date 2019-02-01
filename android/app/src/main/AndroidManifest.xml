@@ -19,11 +19,8 @@
         android:label="Shuttler"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round">
-        <!-- <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyAoih3-6DvYmtyJjS_o20yJkdJxbHJZ9KQ"/>
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/> -->
-        <!-- <meta-data 
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAoih3-6DvYmtyJjS_o20yJkdJxbHJZ9KQ"/> -->
+         <meta-data android:name="com.google.android.geo.API_KEY"
+                    android:value="AIzaSyDeGHreLijVyxGBcSz-l19qh3N6biJEV-U"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
