@@ -8,6 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:shuttler_ios/screens/login/login.dart';
 import 'package:shuttler_ios/utilities/config.dart';
 import 'package:shuttler_ios/screens/home/home.dart';
+import 'package:shuttler_ios/utilities/dataset.dart';
 
 const API_KEY = "AIzaSyAoih3-6DvYmtyJjS_o20yJkdJxbHJZ9KQ";
 
@@ -17,7 +18,7 @@ void main() async {
     name: 'db',
     options: (Platform.isIOS)
         ? const FirebaseOptions(
-            googleAppID: '1:571374342123:ios:caa2f6d813b8d2fc',
+            googleAppID: '1:571374342123:android:caa2f6d813b8d2fc',
             gcmSenderID: '571374342123',
             databaseURL: 'https://shuttler-p001.firebaseio.com',
           )
@@ -27,6 +28,9 @@ void main() async {
             databaseURL: 'https://shuttler-p001.firebaseio.com',
           ),
   );
+
+  Dataset.firebaseApp.value = app;
+  
 
   var result = await checkIsLogin();
   if (result) {

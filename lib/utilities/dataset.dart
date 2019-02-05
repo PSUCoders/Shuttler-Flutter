@@ -1,4 +1,5 @@
 import 'package:shuttler_ios/models/user.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class Data<T> {
   T _value;
@@ -18,6 +19,7 @@ class Dataset {
   // static List<Event> _allEvents;
   static Data<User> currentUser = Data<User>();
   static Data<String> token = Data<String>();
+  static Data<FirebaseApp> firebaseApp = Data();
 }
 
 void main() {

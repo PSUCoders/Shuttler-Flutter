@@ -11,3 +11,15 @@ android/app/src/main/AndroidManifest.xml
 android/app/google-services.json
 android/app/src/main/AndroidManifest.xml
 ios/Runner/AppDelegate.m
+.vscode/settings.json
+.idea/libraries/Flutter_for_Android.xml
+.idea/misc.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/codeStyles/Project.xml
+.idea/libraries/Dart_Packages.xml
+.idea/libraries/Dart_SDK.xml
+.idea/libraries/Flutter_Plugins.xml
+.idea/libraries/Flutter_for_Android.xml
+.idea/workspace.xml
+.idea/libraries/Dart_SDK.xml
