@@ -7,7 +7,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:shuttler_ios/screens/login/login.dart';
 import 'package:shuttler_ios/utilities/dataset.dart';
-// import 'package:shuttler_ios/screens/home/map.dart';
 
 const double _fontSize = 16.0;
 
@@ -92,7 +91,7 @@ class _SettingScreenState extends State<SettingScreen> {
               style: TextStyle(fontSize: _fontSize, 
               fontFamily: "CircularStd-Book", 
               fontWeight: FontWeight.bold, 
-              color: Colors.black38), 
+              color: Colors.black87), 
             ),
             Expanded(
               child: Container(
@@ -140,7 +139,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   style: TextStyle(fontSize: _fontSize, 
                   fontFamily: "CircularStd-Book", 
                   fontWeight: FontWeight.bold, 
-                  color: Colors.black38), 
+                  color: Colors.black87), 
                 )
               ],
             ),
@@ -182,7 +181,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   style: TextStyle(fontSize: _fontSize, 
                   fontFamily: "CircularStd-Book", 
                   fontWeight: FontWeight.bold, 
-                  color: Colors.black38), )
+                  color: Colors.black87), )
               ],
             ),
             setTimeButton()
@@ -390,7 +389,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return Material(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Settings", style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 25.0, color: Colors.black54),),
+          title: Text("Settings", style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 25.0, color: Colors.black87),),
           elevation: 2.0,
           titleSpacing: 0.0,
           leading: IconButton(
@@ -410,12 +409,6 @@ class _SettingScreenState extends State<SettingScreen> {
               notifyButton(),
               timeAheadButton(),
               logoutButton(),
-              FlatButton(
-                onPressed: () {    
-                  // Navigator.of(context).push(CupertinoPageRoute(builder: (context) => Map()));
-                },
-                child: Text("Show Map")
-              )
             ],
           ),
         ),

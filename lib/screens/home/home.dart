@@ -93,55 +93,9 @@ class _HomeScreen extends State<HomeScreen> {
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
       mapController = controller;
-      
+
       _getDrivers();
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Text(
-            "Shuttle Status",
-            style: TextStyle(
-                fontFamily: "CircularStd-Book",
-                fontSize: 25.0,
-                color: Colors.black54),
-          ),
-        ),
-        elevation: 2.0,
-        titleSpacing: 0.0,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              CupertinoIcons.ellipsis,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.push(context,
-                  CupertinoPageRoute(builder: (context) => SettingScreen()));
-            },
-          )
-        ],
-        backgroundColor: Colors.white,
-      ),
-      body: Container(
-        color: Colors.blue,
-        child: GoogleMap(
-          onMapCreated: _onMapCreated,
-          myLocationEnabled: true,
-          initialCameraPosition: _currentPosition != null
-              ? CameraPosition(
-                  target: LatLng(
-                      _currentPosition.latitude, _currentPosition.longitude))
-              : CameraPosition(target: LatLng(70, 70)),
-        ),
-      ),
-      bottomSheet: bottomMenu(),
-    );
   }
 
   Widget bottomMenu() {
@@ -231,5 +185,88 @@ class _HomeScreen extends State<HomeScreen> {
             )
           ],
         ));
+  }
+
+  Widget _buildBody() {
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: Stack(
+            children: <Widget>[
+              Container(
+                color: Colors.blue,
+                child: GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  myLocationEnabled: true,
+                  initialCameraPosition: _currentPosition != null
+                      ? CameraPosition(
+                          target: LatLng(_currentPosition.latitude,
+                              _currentPosition.longitude))
+                      : CameraPosition(target: LatLng(70, 70)),
+                ),
+              ),
+              // Positioned(
+              //   bottom: 15,
+              //   right: 15,
+              //   child: IconButton(
+              //     onPressed: _goToDriver,
+              //     icon: Icon(
+              //       Icons.directions_bus,
+              //       color: Colors.red,
+              //     ),
+              //   ),
+              // ),
+              Positioned(
+                bottom: 30,
+                right: 30,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    splashColor: Colors.blue,
+                    child: Icon(Icons.directions_bus),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        bottomMenu(),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            "Shuttle Status",
+            style: TextStyle(
+                fontFamily: "CircularStd-Book",
+                fontSize: 25.0,
+                color: Colors.black87),
+          ),
+        ),
+        elevation: 2.0,
+        titleSpacing: 0.0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              CupertinoIcons.ellipsis,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.push(context,
+                  CupertinoPageRoute(builder: (context) => SettingScreen()));
+            },
+          ),
+        ],
+        backgroundColor: Colors.white,
+      ),
+      body: _buildBody(),
+      bottomSheet: bottomMenu(),
+    );
   }
 }

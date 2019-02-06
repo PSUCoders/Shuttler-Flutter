@@ -1,19 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:shuttler_ios/models/user.dart';
 
 import 'package:shuttler_ios/screens/login/login.dart';
-import 'package:shuttler_ios/utilities/config.dart';
 import 'package:shuttler_ios/screens/home/home.dart';
 import 'package:shuttler_ios/utilities/dataset.dart';
 
 const API_KEY = "AIzaSyAoih3-6DvYmtyJjS_o20yJkdJxbHJZ9KQ";
 
 void main() async {
-  // MapView.setApiKey("AIzaSyAoih3-6DvYmtyJjS_o20yJkdJxbHJZ9KQ");
   final FirebaseApp app = await FirebaseApp.configure(
     name: 'db',
     options: (Platform.isIOS)
@@ -30,26 +31,82 @@ void main() async {
   );
 
   Dataset.firebaseApp.value = app;
-  
 
   var result = await checkIsLogin();
   if (result) {
-    runApp(Shuttler(true, app));
+    runApp(Shuttler(true));
   } else {
-    runApp(Shuttler(false, app));
+    runApp(Shuttler(false));
   }
 }
 
 Future<bool> checkIsLogin() async {
-  return await getIsLogin();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseUser user = await auth.currentUser();
+  print(user);
+  if (user.email != null) {
+    final FirebaseDatabase database =
+        FirebaseDatabase(app: Dataset.firebaseApp.value);
+    print(user.uid);
+
+    // DataSnapshot snapshot =  await database.reference().child('Users/${user.uid}').once();
+    // print(snapshot.value);
+
+    // DataSnapshot snapshot =  await FirebaseDatabase.instance.reference().child('Users/${user.uid}').once();
+    // print(snapshot.value);
+    // print(0);
+    // Map notiTokens = snapshot.value;
+    // if(!notiTokens.containsKey(Dataset.token.value)) {
+    //   DatabaseReference tokenRef =  FirebaseDatabase.instance.reference().child('Users/${user.uid}/notifications/tokens/${Dataset.token.value}');
+    //   tokenRef.set(true);
+    //   snapshot =  await FirebaseDatabase.instance.reference().child('Users/${user.uid}').once();
+    // }
+    // Dataset.currentUser.value = User.fromSnapshot(snapshot);
+    // Dataset.token.value = await user.getIdToken();
+
+    print(1);
+    return true;
+  } else {
+    print(2);
+    return false;
+  }
 }
 
 class Shuttler extends StatelessWidget {
   final Widget home;
-  final FirebaseApp app;
 
-  Shuttler(bool isLoggin, this.app)
-      : home = (isLoggin ? HomeScreen() : SignInScreen());
+  Shuttler(bool isLoggin)
+      : home = (isLoggin ? HomeScreen() : SignInScreen()) {
+    _getUserData();
+  }
+
+  void _getUserData() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseUser user = await auth.currentUser();
+    print(user);
+
+    final FirebaseDatabase database =
+        FirebaseDatabase(app: Dataset.firebaseApp.value);
+    print(user.uid);
+
+    DataSnapshot snapshot =
+        await database.reference().child('Users/${user.uid}').once();
+    final _firebaseMessaging = FirebaseMessaging();
+    var token = await _firebaseMessaging.getToken();
+
+    print(0);
+    Map notiTokens = snapshot.value;
+    if(!notiTokens.containsKey(token)) {
+      DatabaseReference tokenRef =  FirebaseDatabase.instance.reference().child('Users/${user.uid}/notifications/tokens/${Dataset.token.value}');
+      tokenRef.set(true);
+      snapshot =  await FirebaseDatabase.instance.reference().child('Users/${user.uid}').once();
+    }
+    print(3);
+    print(snapshot.value);
+    Dataset.currentUser.value = User.fromSnapshot(snapshot);
+    Dataset.token.value = token;
+    print(Dataset.token.value);
+  }
 
   @override
   Widget build(BuildContext context) {
