@@ -27,6 +27,7 @@ dependencies:
   firebase_messaging: ^2.0.3
   google_maps_flutter: ^0.2.0
   geolocator: ^2.1.1
+  flutter_statusbar_manager: ^1.0.2
 
 dev_dependencies:
   flutter_test:
@@ -48,6 +49,7 @@ flutter:
   #  - images/a_dot_ham.jpeg
 
   assets:
+    - assets/
     - assets/icons/
     - assets/icons/2.0x/
     - assets/icons/3.0x/

@@ -17,9 +17,11 @@ class Data<T> {
 
 class Dataset {
   // static List<Event> _allEvents;
-  static Data<User> currentUser = Data<User>();
+  static Data<User> currentUser = Data();
   static Data<String> token = Data<String>();
   static Data<FirebaseApp> firebaseApp = Data();
+  static Data<double> statusBarHeight = Data();
+  static Data<bool> isDriver = Data();
 }
 
 void main() {

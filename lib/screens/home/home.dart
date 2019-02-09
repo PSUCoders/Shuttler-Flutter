@@ -198,6 +198,7 @@ class _HomeScreen extends State<HomeScreen> {
                 child: GoogleMap(
                   onMapCreated: _onMapCreated,
                   myLocationEnabled: true,
+                  compassEnabled: true,
                   initialCameraPosition: _currentPosition != null
                       ? CameraPosition(
                           target: LatLng(_currentPosition.latitude,
@@ -205,17 +206,6 @@ class _HomeScreen extends State<HomeScreen> {
                       : CameraPosition(target: LatLng(70, 70)),
                 ),
               ),
-              // Positioned(
-              //   bottom: 15,
-              //   right: 15,
-              //   child: IconButton(
-              //     onPressed: _goToDriver,
-              //     icon: Icon(
-              //       Icons.directions_bus,
-              //       color: Colors.red,
-              //     ),
-              //   ),
-              // ),
               Positioned(
                 bottom: 30,
                 right: 30,

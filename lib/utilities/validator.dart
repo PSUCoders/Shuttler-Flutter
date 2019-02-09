@@ -1,4 +1,9 @@
 
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 RegExp username = RegExp(r"\b[A-Za-z]{5}[0-9]{3}\b");
 RegExp email = RegExp(r"\b[A-Za-z]{5}[0-9]{3}\@plattsburgh.edu\b");
 RegExp password = RegExp(r"\b[A-Za-z0-9]\!\@\#\$\%\^\&\*\~\(\)\\\b");
@@ -38,9 +43,33 @@ bool isPlattsburgh(String login) {
   return email.hasMatch(login.toLowerCase());
 }
 
-
 bool isStudentID(String login) {
   // print(username.hasMatch(login));
   if (login.length != 8) return false;
   return username.hasMatch(login);
+}
+
+Future<bool> isDriverAccount() async {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  var currentUser = await auth.currentUser();
+
+  DataSnapshot snapshot = await FirebaseDatabase.instance
+      .reference()
+      .child('Drivers/${currentUser.uid}')
+      .once();
+  if (snapshot.value == null) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+Future<bool> checkIsLogin() async {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseUser user = await auth.currentUser();
+  if (user?.email != null) {
+    return true;
+  } else {
+    return false;
+  }
 }
