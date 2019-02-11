@@ -42,7 +42,7 @@ class LoadingScreenState extends State<LoadingScreen> {
     /// Route to another page
     if (isLogin) {
       if (isDriver) {
-        Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => DriverHomeScreen()));
+        // Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => DriverHomeScreen()));
       }
       else {
         Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => HomeScreen()));

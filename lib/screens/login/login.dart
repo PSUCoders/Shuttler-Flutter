@@ -81,10 +81,10 @@ class _SignInScreenState extends State<SignInScreen> {
 
       final bool isDriver = await isDriverAccount();
       if (isDriver) {
-        Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute(builder: (context) => DriverHomeScreen()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   CupertinoPageRoute(builder: (context) => DriverHomeScreen()),
+        // );
       } else {
         if (userFirebase.isEmailVerified) {
 

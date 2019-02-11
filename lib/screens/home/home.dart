@@ -98,7 +98,7 @@ class _HomeScreen extends State<HomeScreen> {
     });
   }
 
-  Widget bottomMenu() {
+  Widget _buildBottomMenu() {
     return Container(
       height: 100.0,
       color: Colors.white,
@@ -137,7 +137,9 @@ class _HomeScreen extends State<HomeScreen> {
                     fontWeight: FontWeight.bold,
                     color: Color(0xFFF2014B)),
               ),
-              Icon(Icons.drive_eta),
+              Image.asset("assets/switch_thumb.png",
+                height: 30,
+              ),
               Text(
                 "Target",
                 style: TextStyle(
@@ -207,20 +209,22 @@ class _HomeScreen extends State<HomeScreen> {
                 ),
               ),
               Positioned(
-                bottom: 30,
-                right: 30,
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: InkWell(
-                    splashColor: Colors.blue,
-                    child: Icon(Icons.directions_bus),
-                  ),
-                ),
-              )
+                  bottom: 15,
+                  right: 5,
+                  child: GestureDetector(
+                    onTap: () {
+                      _goToDriver();
+                    },
+                    child: Image.asset(
+                      "assets/switch_thumb.png",
+                      height: 50,
+                      width: 50,
+                    ),
+                  ))
             ],
           ),
         ),
-        bottomMenu(),
+        _buildBottomMenu(),
       ],
     );
   }
@@ -256,7 +260,7 @@ class _HomeScreen extends State<HomeScreen> {
         backgroundColor: Colors.white,
       ),
       body: _buildBody(),
-      bottomSheet: bottomMenu(),
+      bottomSheet: _buildBottomMenu(),
     );
   }
 }
