@@ -16,10 +16,9 @@ Give examples
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+1. Contact the owner to get API key and Firebase service json files.
 
-Say what the step will be
-
+2. Install Flutter through https://flutter.io/
 ```
 Give the example
 ```
