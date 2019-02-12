@@ -49,7 +49,10 @@ class _SettingScreenState extends State<SettingScreen> {
     enableNotifications = Dataset.currentUser.value.notifications["tokens"][_token];
     _dropDownMenuItems = getDropDownMenuItems();
     _currentPlace = _dropDownMenuItems[_places.indexOf(Dataset.currentUser.value.notifications['notifyLocation'])].value;
-    _timeAhead = Dataset.currentUser.value.notifications['timeAhead'];
+    print(Dataset.currentUser.value.notifications);
+    String timeAheadString = Dataset.currentUser.value.notifications['timeAhead'];
+    _timeAhead = int.parse(timeAheadString);
+    // _timeAhead = Dataset.currentUser.value.notifications['timeAhead'];
     userNotificationRef = FirebaseDatabase.instance.reference().child('Users/${Dataset.currentUser.value.key}/notifications');
   }
   
@@ -353,7 +356,7 @@ class _SettingScreenState extends State<SettingScreen> {
   void applySetting() async {
     // userNotificationRef.child('enabled').set(enableNotifications);
     userNotificationRef.child('notifyLocation').set(_currentPlace);
-    userNotificationRef.child('timeAhead').set(_timeAhead);
+    userNotificationRef.child('timeAhead').set(_timeAhead.toString());
     if(enableNotifications) {
       userNotificationRef.child("tokens/$_token").set(true);
     }

@@ -74,9 +74,11 @@ class LoadingScreenState extends State<LoadingScreen> {
   Future _getUserData() async {
     /// Check whether user is login.
     isLogin = await getIsLogin();
+    print("User isLogin: $isLogin");
 
     if (isLogin) {
       isDriver = await isDriverAccount();
+      print("isDriver: $isDriver");
       Dataset.isDriver.value = isDriver;
       if (!isDriver) {
         final FirebaseAuth auth = FirebaseAuth.instance;
@@ -89,6 +91,10 @@ class LoadingScreenState extends State<LoadingScreen> {
 
         Dataset.token.value = await _firebaseMessaging.getToken();
       }
+    }
+    else {
+      final FirebaseAuth auth = FirebaseAuth.instance;
+      auth.signOut();
     }
   }
 

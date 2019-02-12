@@ -7,6 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shuttler_ios/screens/home/driver_home.dart';
+import 'package:shuttler_ios/utilities/config.dart';
 
 import 'package:shuttler_ios/utilities/dataset.dart';
 import 'package:shuttler_ios/models/user.dart';
@@ -112,6 +113,7 @@ class _SignInScreenState extends State<SignInScreen> {
           User u = User.fromSnapshot(snapshot);
           Dataset.currentUser.value = u;
           Dataset.token.value = token;
+          await setIsLogin(true);
           print("token is " + Dataset.token.value);
           Navigator.pushReplacement(
             context,

@@ -104,17 +104,17 @@ class _HomeScreen extends State<HomeScreen> {
       color: Colors.white,
       padding: EdgeInsets.all(15.0),
       child: Row(
-        children: <Widget>[nextStopButton(), etcButton()],
+        children: <Widget>[_buildNextStopButton(), _buildEstButton()],
       ),
     );
   }
 
-  Widget nextStopButton() {
+  Widget _buildNextStopButton() {
     return GestureDetector(
       onTap: () {
         // print(_currentPosition);
-        _getDrivers();
-        _goToDriver();
+        // _getDrivers();
+        // _goToDriver();
       },
       child: Container(
           margin: EdgeInsets.symmetric(horizontal: 20.0),
@@ -137,7 +137,8 @@ class _HomeScreen extends State<HomeScreen> {
                     fontWeight: FontWeight.bold,
                     color: Color(0xFFF2014B)),
               ),
-              Image.asset("assets/switch_thumb.png",
+              Image.asset(
+                "assets/switch_thumb.png",
                 height: 30,
               ),
               Text(
@@ -152,7 +153,7 @@ class _HomeScreen extends State<HomeScreen> {
     );
   }
 
-  Widget etcButton() {
+  Widget _buildEstButton() {
     return Container(
         margin: EdgeInsets.symmetric(horizontal: 20.0),
         height: 70.0,
@@ -209,18 +210,32 @@ class _HomeScreen extends State<HomeScreen> {
                 ),
               ),
               Positioned(
-                  bottom: 15,
-                  right: 5,
-                  child: GestureDetector(
-                    onTap: () {
-                      _goToDriver();
-                    },
-                    child: Image.asset(
-                      "assets/switch_thumb.png",
-                      height: 50,
-                      width: 50,
+                bottom: 15,
+                right: 5,
+                child: GestureDetector(
+                  onTap: () {
+                    _goToDriver();
+                  },
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(180),
+                    // shape: CircleBorder(side: Bo),
+                    child: Center(
+                      child: Ink.image(
+                        image: AssetImage('assets/switch_thumb.png'),
+                        fit: BoxFit.fill,
+                        width: 50.0,
+                        height: 50.0,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(30),
+                          highlightColor: Colors.transparent,
+                          splashColor: Color.fromARGB(150, 255, 0, 0),
+                          onTap: () {
+                            _goToDriver();
+                          },
+                      ),
                     ),
-                  ))
+                    ))))
             ],
           ),
         ),
