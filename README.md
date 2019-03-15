@@ -10,43 +10,20 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to install the software and how to install them
 
-```
-Give examples
-```
-
-### Installing
-
 1. Contact the owner to get API key and Firebase service json files.
 
 2. Install Flutter through https://flutter.io/
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
 * [Flutter](https://flutter.io/) - Mobile application development SDK to build beautiful UI.
 * [Dart](https://www.dartlang.org/) - Programming language.
 
-## Versioning
-
-
-
 ## Authors
 
-* **Hung Nguyen** - *Initial work* - [nthungdev](https://github.com/nthungdev)
+
+* **Gonzalo Reyes** - *Designer* - [gonzen2310](https://github.com/gonzen2310)
+* **Hung Nguyen** - *Developer* - [nthungdev](https://github.com/nthungdev)
 
 ## License
 
