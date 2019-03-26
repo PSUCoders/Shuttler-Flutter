@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:deliverit/blocs/authentication/authentication.dart';
-import 'package:deliverit/blocs/login/login_event.dart';
-import 'package:deliverit/blocs/login/login_state.dart';
-import 'package:deliverit/respositories/user_repository.dart';
+import 'package:shuttler_flutter/blocs/authentication/authentication.dart';
+import 'package:shuttler_flutter/blocs/login/login_event.dart';
+import 'package:shuttler_flutter/blocs/login/login_state.dart';
+import 'package:shuttler_flutter/respositories/user_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 
@@ -18,7 +18,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   @override
   Stream<LoginState> mapEventToState(
-    LoginState currentState,
     LoginEvent event,
   ) async* {
     if (event is LoginButtonPressed) {
