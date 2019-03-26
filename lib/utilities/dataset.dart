@@ -1,4 +1,4 @@
-import 'package:shuttler_ios/models/user.dart';
+import 'package:shuttler_flutter/models/user.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 class Data<T> {
@@ -12,7 +12,6 @@ class Data<T> {
     _value = value;
     _lastModified = DateTime.now();
   }
-
 }
 
 class Dataset {
@@ -27,4 +26,3 @@ class Dataset {
 void main() {
   // Dataset.
 }
-

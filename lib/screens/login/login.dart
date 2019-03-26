@@ -6,15 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:shuttler_ios/screens/home/driver_home.dart';
-import 'package:shuttler_ios/utilities/config.dart';
+import 'package:shuttler_flutter/screens/home/driver_home.dart';
+import 'package:shuttler_flutter/utilities/config.dart';
 
-import 'package:shuttler_ios/utilities/dataset.dart';
-import 'package:shuttler_ios/models/user.dart';
-import 'package:shuttler_ios/screens/home/home.dart';
-import 'package:shuttler_ios/screens/login/signup.dart';
-import 'package:shuttler_ios/screens/login/verify.dart';
-import 'package:shuttler_ios/utilities/validator.dart';
+import 'package:shuttler_flutter/utilities/dataset.dart';
+import 'package:shuttler_flutter/models/user.dart';
+import 'package:shuttler_flutter/screens/home/home.dart';
+import 'package:shuttler_flutter/screens/login/signup.dart';
+import 'package:shuttler_flutter/screens/login/verify.dart';
+import 'package:shuttler_flutter/utilities/validator.dart';
 
 const Color primaryColor1 = Color(0xFFF2014B);
 
@@ -88,7 +88,6 @@ class _SignInScreenState extends State<SignInScreen> {
         // );
       } else {
         if (userFirebase.isEmailVerified) {
-
           var token = await _firebaseMessaging.getToken();
           DataSnapshot snapshot = await FirebaseDatabase.instance
               .reference()

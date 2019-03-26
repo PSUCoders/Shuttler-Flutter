@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:shuttler_ios/screens/home/loading.dart';
-
+import 'package:shuttler_flutter/screens/home/loading.dart';
 
 void main() => runApp(ShuttlerApp());
 
@@ -21,13 +20,12 @@ class ShuttlerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Your Occasions',
-      theme: ThemeData(
-        primaryColor: Color(0xFFF2014B),
-        textSelectionHandleColor: Color(0xFFF2014B),
-      ),
-      home: LoadingScreen()
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Your Occasions',
+        theme: ThemeData(
+          primaryColor: Color(0xFFF2014B),
+          textSelectionHandleColor: Color(0xFFF2014B),
+        ),
+        home: LoadingScreen());
   }
 }

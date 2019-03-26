@@ -1,13 +1,14 @@
 #include "AppDelegate.h"
 #include "GeneratedPluginRegistrant.h"
-@import GoogleMaps
+@import Firebase;
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  [GMSServices provideAPIKey:@"AIzaSyDJ0i7AKfie4oJ1VfNlftj0Wi254H6X0ZQ"];
+  [FIRApp configure];
   [GeneratedPluginRegistrant registerWithRegistry:self];
-  [GMSServices provideAPIKey:@"AIzaSyDeGHreLijVyxGBcSz-l19qh3N6biJEV-U"];
-  [GMSPlacesClient provideAPIKey:@"AIzaSyAoih3-6DvYmtyJjS_o20yJkdJxbHJZ9KQ"];
   // Override point for customization after application launch.
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

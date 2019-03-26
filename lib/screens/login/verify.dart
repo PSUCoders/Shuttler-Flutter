@@ -6,12 +6,11 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:shuttler_ios/models/user.dart';
-import 'package:shuttler_ios/utilities/dataset.dart';
-import 'package:shuttler_ios/screens/home/home.dart';
+import 'package:shuttler_flutter/models/user.dart';
+import 'package:shuttler_flutter/utilities/dataset.dart';
+import 'package:shuttler_flutter/screens/home/home.dart';
 
-String message = 
-"""
+String message = """
 We've sent you a comfirmation code to your email.
 Please follow the instruction from your email to verify your account.
 Make sure to check your Spam box if you don't receive the email.
@@ -33,7 +32,7 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
   bool hasVerified;
   Timer _verificationTimer;
   FirebaseMessaging _firebaseMessaging;
-  
+
   @override
   initState() {
     super.initState();
@@ -44,7 +43,7 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
   }
 
@@ -52,7 +51,7 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseUser user = await auth.currentUser();
     await user.reload();
-    if(user.isEmailVerified) {
+    if (user.isEmailVerified) {
       String token = await _firebaseMessaging.getToken();
       User u = User.fromFirebase(user);
       Map tokens = u.notifications["tokens"];
@@ -68,52 +67,58 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
           _verificationTimer = null;
         });
       }
-    }
-    else {
+    } else {
       _verificationTimer = Timer(Duration(seconds: 2), _handleTimer);
     }
   }
 
   Future<void> addUserToDatabase(User user) async {
-    DatabaseReference newUserRef =  FirebaseDatabase.instance.reference().child('Users/${user.key}');
+    DatabaseReference newUserRef =
+        FirebaseDatabase.instance.reference().child('Users/${user.key}');
     newUserRef.set(Dataset.currentUser.value.toJson());
   }
 
   void verifying() async {
     widget.user.sendEmailVerification();
-    
-    if(_verificationTimer == null) {
+
+    if (_verificationTimer == null) {
       _verificationTimer = Timer(Duration(seconds: 2), _handleTimer);
     }
   }
 
   void verifyDone() async {
-    Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => HomeScreen()), (Route<dynamic> route) => false);
+    Navigator.of(context).pushAndRemoveUntil(
+        CupertinoPageRoute(builder: (context) => HomeScreen()),
+        (Route<dynamic> route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
     return new Material(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center,
           // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 150.0,),
-            Text(message + widget.user.email, style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.black87)),
-            SizedBox(height: 50.0,),
+            SizedBox(
+              height: 150.0,
+            ),
+            Text(message + widget.user.email,
+                style: TextStyle(
+                    fontFamily: "CircularStd-Book",
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87)),
+            SizedBox(
+              height: 50.0,
+            ),
             CupertinoButton(
               disabledColor: disableColor,
               color: activeColor,
-              onPressed: hasVerified ? verifyDone : null ,
+              onPressed: hasVerified ? verifyDone : null,
               child: Text("DONE"),
             ),
-          ]
-        ),
-      )
-    );
+          ]),
+    ));
   }
-
-  
 }

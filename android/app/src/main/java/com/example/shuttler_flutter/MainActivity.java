@@ -1,4 +1,4 @@
-package com.example.shuttlerios;
+package com.codinghub.shuttlerflutter;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

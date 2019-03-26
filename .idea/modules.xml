@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/shuttler_ios.iml" filepath="$PROJECT_DIR$/shuttler_ios.iml" />
-      <module fileurl="file://$PROJECT_DIR$/shuttler_ios_android.iml" filepath="$PROJECT_DIR$/shuttler_ios_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shuttler_flutter.iml" filepath="$PROJECT_DIR$/shuttler_flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/shuttler_flutter_android.iml" filepath="$PROJECT_DIR$/android/shuttler_flutter_android.iml" />
     </modules>
   </component>
 </project>

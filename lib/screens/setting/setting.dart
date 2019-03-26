@@ -5,8 +5,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:shuttler_ios/screens/login/login.dart';
-import 'package:shuttler_ios/utilities/dataset.dart';
+import 'package:shuttler_flutter/screens/login/login.dart';
+import 'package:shuttler_flutter/utilities/dataset.dart';
 
 const double _fontSize = 16.0;
 
@@ -46,18 +46,24 @@ class _SettingScreenState extends State<SettingScreen> {
     _token = Dataset.token.value;
     // print(Dataset.currentUser.value.notifications["tokens"][_token]);
     // print(Dataset.currentUser.value.notifications[Dataset.token.value]);
-    enableNotifications = Dataset.currentUser.value.notifications["tokens"][_token];
+    enableNotifications =
+        Dataset.currentUser.value.notifications["tokens"][_token];
     _dropDownMenuItems = getDropDownMenuItems();
-    _currentPlace = _dropDownMenuItems[_places.indexOf(Dataset.currentUser.value.notifications['notifyLocation'])].value;
+    _currentPlace = _dropDownMenuItems[_places
+            .indexOf(Dataset.currentUser.value.notifications['notifyLocation'])]
+        .value;
     print(Dataset.currentUser.value.notifications);
-    String timeAheadString = Dataset.currentUser.value.notifications['timeAhead'];
+    String timeAheadString =
+        Dataset.currentUser.value.notifications['timeAhead'];
     _timeAhead = int.parse(timeAheadString);
     // _timeAhead = Dataset.currentUser.value.notifications['timeAhead'];
-    userNotificationRef = FirebaseDatabase.instance.reference().child('Users/${Dataset.currentUser.value.key}/notifications');
+    userNotificationRef = FirebaseDatabase.instance
+        .reference()
+        .child('Users/${Dataset.currentUser.value.key}/notifications');
   }
-  
+
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     enableNotifications = null;
     _dropDownMenuItems = null;
@@ -76,42 +82,39 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget enableNotificationSwitch() {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 15.0),
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10.0,
-          ),
-        ],
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0)
-      ),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+          color: Colors.black26,
+          blurRadius: 10.0,
+        ),
+      ], color: Colors.white, borderRadius: BorderRadius.circular(10.0)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 10.0),
         child: Row(
           children: <Widget>[
-            Text("Enable Notifications", 
-              style: TextStyle(fontSize: _fontSize, 
-              fontFamily: "CircularStd-Book", 
-              fontWeight: FontWeight.bold, 
-              color: Colors.black87), 
+            Text(
+              "Enable Notifications",
+              style: TextStyle(
+                  fontSize: _fontSize,
+                  fontFamily: "CircularStd-Book",
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87),
             ),
             Expanded(
               child: Container(
-                alignment: Alignment.centerRight,
-                color: Colors.white,
-                child: CupertinoSwitch(
-                  onChanged: onChangedSwitch,
-                  value: enableNotifications,
-                )
-              ),
+                  alignment: Alignment.centerRight,
+                  color: Colors.white,
+                  child: CupertinoSwitch(
+                    onChanged: onChangedSwitch,
+                    value: enableNotifications,
+                  )),
             )
           ],
         ),
       ),
     );
   }
-  
+
   void changedDropDownItem(String selectedPlace) {
     setState(() {
       _currentPlace = selectedPlace;
@@ -122,27 +125,25 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget notifyButton() {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 15.0),
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10.0,
-          ),
-        ],
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0)
-      ),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+          color: Colors.black26,
+          blurRadius: 10.0,
+        ),
+      ], color: Colors.white, borderRadius: BorderRadius.circular(10.0)),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: <Widget>[
             Row(
               children: <Widget>[
-                Text("Notify me when the shuttle is at", 
-                  style: TextStyle(fontSize: _fontSize, 
-                  fontFamily: "CircularStd-Book", 
-                  fontWeight: FontWeight.bold, 
-                  color: Colors.black87), 
+                Text(
+                  "Notify me when the shuttle is at",
+                  style: TextStyle(
+                      fontSize: _fontSize,
+                      fontFamily: "CircularStd-Book",
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87),
                 )
               ],
             ),
@@ -150,10 +151,12 @@ class _SettingScreenState extends State<SettingScreen> {
               value: _currentPlace,
               onChanged: changedDropDownItem,
               items: _dropDownMenuItems,
-              style: TextStyle(fontSize: _fontSize, 
-                fontFamily: "CircularStd-Book", 
-                // fontWeight: FontWeight.bold, 
-                color: Colors.black,),
+              style: TextStyle(
+                fontSize: _fontSize,
+                fontFamily: "CircularStd-Book",
+                // fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             )
           ],
         ),
@@ -164,27 +167,26 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget timeAheadButton() {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 15.0),
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10.0,
-          ),
-        ],
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0)
-      ),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+          color: Colors.black26,
+          blurRadius: 10.0,
+        ),
+      ], color: Colors.white, borderRadius: BorderRadius.circular(10.0)),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: <Widget>[
             Row(
               children: <Widget>[
-                Text("Time ahead", 
-                  style: TextStyle(fontSize: _fontSize, 
-                  fontFamily: "CircularStd-Book", 
-                  fontWeight: FontWeight.bold, 
-                  color: Colors.black87), )
+                Text(
+                  "Time ahead",
+                  style: TextStyle(
+                      fontSize: _fontSize,
+                      fontFamily: "CircularStd-Book",
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87),
+                )
               ],
             ),
             setTimeButton()
@@ -206,9 +208,11 @@ class _SettingScreenState extends State<SettingScreen> {
           children: <Widget>[
             Expanded(
               child: CupertinoButton(
-                onPressed: () { 
+                onPressed: () {
                   setState(() {
-                    if(_timeAhead == 1) {return;}
+                    if (_timeAhead == 1) {
+                      return;
+                    }
                     --_timeAhead;
                     // onChangedTimeAhead(_timeAhead);
                   });
@@ -222,27 +226,28 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             Expanded(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 9.0),
-                    child: Text(_timeAhead.toString(), 
-                      style: TextStyle(fontSize: 30.0,
-                      color: Colors.black87), 
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 9.0),
+                      child: Text(
+                        _timeAhead.toString(),
+                        style: TextStyle(fontSize: 30.0, color: Colors.black87),
+                      ),
                     ),
-                  ),
-                  Text(" mins", 
-                    style: TextStyle(fontSize: _fontSize, 
-                    fontFamily: "CircularStd-Book", 
-                    color: Colors.black87), 
-                  ),
-                ]
-              ),
+                    Text(
+                      " mins",
+                      style: TextStyle(
+                          fontSize: _fontSize,
+                          fontFamily: "CircularStd-Book",
+                          color: Colors.black87),
+                    ),
+                  ]),
             ),
             Expanded(
               child: CupertinoButton(
-                onPressed: () { 
+                onPressed: () {
                   setState(() {
                     ++_timeAhead;
                     // onChangedTimeAhead(_timeAhead);
@@ -271,11 +276,13 @@ class _SettingScreenState extends State<SettingScreen> {
         onPressed: logOut,
         child: Align(
           alignment: Alignment.centerLeft,
-          child: Text("Logout", 
-            style: TextStyle(fontSize: 20.0, 
-            fontFamily: "CircularStd-Book", 
-            // fontWeight: FontWeight.bold,
-            color: Colors.white), 
+          child: Text(
+            "Logout",
+            style: TextStyle(
+                fontSize: 20.0,
+                fontFamily: "CircularStd-Book",
+                // fontWeight: FontWeight.bold,
+                color: Colors.white),
           ),
         ),
       ),
@@ -286,10 +293,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return Container(
       padding: EdgeInsets.all(15.0),
       child: Row(
-        children: <Widget>[
-          cancelButton(),
-          applyButton()
-        ],
+        children: <Widget>[cancelButton(), applyButton()],
       ),
     );
   }
@@ -304,11 +308,13 @@ class _SettingScreenState extends State<SettingScreen> {
           borderRadius: BorderRadius.circular(10.0),
           color: Color(0xffe2e2e2),
           onPressed: cancelSetting,
-          child: Text("CANCEL", 
-            style: TextStyle(fontSize: 20.0, 
-            fontFamily: "CircularStd-Book",
-            fontWeight: FontWeight.bold,
-            color: Colors.black87), 
+          child: Text(
+            "CANCEL",
+            style: TextStyle(
+                fontSize: 20.0,
+                fontFamily: "CircularStd-Book",
+                fontWeight: FontWeight.bold,
+                color: Colors.black87),
           ),
         ),
       ),
@@ -324,11 +330,13 @@ class _SettingScreenState extends State<SettingScreen> {
           borderRadius: BorderRadius.circular(10.0),
           color: Color(0xFFF2014B),
           onPressed: applySetting,
-          child: Text("APPLY", 
-            style: TextStyle(fontSize: 20.0, 
-            fontFamily: "CircularStd-Book", 
-            fontWeight: FontWeight.bold,
-            color: Colors.white), 
+          child: Text(
+            "APPLY",
+            style: TextStyle(
+                fontSize: 20.0,
+                fontFamily: "CircularStd-Book",
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
           ),
         ),
       ),
@@ -342,11 +350,13 @@ class _SettingScreenState extends State<SettingScreen> {
       // but I'll just use a simple text for this
       items.add(DropdownMenuItem(
         value: place,
-        child: Text(place, 
-          style: TextStyle(fontSize: _fontSize, 
-          fontFamily: "CircularStd-Book", 
-          // fontWeight: FontWeight.bold, 
-          color: Colors.black), 
+        child: Text(
+          place,
+          style: TextStyle(
+              fontSize: _fontSize,
+              fontFamily: "CircularStd-Book",
+              // fontWeight: FontWeight.bold,
+              color: Colors.black),
         ),
       ));
     }
@@ -357,16 +367,16 @@ class _SettingScreenState extends State<SettingScreen> {
     // userNotificationRef.child('enabled').set(enableNotifications);
     userNotificationRef.child('notifyLocation').set(_currentPlace);
     userNotificationRef.child('timeAhead').set(_timeAhead.toString());
-    if(enableNotifications) {
+    if (enableNotifications) {
       userNotificationRef.child("tokens/$_token").set(true);
-    }
-    else {
+    } else {
       userNotificationRef.child("tokens/$_token").set(false);
     }
 
     print((await userNotificationRef.once()).value);
 
-    Dataset.currentUser.value.notifications = (await userNotificationRef.once()).value;
+    Dataset.currentUser.value.notifications =
+        (await userNotificationRef.once()).value;
     Navigator.pop(context);
   }
 
@@ -384,7 +394,9 @@ class _SettingScreenState extends State<SettingScreen> {
     FirebaseAuth auth = FirebaseAuth.instance;
     await auth.signOut();
     removeNotificationToken();
-    Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => SignInScreen()), (Route<dynamic> route) => false);
+    Navigator.of(context).pushAndRemoveUntil(
+        CupertinoPageRoute(builder: (context) => SignInScreen()),
+        (Route<dynamic> route) => false);
   }
 
   @override
@@ -392,14 +404,23 @@ class _SettingScreenState extends State<SettingScreen> {
     return Material(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Settings", style: TextStyle(fontFamily: "CircularStd-Book", fontSize: 25.0, color: Colors.black87),),
+          title: Text(
+            "Settings",
+            style: TextStyle(
+                fontFamily: "CircularStd-Book",
+                fontSize: 25.0,
+                color: Colors.black87),
+          ),
           elevation: 2.0,
           titleSpacing: 0.0,
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back_ios, color: Colors.black,),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
           ),
           backgroundColor: Colors.white,
         ),
@@ -419,6 +440,4 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
     );
   }
-
-
 }
