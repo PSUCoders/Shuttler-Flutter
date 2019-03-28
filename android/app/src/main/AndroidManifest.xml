@@ -10,7 +10,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="shuttler_flutter"
+        android:label="Shuttler"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
