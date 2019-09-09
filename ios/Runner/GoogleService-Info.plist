@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>571374342123-t2iammgrog63pg76lp3vfoece8912oel.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.571374342123-t2iammgrog63pg76lp3vfoece8912oel</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>571374342123-tl78atjcisuohvas3044e347956eeupk.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDZPMcp9FqFGy3LHRtGV902BFFCJ9JBHvU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>571374342123</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.codinghub.shuttlerflutter</string>
+	<key>PROJECT_ID</key>
+	<string>shuttler-p001</string>
+	<key>STORAGE_BUCKET</key>
+	<string>shuttler-p001.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:571374342123:ios:df29b2d19db22a08b8d3ae</string>
+	<key>DATABASE_URL</key>
+	<string>https://shuttler-p001.firebaseio.com</string>
+</dict>
+</plist>

@@ -8,7 +8,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:shuttler_flutter/models/user.dart';
 import 'package:shuttler_flutter/utilities/dataset.dart';
-import 'package:shuttler_flutter/screens/home/home.dart';
 
 String message = """
 We've sent you a comfirmation code to your email.
@@ -87,9 +86,9 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
   }
 
   void verifyDone() async {
-    Navigator.of(context).pushAndRemoveUntil(
-        CupertinoPageRoute(builder: (context) => HomeScreen()),
-        (Route<dynamic> route) => false);
+    // Navigator.of(context).pushAndRemoveUntil(
+    //     CupertinoPageRoute(builder: (context) => HomeScreen()),
+    //     (Route<dynamic> route) => false);
   }
 
   @override

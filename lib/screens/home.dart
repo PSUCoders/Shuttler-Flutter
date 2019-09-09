@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:shuttler_flutter/screens/setting/setting.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:flutter/services.dart';
@@ -336,8 +335,8 @@ class _HomeScreen extends State<HomeScreen> {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.push(context,
-                  CupertinoPageRoute(builder: (context) => SettingScreen()));
+              // Navigator.push(context,
+              //     CupertinoPageRoute(builder: (context) => SettingScreen()));
             },
           ),
         ],

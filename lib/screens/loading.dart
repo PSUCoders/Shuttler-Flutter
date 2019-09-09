@@ -9,13 +9,10 @@ import 'dart:io' show Platform;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shuttler_flutter/models/user.dart';
 
-import 'package:shuttler_flutter/screens/login/login.dart';
-import 'package:shuttler_flutter/screens/home/home.dart';
 import 'package:shuttler_flutter/utilities/config.dart';
 import 'package:shuttler_flutter/utilities/dataset.dart';
 import 'package:shuttler_flutter/utilities/secret.dart';
 import 'package:shuttler_flutter/utilities/validator.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -45,37 +42,37 @@ class LoadingScreenState extends State<LoadingScreen> {
       if (isDriver) {
         // Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => DriverHomeScreen()));
       } else {
-        Navigator.of(context).pushReplacement(
-            CupertinoPageRoute(builder: (context) => HomeScreen()));
+        // Navigator.of(context).pushReplacement(
+        //     CupertinoPageRoute(builder: (context) => HomeScreen()));
       }
     } else {
-      Navigator.of(context).pushReplacement(
-          CupertinoPageRoute(builder: (context) => SignInScreen()));
+      // Navigator.of(context).pushReplacement(
+      //     CupertinoPageRoute(builder: (context) => SignInScreen()));
     }
   }
 
   Future _requestedPermission() async {
-    Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions([
-      PermissionGroup.location,
-      PermissionGroup.locationAlways,
-      PermissionGroup.locationWhenInUse
-    ]);
+    // Map<PermissionGroup, PermissionStatus> permissions =
+    //     await PermissionHandler().requestPermissions([
+    //   PermissionGroup.location,
+    //   PermissionGroup.locationAlways,
+    //   PermissionGroup.locationWhenInUse
+    // ]);
 
-    PermissionStatus locationStatus = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.location);
-    PermissionStatus locationAlwaysStatus = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.locationAlways);
-    PermissionStatus locationWhenInUseStatus = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.locationWhenInUse);
+    // PermissionStatus locationStatus = await PermissionHandler()
+    //     .checkPermissionStatus(PermissionGroup.location);
+    // PermissionStatus locationAlwaysStatus = await PermissionHandler()
+    //     .checkPermissionStatus(PermissionGroup.locationAlways);
+    // PermissionStatus locationWhenInUseStatus = await PermissionHandler()
+    //     .checkPermissionStatus(PermissionGroup.locationWhenInUse);
 
-    if (locationStatus == null ||
-        locationAlwaysStatus == null ||
-        locationWhenInUseStatus == null) {
-      _locationAcquired = false;
-    } else {
-      _locationAcquired = true;
-    }
+    // if (locationStatus == null ||
+    //     locationAlwaysStatus == null ||
+    //     locationWhenInUseStatus == null) {
+    //   _locationAcquired = false;
+    // } else {
+    //   _locationAcquired = true;
+    // }
   }
 
   Future _configureFirebaseApp() async {

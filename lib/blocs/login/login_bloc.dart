@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
 
 import 'package:shuttler_flutter/blocs/authentication/authentication.dart';
 import 'package:shuttler_flutter/blocs/login/login_event.dart';
@@ -6,6 +7,7 @@ import 'package:shuttler_flutter/blocs/login/login_state.dart';
 import 'package:shuttler_flutter/respositories/user_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthenticationBloc authenticationBloc;
@@ -24,9 +26,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield LoginLoading();
 
       try {
-        /// TODO get token from login authentication
-        await Future.delayed(Duration(seconds: 2));
-        final token = "dummy";
+        FirebaseAuth auth = FirebaseAuth.instance;
+
+        FirebaseUser user = await auth.signInWithEmailAndPassword(
+            email: event.username, password: event.password);
+
+        String token = await user.getIdToken();
 
         // final token = await authenticationBloc.userRepository.authenticate(
         //   username: event.username,
@@ -34,9 +39,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         // );
 
         authenticationBloc.dispatch(Login(token: token));
-        yield LoginInitial();
-      } catch (error) {
-        yield LoginFailure(error: error.toString());
+      } on PlatformException catch (error) {
+        print(error);
+        yield LoginFailure(error: error.message);
       }
     }
   }

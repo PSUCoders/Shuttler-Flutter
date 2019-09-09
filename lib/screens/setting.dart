@@ -5,7 +5,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:shuttler_flutter/screens/login/login.dart';
 import 'package:shuttler_flutter/utilities/dataset.dart';
 
 const double _fontSize = 16.0;
@@ -394,9 +393,9 @@ class _SettingScreenState extends State<SettingScreen> {
     FirebaseAuth auth = FirebaseAuth.instance;
     await auth.signOut();
     removeNotificationToken();
-    Navigator.of(context).pushAndRemoveUntil(
-        CupertinoPageRoute(builder: (context) => SignInScreen()),
-        (Route<dynamic> route) => false);
+    // Navigator.of(context).pushAndRemoveUntil(
+    //     CupertinoPageRoute(builder: (context) => SignInScreen()),
+    //     (Route<dynamic> route) => false);
   }
 
   @override

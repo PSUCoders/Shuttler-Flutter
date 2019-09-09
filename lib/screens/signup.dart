@@ -7,8 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:shuttler_flutter/models/user.dart';
 import 'package:shuttler_flutter/utilities/config.dart';
-import 'package:shuttler_flutter/screens/home/home.dart';
-import 'package:shuttler_flutter/screens/login/verify.dart';
 import 'package:shuttler_flutter/utilities/validator.dart';
 
 const Color primaryColor1 = Color(0xFFF2014B);
@@ -130,10 +128,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
         FirebaseUser user = await auth.createUserWithEmailAndPassword(
             email: signUpEmail, password: passwordController.text);
-        Navigator.pushReplacement(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => VerifyAccountScreen(user)));
+        // Navigator.pushReplacement(
+        //     context,
+        //     CupertinoPageRoute(
+        //         builder: (context) => VerifyAccountScreen(user)));
       }
     } catch (e) {
       print("An error occurs");
