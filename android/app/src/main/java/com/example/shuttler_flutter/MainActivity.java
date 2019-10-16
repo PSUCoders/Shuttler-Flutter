@@ -1,4 +1,4 @@
-package com.codinghub.shuttlerflutter;
+package com.codinghub.shuttler.mobile;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

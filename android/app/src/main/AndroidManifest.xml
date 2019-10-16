@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.codinghub.shuttlerflutter">
+    package="com.codinghub.shuttler.mobile">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -29,5 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+         <meta-data android:name="com.google.android.geo.API_KEY"
+                    android:value="AIzaSyAwrQEWxay6uhNfNIyLPsnh1w4dk6RF9ss"/>
     </application>
 </manifest>
