@@ -44,8 +44,8 @@
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is required for xyz benefits for you</string>
+	<string>Your location is required for showing your location on the map</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is required for xyz benefits for you</string>
+	<string>Your location is required for showing your location on the map</string>
 </dict>
 </plist>
