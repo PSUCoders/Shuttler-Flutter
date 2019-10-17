@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codinghub.shuttler.mobile">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permisssion.ACCESS_COARSE_LOCATION" />
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
          In most cases you can leave this as-is, but you if you want to provide
@@ -31,6 +33,5 @@
         </activity>
         <meta-data android:name="com.google.android.geo.API_KEY"
                     android:value="AIzaSyAwrQEWxay6uhNfNIyLPsnh1w4dk6RF9ss"/>
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     </application>
 </manifest>
