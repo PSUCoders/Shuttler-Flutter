@@ -22,14 +22,14 @@ class EmailInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       style: TextStyle(
-          fontFamily: "CircularStd-Book",
-          fontSize: 16.0,
-          color: Colors.black,
-          decoration: TextDecoration.none),
+        fontFamily: "CircularStd-Book",
+        fontSize: 16.0,
+        color: Colors.black,
+        decoration: TextDecoration.none,
+      ),
       controller: controller,
       keyboardType: TextInputType.emailAddress,
-      validator: (text) =>
-          text == null ? "Please provide a username or an email" : null,
+      validator: validator,
       autofocus: false,
       focusNode: focusNode,
       textInputAction: TextInputAction.next,

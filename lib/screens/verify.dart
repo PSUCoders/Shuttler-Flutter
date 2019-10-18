@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-
-import 'package:shuttler_flutter/models/user.dart';
-import 'package:shuttler_flutter/utilities/dataset.dart';
 
 String message = """
 We've sent you a comfirmation code to your email.
@@ -30,15 +25,15 @@ class VerifyAccountScreen extends StatefulWidget {
 class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
   bool hasVerified;
   Timer _verificationTimer;
-  FirebaseMessaging _firebaseMessaging;
+  // FirebaseMessaging _firebaseMessaging;
 
   @override
   initState() {
     super.initState();
     hasVerified = false;
     _verificationTimer = null;
-    verifying();
-    _firebaseMessaging = FirebaseMessaging();
+    // verifying();
+    // _firebaseMessaging = FirebaseMessaging();
   }
 
   @override
@@ -46,44 +41,44 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
     super.dispose();
   }
 
-  void _handleTimer() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseUser user = await auth.currentUser();
-    await user.reload();
-    if (user.isEmailVerified) {
-      String token = await _firebaseMessaging.getToken();
-      User u = User.fromFirebase(user);
-      Map tokens = u.notifications["tokens"];
-      tokens[token] = true;
-      print(u.notifications);
+  // void _handleTimer() async {
+  //   FirebaseAuth auth = FirebaseAuth.instance;
+  //   FirebaseUser user = await auth.currentUser();
+  //   await user.reload();
+  //   if (user.isEmailVerified) {
+  //     // String token = await _firebaseMessaging.getToken();
+  //     User u = User.fromFirebase(user);
+  //     Map tokens = u.notifications["tokens"];
+  //     // tokens[token] = true;
+  //     print(u.notifications);
 
-      Dataset.token.value = token;
-      Dataset.currentUser.value = u;
-      await addUserToDatabase(Dataset.currentUser.value);
-      if (this.mounted) {
-        setState(() {
-          hasVerified = true;
-          _verificationTimer = null;
-        });
-      }
-    } else {
-      _verificationTimer = Timer(Duration(seconds: 2), _handleTimer);
-    }
-  }
+  //     // Dataset.token.value = token;
+  //     Dataset.currentUser.value = u;
+  //     await addUserToDatabase(Dataset.currentUser.value);
+  //     if (this.mounted) {
+  //       setState(() {
+  //         hasVerified = true;
+  //         _verificationTimer = null;
+  //       });
+  //     }
+  //   } else {
+  //     _verificationTimer = Timer(Duration(seconds: 2), _handleTimer);
+  //   }
+  // }
 
-  Future<void> addUserToDatabase(User user) async {
-    DatabaseReference newUserRef =
-        FirebaseDatabase.instance.reference().child('Users/${user.key}');
-    newUserRef.set(Dataset.currentUser.value.toJson());
-  }
+  // Future<void> addUserToDatabase(User user) async {
+  //   DatabaseReference newUserRef =
+  //       FirebaseDatabase.instance.reference().child('Users/${user.uid}');
+  //   newUserRef.set(Dataset.currentUser.value.toJson());
+  // }
 
-  void verifying() async {
-    widget.user.sendEmailVerification();
+  // void verifying() async {
+  //   widget.user.sendEmailVerification();
 
-    if (_verificationTimer == null) {
-      _verificationTimer = Timer(Duration(seconds: 2), _handleTimer);
-    }
-  }
+  //   if (_verificationTimer == null) {
+  //     _verificationTimer = Timer(Duration(seconds: 2), _handleTimer);
+  //   }
+  // }
 
   void verifyDone() async {
     // Navigator.of(context).pushAndRemoveUntil(
