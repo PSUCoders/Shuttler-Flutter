@@ -13,7 +13,7 @@ enum ShuttleStop {
   Walmart,
   Target,
   Market32,
-  Unknown,
+  Jade,
 }
 
 /// Store all settings to device memory
@@ -70,8 +70,9 @@ class DeviceState extends ChangeNotifier {
 
   changeShuttleStop(ShuttleStop value) async {
     SharedPreferences prefs = await _prefs.future;
-    await prefs.setString(PrefsKey.SHUTTLE_STOP.toString(), value.toString());
-    _shuttleStop = value.toString();
+    await prefs.setString(
+        PrefsKey.SHUTTLE_STOP.toString(), value.toString().split('.')[1]);
+    _shuttleStop = prefs.getString(PrefsKey.SHUTTLE_STOP.toString());
     notifyListeners();
   }
 }
