@@ -14,7 +14,7 @@ class ShuttlerTheme {
         barBackgroundColor: Colors.white12,
         brightness: Brightness.light,
         primaryColor: Colors.pink,
-        // primaryContrastingColor: Colors.pink,
+        primaryContrastingColor: Colors.pink,
         scaffoldBackgroundColor: Colors.white,
         textTheme: CupertinoTextThemeData(
           textStyle: TextStyle(),

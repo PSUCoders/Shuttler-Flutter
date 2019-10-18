@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler_flutter/providers/device_state.dart';
+import 'package:shuttler_flutter/screens/setting/setting_cupertino.dart';
+import 'package:shuttler_flutter/screens/setting/setting_material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+const double _kDropdownItemHeight = 30.0;
 
 /// Setting Screen
 class SettingScreen extends StatefulWidget {
@@ -13,49 +18,19 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   ShuttleStop dropdownValue = ShuttleStop.Campus;
 
-  Widget _buildNotificationToggler(DeviceState deviceState) {
-    return ListTile(
-      title: Text("Enable Notification"),
-      subtitle: Text("Enable option to get notification"),
-      trailing: PlatformSwitch(
-        onChanged: (bool value) => deviceState.turnNotificationOn(value),
-        value: deviceState.isNotificationOn,
-      ),
-    );
-  }
+  List<Widget> _dropDownItems = [
+    Text('item 1'),
+    Text('item 2'),
+    Text('item 3'),
+  ];
 
-  Widget _buildNotifyPicker(DeviceState deviceState) {
-    return Column(
-      children: <Widget>[
-        ListTile(
-          title: Text("Notify me when the Shuttler is at"),
-          subtitle: Text("In which stop would you like to be notified?"),
-        ),
-        DropdownButton<ShuttleStop>(
-          value: dropdownValue,
-          // icon: Icon(Icons.arrow_downward),
-          iconSize: 24,
-          elevation: 16,
-          style: TextStyle(color: Colors.deepPurple),
-          underline: Container(
-            height: 2,
-            color: Colors.deepPurpleAccent,
-          ),
-          onChanged: (ShuttleStop newValue) {
-            setState(() {
-              dropdownValue = newValue;
-            });
-          },
-          items: ShuttleStop.values
-              .map<DropdownMenuItem<ShuttleStop>>((ShuttleStop value) {
-            return DropdownMenuItem<ShuttleStop>(
-              value: value,
-              child: Text(value.toString().split(".")[1]),
-            );
-          }).toList(),
-        ),
-      ],
-    );
+  _handleCodingHubPress() async {
+    const url = 'https://coding-hub.com';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -66,32 +41,19 @@ class _SettingScreenState extends State<SettingScreen> {
       appBar: PlatformAppBar(
         title: Text('Settings'),
       ),
-      body: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                _buildNotificationToggler(deviceState),
-                _buildNotifyPicker(deviceState),
-              ],
-            )
-          ],
-        ),
+      android: (_) => MaterialScaffoldData(
+        body: SettingMaterialLayout(deviceState: deviceState),
       ),
-    );
-
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text('Settings'),
-      ),
-      child: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            PlatformSwitch(
-              onChanged: (bool value) => deviceState.turnNotificationOn(value),
-              value: deviceState.isNotificationOn,
-            )
-          ],
+      ios: (_) => CupertinoPageScaffoldData(
+        body: SettingCupertinoLayout(
+          deviceState: deviceState,
+          onCodingHubPress: _handleCodingHubPress,
+          onNotificationChange: deviceState.turnNotificationOn,
+          onShuttleStopChange: deviceState.changeShuttleStop,
+          pickerItemHeight: _kDropdownItemHeight,
+          pickerItems: ShuttleStop.values
+              .map((stop) => stop.toString().split('.')[1])
+              .toList(),
         ),
       ),
     );
