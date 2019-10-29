@@ -1,4 +1,4 @@
-name: shuttler_flutter
+name: shuttler
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -24,13 +24,13 @@ dependencies:
   firebase_auth: ^0.14.0+5
   firebase_database: ^3.0.7
   cloud_firestore: ^0.12.9+5
+  firebase_dynamic_links: ^0.5.0+1
   # firebase_messaging: ^4.0.0+4 #Disable due to iOS
   google_maps_flutter: ^0.5.21+7
-  flutter_bloc: ^0.22.0
-  location: ^2.3.5
   shared_preferences: ^0.5.3+4
-  provider: ^3.1.0
   flutter_platform_widgets: ^0.20.2
+  provider: ^3.1.0
+  location: ^2.3.5
   url_launcher: ^5.2.2
 
   # The following adds the Cupertino Icons font to your application.

@@ -18,10 +18,27 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>EmailLink</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.codinghub.shuttler.mobile</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Your location is required for showing your location on the map</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is required for showing your location on the map</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -43,9 +60,5 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is required for showing your location on the map</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is required for showing your location on the map</string>
 </dict>
 </plist>
