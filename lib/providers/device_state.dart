@@ -3,46 +3,49 @@ import 'dart:core';
 
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-/// SHARED PREFERENCES KEYS ///
-enum PrefsKey { NOTIFICATION_ON, SHUTTLE_STOP }
-
-/// SHUTTLE STOPS ///
-enum ShuttleStop {
-  Campus,
-  Walmart,
-  Target,
-  Market32,
-  Jade,
-}
+import 'package:shuttler/utilities/contants.dart' show ShuttleStop, PrefsKey;
 
 /// Store all settings to device memory
 class DeviceState extends ChangeNotifier {
   // PRIVATE VARIABLES //
   bool _isNotificationOn;
-  String _shuttleStop;
-  bool _hasData = false;
+  ShuttleStop _shuttleStop;
+  String _email;
+  bool _isSignIn;
+  bool _hasData;
+  List<String> _readNotifications;
   Completer<SharedPreferences> _prefs = Completer();
 
   DeviceState() {
-    // Get SharedPreferences instance
+    // // Get SharedPreferences instance
     SharedPreferences.getInstance().then((prefs) => _prefs.complete(prefs));
+    fetchStates();
   }
 
   // GETTERS //
 
-  bool get hasData => _hasData;
+  bool get hasData => _hasData ?? false;
 
   bool get isNotificationOn => _isNotificationOn ?? false;
 
-  String get shuttleStop => _shuttleStop ?? "";
+  bool get isSignIn => _isSignIn ?? false;
+
+  /// The email the user use to sign in to the app
+  String get email => _email;
+
+  ShuttleStop get shuttleStop => _shuttleStop ?? ShuttleStop.Campus;
+
+  /// List of notification ids that has been read on this device
+  List<String> get readNotifications => _readNotifications ?? [];
 
   // METHODS //
 
   fetchStates() async {
+    print('fetching device state...');
     SharedPreferences prefs = await _prefs.future;
     await prefs.reload();
 
+    // Retrieve all of the local values
     PrefsKey.values.forEach((key) async {
       switch (key) {
         case PrefsKey.NOTIFICATION_ON:
@@ -52,9 +55,25 @@ class DeviceState extends ChangeNotifier {
           }
         case PrefsKey.SHUTTLE_STOP:
           {
-            _shuttleStop = prefs.getString(key.toString());
+            final stopIndex =
+                prefs.getInt(PrefsKey.SHUTTLE_STOP.toString()) ?? 0;
+
+            _shuttleStop = ShuttleStop.values[stopIndex];
+
             break;
           }
+        case PrefsKey.IS_SIGN_IN:
+          {
+            _isSignIn = prefs.getBool(key.toString());
+            break;
+          }
+        case PrefsKey.EMAIL:
+          {
+            _email = prefs.getString(key.toString());
+            break;
+          }
+        case PrefsKey.SEEN_NOTIFICATION:
+          break;
       }
     });
     _hasData = true;
@@ -70,9 +89,15 @@ class DeviceState extends ChangeNotifier {
 
   changeShuttleStop(ShuttleStop value) async {
     SharedPreferences prefs = await _prefs.future;
-    await prefs.setString(
-        PrefsKey.SHUTTLE_STOP.toString(), value.toString().split('.')[1]);
-    _shuttleStop = prefs.getString(PrefsKey.SHUTTLE_STOP.toString());
+    await prefs.setInt(PrefsKey.SHUTTLE_STOP.toString(), value.index);
+    _shuttleStop = ShuttleStop.values[value.index];
+    notifyListeners();
+  }
+
+  updateReadNotifications(List<String> ids) async {
+    SharedPreferences prefs = await _prefs.future;
+    await prefs.setStringList(PrefsKey.SEEN_NOTIFICATION.toString(), ids);
+    _readNotifications = ids;
     notifyListeners();
   }
 }
