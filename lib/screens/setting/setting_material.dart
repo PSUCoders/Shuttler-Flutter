@@ -1,78 +1,127 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:shuttler_flutter/providers/device_state.dart';
+import 'package:shuttler/utilities/contants.dart';
+import 'package:shuttler/utilities/theme.dart';
 
-class SettingMaterialLayout extends StatefulWidget {
+class SettingMaterialLayout extends StatelessWidget {
   const SettingMaterialLayout({
     Key key,
-    @required this.deviceState,
+    @required this.onCodingHubPress,
+    this.onLogoutPress,
+    this.currentStop,
+    this.notificationOn,
+    this.onShuttleStopChange,
+    this.onNotificationChange,
   }) : super(key: key);
 
-  final DeviceState deviceState;
+  final Function onCodingHubPress;
+  final Function onLogoutPress;
+  final ShuttleStop currentStop;
+  final Function(ShuttleStop) onShuttleStopChange;
+  final Function(bool) onNotificationChange;
+  final bool notificationOn;
 
-  @override
-  _SettingMaterialLayoutState createState() => _SettingMaterialLayoutState();
-}
-
-class _SettingMaterialLayoutState extends State<SettingMaterialLayout> {
-  ShuttleStop dropdownValue = ShuttleStop.Campus;
-
-  Widget _buildNotificationToggler(DeviceState deviceState) {
+  Widget _buildNotificationToggler(context) {
     return ListTile(
-      title: Text("Enable Notification"),
+      title: Text("Notification"),
       subtitle: Text("Enable option to get notification"),
       trailing: PlatformSwitch(
-        onChanged: (bool value) => deviceState.turnNotificationOn(value),
-        value: deviceState.isNotificationOn,
+        onChanged: this.onNotificationChange,
+        value: this.notificationOn,
+        activeColor: ShuttlerTheme.of(context).accentColor,
       ),
     );
   }
 
-  Widget _buildNotifyPicker(DeviceState deviceState) {
-    return Column(
+  Widget _buildNotifyPicker(context) {
+    return Row(
       children: <Widget>[
-        ListTile(
-          title: Text("Notify me when the Shuttler is at"),
-          subtitle: Text("In which stop would you like to be notified?"),
-        ),
-        DropdownButton<ShuttleStop>(
-          value: dropdownValue,
-          // icon: Icon(Icons.arrow_downward),
-          iconSize: 24,
-          elevation: 16,
-          style: TextStyle(color: Colors.deepPurple),
-          underline: Container(
-            height: 2,
-            color: Colors.deepPurpleAccent,
+        Expanded(
+          child: ListTile(
+            title: Text("Shuttle Stop"),
+            subtitle: Text("You will be notified when the shuttle is near"),
+            trailing: DropdownButton<ShuttleStop>(
+              value: this.currentStop,
+              iconSize: 0,
+              elevation: 16,
+              underline: Container(color: Colors.transparent),
+              style: TextStyle(
+                color: ShuttlerTheme.of(context).primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+              onChanged: this.onShuttleStopChange,
+              items: ShuttleStop.values
+                  .map<DropdownMenuItem<ShuttleStop>>((ShuttleStop value) {
+                return DropdownMenuItem<ShuttleStop>(
+                  value: value,
+                  child: Text(value.toString().split(".")[1]),
+                );
+              }).toList(),
+            ),
           ),
-          onChanged: (ShuttleStop newValue) {
-            setState(() {
-              dropdownValue = newValue;
-            });
-          },
-          items: ShuttleStop.values
-              .map<DropdownMenuItem<ShuttleStop>>((ShuttleStop value) {
-            return DropdownMenuItem<ShuttleStop>(
-              value: value,
-              child: Text(value.toString().split(".")[1]),
-            );
-          }).toList(),
         ),
       ],
+    );
+  }
+
+  Widget _buildFooterText(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Text('Developed with ❤️ by '),
+          GestureDetector(
+            onTap: this.onCodingHubPress,
+            child: Text(
+              'Coding Hub',
+              style: TextStyle(
+                color: ShuttlerTheme.of(context).accentColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton() {
+    return Container(
+      margin: EdgeInsets.only(top: 20),
+      child: FlatButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        color: Colors.pink,
+        onPressed: this.onLogoutPress,
+        child: Text(
+          "Logout",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ListView(
+      child: Column(
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              _buildNotificationToggler(widget.deviceState),
-              _buildNotifyPicker(widget.deviceState),
-            ],
-          )
+          Expanded(
+            child: ListView(
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    _buildNotificationToggler(context),
+                    _buildNotifyPicker(context),
+                    _buildLogoutButton(),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          _buildFooterText(context)
         ],
       ),
     );

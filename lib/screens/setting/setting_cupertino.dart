@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:shuttler_flutter/providers/device_state.dart';
-import 'package:shuttler_flutter/utilities/theme.dart';
+import 'package:shuttler/utilities/contants.dart';
+import 'package:shuttler/utilities/theme.dart';
 
 const double _kDropdownItemHeight = 30.0;
 
-class SettingCupertinoLayout extends StatefulWidget {
+class SettingCupertinoLayout extends StatelessWidget {
   SettingCupertinoLayout({
     Key key,
-    @required this.deviceState,
     this.notificationOn,
     this.options,
     this.shuttleStop,
@@ -20,7 +20,6 @@ class SettingCupertinoLayout extends StatefulWidget {
     this.onCodingHubPress,
   }) : super(key: key);
 
-  final DeviceState deviceState;
   final String shuttleStop;
   final String options;
   final bool notificationOn;
@@ -30,40 +29,7 @@ class SettingCupertinoLayout extends StatefulWidget {
   final List<String> pickerItems;
   final Function onCodingHubPress;
 
-  @override
-  _SettingCupertinoLayoutState createState() => _SettingCupertinoLayoutState();
-}
-
-class _SettingCupertinoLayoutState extends State<SettingCupertinoLayout> {
-  /// Build notification toggler
-  Widget _buildNotificationSetting(DeviceState deviceState) {
-    return Container(
-      child: ListTile(
-        title: Text("Notification"),
-        subtitle: Text("Enable option to get notification"),
-        trailing: PlatformSwitch(
-          onChanged: (bool value) => deviceState.turnNotificationOn(value),
-          value: deviceState.isNotificationOn,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildShuttleStopSetting(DeviceState deviceState) {
-    return ListTile(
-      title: Text("Shuttle Stop"),
-      subtitle: Text("In which stop would you like to be notified?"),
-      trailing: CupertinoButton(
-        padding: EdgeInsets.only(right: 5),
-        onPressed: () {
-          _showStopPicker(deviceState);
-        },
-        child: Text(widget.deviceState.shuttleStop),
-      ),
-    );
-  }
-
-  void _showStopPicker(DeviceState deviceState) {
+  void _showStopPicker(context) {
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext builder) {
@@ -80,23 +46,68 @@ class _SettingCupertinoLayoutState extends State<SettingCupertinoLayout> {
             child: CupertinoPicker(
               itemExtent: _kDropdownItemHeight,
               looping: true,
-              onSelectedItemChanged: (index) {
-                print('item $index is picked');
-                print(ShuttleStop.values[index]);
-
-                widget.deviceState.changeShuttleStop(ShuttleStop.values[index]);
-              },
-              children: widget.pickerItems.map((stop) => Text(stop)).toList(),
+              onSelectedItemChanged: (index) =>
+                  this.onShuttleStopChange(ShuttleStop.values[index]),
+              children: this.pickerItems.map((stop) => Text(stop)).toList(),
             ),
           ),
-          // ),
         );
       },
     );
   }
 
+  /// Build notification toggler
+  Widget _buildNotificationSetting() {
+    return Container(
+      child: ListTile(
+        title: Text("Notification"),
+        subtitle: Text("Enable option to get notification"),
+        trailing: PlatformSwitch(
+          onChanged: this.onNotificationChange,
+          value: this.notificationOn,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShuttleStopSetting(context) {
+    return ListTile(
+      title: Text("Shuttle Stop"),
+      subtitle: Text("In which stop would you like to be notified?"),
+      trailing: CupertinoButton(
+        padding: EdgeInsets.only(right: 5),
+        onPressed: () => _showStopPicker(context),
+        child: Text(this.shuttleStop),
+      ),
+    );
+  }
+
+  Widget _buildFooterText(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Text('Developed with ❤️ by '),
+          GestureDetector(
+            onTap: this.onCodingHubPress,
+            child: Text(
+              'Coding Hub',
+              style: TextStyle(
+                color: ShuttlerTheme.of(context).accentColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('building cupertino setting...');
+
     return SafeArea(
       top: false,
       child: Column(
@@ -105,30 +116,12 @@ class _SettingCupertinoLayoutState extends State<SettingCupertinoLayout> {
             child: ListView(
               shrinkWrap: true,
               children: <Widget>[
-                _buildNotificationSetting(widget.deviceState),
-                _buildShuttleStopSetting(widget.deviceState),
+                _buildNotificationSetting(),
+                _buildShuttleStopSetting(context),
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Text('Developed with ❤️ by '),
-                GestureDetector(
-                  onTap: widget.onCodingHubPress,
-                  child: Text(
-                    'Coding Hub',
-                    style: TextStyle(
-                      color: ShuttlerTheme.of(context).accentColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
+          _buildFooterText(context)
         ],
       ),
     );
