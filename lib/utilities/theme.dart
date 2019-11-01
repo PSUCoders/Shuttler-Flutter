@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// textTheme
+///
+/// headline: title of a section
+/// display1: dates
 class ShuttlerTheme {
   static ThemeData of(BuildContext context) {
     return Theme.of(context).copyWith(
@@ -10,6 +14,18 @@ class ShuttlerTheme {
         labelStyle: TextStyle(fontSize: 16, color: Colors.pink),
         hintStyle: TextStyle(fontSize: 16, color: Colors.pink),
       ),
+      textTheme: Theme.of(context).textTheme.copyWith(
+            headline: TextStyle(
+              color: Colors.black87,
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+            // Used for displaying dates
+            display1: TextStyle(
+              color: Colors.black54,
+              fontSize: 12,
+            ),
+          ),
       cupertinoOverrideTheme: CupertinoThemeData(
         barBackgroundColor: Colors.white12,
         brightness: Brightness.light,
@@ -17,8 +33,9 @@ class ShuttlerTheme {
         primaryContrastingColor: Colors.pink,
         scaffoldBackgroundColor: Colors.white,
         textTheme: CupertinoTextThemeData(
-          textStyle: TextStyle(),
-        ),
+            textStyle: TextStyle(
+          color: Colors.black87,
+        )),
       ),
     );
   }
