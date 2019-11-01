@@ -1,66 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+
 import 'package:provider/provider.dart';
-import 'package:shuttler_flutter/providers/device_state.dart';
-import 'package:shuttler_flutter/screens/home/home_screen.dart';
-import 'package:shuttler_flutter/utilities/theme.dart';
+import 'package:shuttler/providers/auth_state.dart';
+import 'package:shuttler/providers/device_state.dart';
+import 'package:shuttler/app.dart';
+import 'package:shuttler/providers/notification_state.dart';
 
-void main() => runApp(Shuttler());
+void main() => runApp(ProviderWrapper());
 
-// This widget is the root of your application.
-class Shuttler extends StatefulWidget {
-  const Shuttler({
+class ProviderWrapper extends StatefulWidget {
+  const ProviderWrapper({
     Key key,
   }) : super(key: key);
 
   @override
-  _ShuttlerState createState() => _ShuttlerState();
+  _ProviderWrapperState createState() => _ProviderWrapperState();
 }
 
-class _ShuttlerState extends State<Shuttler> {
-  DeviceState _deviceState;
-
-  @override
-  void initState() {
-    super.initState();
-    _deviceState = DeviceState();
-    _deviceState.fetchStates();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    // authenticationBloc.dispose();
-  }
-
-  ThemeData _buildTheme() {
-    return ThemeData(
-      primarySwatch: Colors.pink,
-      inputDecorationTheme: InputDecorationTheme(
-        labelStyle: TextStyle(fontSize: 16, color: Colors.pink),
-        hintStyle: TextStyle(fontSize: 16, color: Colors.pink),
-      ),
-    );
-  }
-
+class _ProviderWrapperState extends State<ProviderWrapper> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<DeviceState>(
-      builder: (context) => _deviceState,
-      child: PlatformApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Shuttler',
-        ios: (_) => CupertinoAppData(
-          theme: ShuttlerTheme.of(context).cupertinoOverrideTheme,
-          home: HomeScreen(),
+    print('main.dart');
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<DeviceState>(
+          builder: (context) => DeviceState(),
         ),
-        android: (_) => MaterialAppData(
-          theme: ShuttlerTheme.of(context),
-          home: HomeScreen(),
+        ChangeNotifierProvider<AuthState>(
+          builder: (context) => AuthState(),
         ),
-        // home: HomeScreen(),
-      ),
+        ChangeNotifierProvider<NotificationState>(
+          builder: (context) => NotificationState(),
+        )
+      ],
+      child: Shuttler(),
     );
   }
 }
