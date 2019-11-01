@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttler/utilities/theme.dart';
 
 typedef FutureVoidCallback = Future<void> Function();
 
@@ -13,6 +14,7 @@ class NavigationMaterial extends StatefulWidget {
   final Function(GoogleMapController) onMapCreated;
   final Function(LatLng) onMapTap;
   final List<Widget> mapActions;
+  final List<LatLng> driverLocations;
 
   NavigationMaterial({
     this.onMyLocationPress,
@@ -20,6 +22,7 @@ class NavigationMaterial extends StatefulWidget {
     this.onMapTap,
     this.mapActions,
     this.onMapCreated,
+    this.driverLocations,
   });
 
   @override
@@ -28,20 +31,52 @@ class NavigationMaterial extends StatefulWidget {
 
 class _NavigationMaterialState extends State<NavigationMaterial> {
   Completer<GoogleMapController> _controller = Completer();
-  Widget map;
+  var _shuttleIcon;
+  bool _hasShuttleIcon = false;
 
   @override
   void initState() {
     super.initState();
-    map = GoogleMap(
+
+    _getShuttleIcon();
+  }
+
+  _getShuttleIcon() async {
+    final shuttleIcon = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(),
+      "assets/icons/ic_shuttle.png",
+    );
+    setState(() {
+      _shuttleIcon = shuttleIcon;
+      _hasShuttleIcon = true;
+    });
+  }
+
+  static final CameraPosition _kPlattsburgh = CameraPosition(
+    target: LatLng(44.7065763, -73.460642),
+    zoom: 14.151926040649414,
+  );
+
+  Widget _buildGoogleMap() {
+    return GoogleMap(
+      markers: widget.driverLocations
+          .map((loc) => Marker(
+                // TODO fix super small icon
+                icon: _hasShuttleIcon
+                    ? _shuttleIcon
+                    : BitmapDescriptor.defaultMarker,
+                markerId: MarkerId(this.hashCode.toString()),
+                position: loc,
+              ))
+          .toSet(),
       mapType: MapType.normal,
+      myLocationEnabled: true,
       myLocationButtonEnabled: false,
-      initialCameraPosition: _kGooglePlex,
+      initialCameraPosition: _kPlattsburgh,
       onMapCreated: (GoogleMapController controller) {
         try {
           _controller.complete(controller);
           widget.onMapCreated(controller);
-          setState(() {});
         } catch (error) {
           print(error);
         }
@@ -49,51 +84,70 @@ class _NavigationMaterialState extends State<NavigationMaterial> {
     );
   }
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+  Widget _buildActions() {
+    return Container(
+      padding: EdgeInsets.all(20),
+      alignment: Alignment.bottomRight,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(
+          /// Add a space of 10 in between each element
+          widget.mapActions.length * 2 - 1,
+          (index) {
+            if (index.isEven)
+              return widget.mapActions[index ~/ 2];
+            else
+              return SizedBox(height: 10);
+          },
+        ),
+      ),
+    );
+  }
 
-  static final CameraPosition _kLake = CameraPosition(
-    bearing: 192.8334901395799,
-    target: LatLng(37.43296265331129, -122.08832357078792),
-    tilt: 59.440717697143555,
-    zoom: 19.151926040649414,
-  );
-
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
+  Widget _buildNextStop() {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        margin: EdgeInsets.all(10),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        decoration: BoxDecoration(
+          color: Colors.white70,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              "Next Stop",
+              style: TextStyle(color: Colors.black54),
+            ),
+            SizedBox(height: 10),
+            // TODO update this asset to be black
+            Image.asset('assets/icons/ic_navigation.png'),
+            SizedBox(height: 10),
+            Text(
+              "Walmart",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Map'),
-      ),
+      appBar: AppBar(title: Text('Map')),
       body: SafeArea(
         child: Stack(
           children: <Widget>[
-            // if (!_controller.isCompleted)
-            //   Center(
-            //     child: CircularProgressIndicator(),
-            //   ),
-            // if (_controller.isCompleted)
-            map,
-            // GoogleMap(
-            //   mapType: MapType.normal,
-            //   myLocationButtonEnabled: false,
-            //   initialCameraPosition: _kGooglePlex,
-            //   onMapCreated: (GoogleMapController controller) {
-            //     try {
-            //       _controller.complete(controller);
-            //       widget.onMapCreated(controller);
-            //     } catch (error) {
-            //       print(error);
-            //     }
-            //   },
-            // ),
+            _buildGoogleMap(),
+            _buildActions(),
+            _buildNextStop(),
           ],
         ),
       ),
