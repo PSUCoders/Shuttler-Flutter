@@ -6,14 +6,15 @@ class Notification {
   DateTime date;
   String description;
   String title;
+  bool seen;
 
   Notification.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     this.id = snapshot.documentID;
-    // TODO
-    // this.date =
-    // snapshot.data['date']?.toDate(); // Convert Timestamp to DateTime
-    this.description = snapshot.data['description'];
-    this.title = snapshot.data['title'];
+    this.description = snapshot.data['description'].trim();
+    this.title = snapshot.data['title'].trim();
+    this.date = DateTime.fromMillisecondsSinceEpoch(
+        snapshot?.data['dateFlutter'] ?? DateTime.now().millisecondsSinceEpoch);
+    this.seen = false;
   }
 
   // METHODS //
