@@ -3,44 +3,45 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shuttler_flutter/providers/notification_state.dart';
+import 'package:shuttler/providers/notification_state.dart';
+import 'package:shuttler/screens/home/home_cupertino.dart';
+import 'package:shuttler/screens/home/home_material.dart';
+import 'package:shuttler/screens/navigation/navigation_screen.dart';
+import 'package:shuttler/screens/notification/notification_screen.dart';
+import 'package:shuttler/screens/setting/setting_screen.dart';
+import 'package:shuttler/providers/map_state.dart';
 
-import 'package:shuttler_flutter/screens/home/home_cupertino.dart';
-import 'package:shuttler_flutter/screens/home/home_material.dart';
-import 'package:shuttler_flutter/screens/navigation/navigation_screen.dart';
-import 'package:shuttler_flutter/screens/notification/notification_screen.dart';
-import 'package:shuttler_flutter/screens/setting/setting_screen.dart';
-import 'package:shuttler_flutter/providers/map_provider.dart';
-
-class HomeScreen extends StatefulWidget {
-  HomeScreen({Key key}) : super(key: key);
-
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  MapState _mapProvider;
-  NotificationState _notificationState;
-
-  @override
-  void initState() {
-    super.initState();
-    _mapProvider = MapState();
-    _notificationState = NotificationState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     print('home screen build called');
+    final notificationState = Provider.of<NotificationState>(context);
+
     final List<BottomNavigationBarItem> navBarItems = <BottomNavigationBarItem>[
-      // TODO use correct icons
+      // TODO might need to update icons
       BottomNavigationBarItem(
-        icon: Icon(Icons.notifications),
+        icon: Stack(
+          children: <Widget>[
+            Icon(
+              Icons.notifications,
+            ),
+            if (notificationState.hasUnreadNotification)
+              Positioned(
+                right: 2,
+                top: 0,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+              ),
+          ],
+        ),
         title: Text('Notification'),
       ),
       BottomNavigationBarItem(
@@ -53,36 +54,29 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     ];
 
-    Widget home;
-
-    Widget notificationScreen = ChangeNotifierProvider<NotificationState>(
-      builder: (_) => NotificationState(),
-      child: NotificationScreen(),
-    );
-
-    Widget navigationScreen = ChangeNotifierProvider<MapState>(
-      builder: (_) => MapState(),
-      child: NavigationScreen(),
-    );
-
-    Widget settingScreen = SettingScreen();
+    final List<Widget> pages = [
+      // ChangeNotifierProvider<NotificationState>(
+      //   builder: (_) => NotificationState(),
+      //   child: NotificationScreen(),
+      // ),
+      NotificationScreen(),
+      ChangeNotifierProvider<MapState>(
+        builder: (_) => MapState(),
+        child: NavigationScreen(),
+      ),
+      SettingScreen(),
+    ];
 
     if (Platform.isIOS)
-      home = HomeCupertino(
+      return HomeCupertino(
         navBarItems: navBarItems,
-        navigationScreen: navigationScreen,
-        settingScreen: settingScreen,
-        notificationScreen: notificationScreen,
+        pages: pages,
       );
     else
       // Android Layout
-      home = HomeMaterial(
+      return HomeMaterial(
         navBarItems: navBarItems,
-        navigationScreen: navigationScreen,
-        settingScreen: settingScreen,
-        notificationScreen: notificationScreen,
+        pages: pages,
       );
-
-    return home;
   }
 }
