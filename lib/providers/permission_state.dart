@@ -3,8 +3,6 @@ import 'dart:core';
 
 import 'package:flutter/foundation.dart';
 import 'package:location/location.dart';
-import 'package:shuttler_flutter/models/driver.dart';
-import 'package:shuttler_flutter/services/db_service.dart';
 
 class PermissionState extends ChangeNotifier {
   // PRIVATE VARIABLES //
