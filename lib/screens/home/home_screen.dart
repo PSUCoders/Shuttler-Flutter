@@ -55,10 +55,6 @@ class HomeScreen extends StatelessWidget {
     ];
 
     final List<Widget> pages = [
-      // ChangeNotifierProvider<NotificationState>(
-      //   builder: (_) => NotificationState(),
-      //   child: NotificationScreen(),
-      // ),
       NotificationScreen(),
       ChangeNotifierProvider<MapState>(
         builder: (_) => MapState(),
