@@ -68,6 +68,7 @@ class _SignInMaterialState extends State<SignInMaterial> {
                 )
               ],
             ),
+          ),
           Column(
             children: <Widget>[
               Image.asset("assets/icons/shuttler_logo_labeled.png"),
