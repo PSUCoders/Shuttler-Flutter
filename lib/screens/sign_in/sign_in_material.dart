@@ -48,7 +48,7 @@ class _SignInMaterialState extends State<SignInMaterial> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              Image.asset("assets/icons/ic_logo.png"),
+              Image.asset("assets/icons/shuttler_logo_labeled.png"),
               Row(
                 children: <Widget>[
                   _emailInput(),

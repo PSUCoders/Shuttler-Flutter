@@ -78,7 +78,7 @@ class _SignInCupertinoState extends State<SignInCupertino> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Image.asset("assets/icons/ic_logo.png"),
+              Image.asset("assets/icons/shuttler_logo_labeled.png"),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
