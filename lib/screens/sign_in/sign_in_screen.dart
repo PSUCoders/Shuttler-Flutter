@@ -5,6 +5,9 @@ import 'package:shuttler/screens/sign_in/sign_in_cupertino.dart';
 import 'dart:io' show Platform;
 
 import 'package:shuttler/screens/sign_in/sign_in_material.dart';
+import 'package:shuttler/utilities/contants.dart';
+import 'package:shuttler/utilities/theme.dart';
+import 'package:shuttler/utilities/validator.dart';
 
 class SignInScreen extends StatefulWidget {
   SignInScreen({Key key}) : super(key: key);
@@ -13,58 +16,101 @@ class SignInScreen extends StatefulWidget {
   _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen>
-// with WidgetsBindingObserver {
-{
-  @override
-  void initState() {
-    super.initState();
-    // WidgetsBinding.instance.addObserver(this);
-  }
+class _SignInScreenState extends State<SignInScreen> {
+  final _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _fieldFocusNode = FocusNode();
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   if (state == AppLifecycleState.resumed) {
-  //     print('AppLifecycleState.resumed');
-  //     // _retrieveDynamicLink();
-  //   }
-  // }
+  void _handleSendEmail() {
+    final noError = _formKey.currentState.validate();
 
-  Future<bool> _sendSignInWithEmailLink(AuthState state, String email) async {
-    try {
-      state.sendSignInWithEmailLink(email.trim());
-    } catch (e) {
-      print("Error sending email link $e");
-      // _showDialog(e.toString());
-      return false;
+    if (noError) {
+      print('no error');
+      final AuthState authState = Provider.of<AuthState>(context);
+      // TODO
     }
-
-    print(email + "<< sent");
-    return true;
   }
 
-  handleSendEmailLink(
-    String email,
-    AuthState authState,
-  ) {
-    print('email to send link: $email');
+  void _handleFieldSubmitted(String text) {
+    // TODO
+    _fieldFocusNode.unfocus();
+    _handleSendEmail();
+  }
 
-    // _sendSignInWithEmailLink(authState, "hnguy011@plattsburgh.edu");
-    _sendSignInWithEmailLink(authState, email);
+  Widget _sendEmailLinkButton({@required Function onPressed}) {
+    return FlatButton(
+      textColor: ShuttlerTheme.of(context).primaryColor,
+      onPressed: onPressed,
+      child: Text("Send"),
+    );
+  }
+
+  Widget _emailInput() {
+    return TextFormField(
+      focusNode: _fieldFocusNode,
+      controller: _controller,
+      keyboardType: TextInputType.emailAddress,
+      validator: (email) =>
+          Validator.isPlattsburghEmail(email) ? null : ErrorMessages.wrongEmail,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.grey[200],
+        prefixIcon: Icon(Icons.email),
+      ),
+      onFieldSubmitted: _handleFieldSubmitted,
+    );
+
+    // return Expanded(
+    //   child: TextFormField(
+    //     focusNode: _fieldFocusNode,
+    //     controller: _controller,
+    //     keyboardType: TextInputType.emailAddress,
+    //     validator: (email) => Validator.isPlattsburghEmail(email)
+    //         ? null
+    //         : ErrorMessages.wrongEmail,
+    //     decoration: InputDecoration(
+    //       filled: true,
+    //       fillColor: Colors.grey[200],
+    //       prefixIcon: Icon(Icons.email),
+    //     ),
+    //     onFieldSubmitted: _handleFieldSubmitted,
+    //   ),
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
-    final AuthState authState = Provider.of<AuthState>(context);
-
-    if (Platform.isAndroid) {
-      return SignInMaterial(
-        onSendEmailPress: (email) => handleSendEmailLink(email, authState),
-      );
-    } else {
+    if (Platform.isIOS) {
       return SignInCupertino(
-        onSendEmailPress: (email) => handleSendEmailLink(email, authState),
+        onSendEmailPress: (email) {},
       );
     }
+
+    return Material(
+      child: Scaffold(
+        body: SafeArea(
+          child: ListView(
+            children: <Widget>[
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    Image.asset("assets/icons/ic_logo.png"),
+                    _emailInput(),
+                    _sendEmailLinkButton(onPressed: _handleSendEmail),
+                    // Row(
+                    //   children: <Widget>[
+                    //     _emailInput(),
+                    //     _sendEmailLinkButton(onPressed: _handleSendEmail)
+                    //   ],
+                    // )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

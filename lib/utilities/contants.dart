@@ -16,3 +16,7 @@ enum PrefsKey {
   /// List of read notification ids
   SEEN_NOTIFICATION
 }
+
+class ErrorMessages {
+  static String get wrongEmail => "Please provide a SUNY Plattsburgh email";
+}
