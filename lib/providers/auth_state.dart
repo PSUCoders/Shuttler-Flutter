@@ -15,6 +15,7 @@ final String _signInWithEmailLinkUrl = "https://shuttler.page.link/verifyEmail";
 class AuthState extends ChangeNotifier {
   bool _hasData;
   bool _isSignIn;
+  bool _emailSent;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Completer<SharedPreferences> _prefs = Completer();
@@ -31,6 +32,8 @@ class AuthState extends ChangeNotifier {
   bool get hasData => _hasData ?? false;
 
   bool get isSignIn => _isSignIn ?? false;
+
+  bool get emailSent => _emailSent ?? false;
 
   // METHODS //
 

@@ -36,9 +36,7 @@ class _SignInCupertinoState extends State<SignInCupertino> {
   Widget _buildSendEmailButton(Function(String) onPressed) {
     return CupertinoButton(
       padding: EdgeInsets.all(0),
-      onPressed: () {
-        onPressed(_controller.text);
-      },
+      onPressed: () => onPressed(_controller.text.trim()),
       child: Text(
         "Send",
         style: TextStyle(
@@ -53,21 +51,57 @@ class _SignInCupertinoState extends State<SignInCupertino> {
     final screenW = MediaQuery.of(context).size.width;
 
     return Container(
-      width: screenW * 0.7,
-      child: CupertinoTextField(
-        controller: _controller,
-        placeholder: "SUNY Plattsburgh email",
-        keyboardType: TextInputType.emailAddress,
-        prefix: Container(
-          padding: EdgeInsets.all(5),
-          child: Icon(Icons.email),
-        ),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            "Enter your email",
+            style: TextStyle(fontSize: 26),
+          ),
+          SizedBox(height: 20),
+          // Text(
+          //   "Enter your email",
+          //   style: TextStyle(
+          //     color: Colors.black38,
+          //     fontSize: 20,
+          //   ),
+          // ),
+          Material(
+            child: TextFormField(
+              decoration: InputDecoration(
+                hintText: "hint",
+                enabled: false,
+                filled: false,
+                icon: Icon(Icons.email),
+                labelText: "Email",
+                fillColor: Colors.red,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+              ),
+            ),
+          ),
+          // CupertinoTextField(),
+          SizedBox(height: 10),
+        ],
       ),
     );
+
+    // return Container(
+    //   width: screenW * 0.7,
+    //   child: CupertinoTextField(
+    //     controller: _controller,
+    //     placeholder: "SUNY Plattsburgh email",
+    //     keyboardType: TextInputType.emailAddress,
+    //     prefix: Container(
+    //       padding: EdgeInsets.all(5),
+    //       child: Icon(Icons.email),
+    //     ),
+    //     decoration: BoxDecoration(
+    //       color: Colors.grey[200],
+    //       borderRadius: BorderRadius.all(Radius.circular(10)),
+    //     ),
+    //   ),
+    // );
   }
 
   @override
@@ -75,19 +109,29 @@ class _SignInCupertinoState extends State<SignInCupertino> {
     return CupertinoPageScaffold(
       child: ListView(
         children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Row(
             children: <Widget>[
-              Image.asset("assets/icons/ic_logo.png"),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  _buildEmailInput(),
-                  SizedBox(width: 10),
-                  _buildSendEmailButton(widget.onSendEmailPress),
-                ],
-              ),
+              CupertinoNavigationBarBackButton(),
             ],
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Center(child: Image.asset("assets/icons/ic_logo.png")),
+                _buildEmailInput(),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    // _buildEmailInput(),
+                    SizedBox(width: 10),
+                    // _buildSendEmailButton(widget.onSendEmailPress),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
