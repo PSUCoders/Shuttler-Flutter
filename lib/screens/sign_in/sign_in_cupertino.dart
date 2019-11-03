@@ -112,6 +112,15 @@ class _SignInCupertinoState extends State<SignInCupertino> {
           Row(
             children: <Widget>[
               CupertinoNavigationBarBackButton(),
+              Image.asset("assets/icons/shuttler_logo_labeled.png"),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  _buildEmailInput(),
+                  SizedBox(width: 10),
+                  _buildSendEmailButton(widget.onSendEmailPress),
+                ],
+              ),
             ],
           ),
           Container(
