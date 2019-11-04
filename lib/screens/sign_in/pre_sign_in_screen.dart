@@ -16,15 +16,25 @@ class PreSignInScreen extends StatelessWidget {
               width: double.maxFinite,
               color: Colors.pink,
               child: Center(
-                child: Container(
-                  padding: EdgeInsets.all(25),
-                  // height: double.minPositive,
-                  // width: double.minPositive,
-                  decoration: BoxDecoration(
-                    // borderRadius: BorderRadius.circular(180),
-                    color: Colors.white,
+                child: Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.circular(180),
+                  child: Container(
+                    width: 150,
+                    padding: EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(180),
+                      color: Colors.white,
+                    ),
+                    child: Container(
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Image.asset(
+                          "assets/icons/shuttler_logo_labeled.png",
+                        ),
+                      ),
+                    ),
                   ),
-                  child: Image.asset("assets/icons/ic_logo.png"),
                 ),
               ),
             ),

@@ -20,3 +20,9 @@ enum PrefsKey {
 class ErrorMessages {
   static String get wrongEmail => "Please provide a SUNY Plattsburgh email";
 }
+
+final String kVerificationScreenMessage = """
+Please check your email for a sign in link.
+Time to receive the email depends on your internet connection.
+Check your Spam mailbox if you don't see the email.
+""";

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart' hide Notification;
 import 'package:flutter/material.dart' hide Notification;
 
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rect_getter/rect_getter.dart';
 import 'package:shuttler/providers/notification_state.dart';
@@ -114,16 +113,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final notificationState = Provider.of<NotificationState>(context);
     final notifications = notificationState.notifications ?? [];
 
-    return PlatformScaffold(
-      appBar: PlatformAppBar(
+    return Scaffold(
+      appBar: AppBar(
         title: Text('Nofitications'),
       ),
-      body: SafeArea(
-        child: Container(
-          child: notifications.isEmpty
-              ? _buildNoNotification()
-              : _buildNotificationList(notifications),
-        ),
+      backgroundColor: Color.fromRGBO(255, 254, 255, 1),
+      body: Container(
+        child: notifications.isEmpty
+            ? _buildNoNotification()
+            : _buildNotificationList(notifications),
       ),
     );
   }

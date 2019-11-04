@@ -49,9 +49,7 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  authStream() {
-    return _auth.onAuthStateChanged;
-  }
+  authStream() => _auth.onAuthStateChanged;
 
   logout() async {
     print('signing out...');
@@ -117,20 +115,26 @@ class AuthState extends ChangeNotifier {
     );
   }
 
-  sendSignInWithEmailLink(String email) async {
+  /// If return false: send email to sign in with email link failed
+  Future<bool> sendSignInWithEmailLink(String email) async {
     SharedPreferences prefs = await _prefs.future;
 
-    await _auth.sendSignInWithEmailLink(
-      email: email,
-      url: _signInWithEmailLinkUrl,
-      androidInstallIfNotAvailable: true,
-      handleCodeInApp: true,
-      androidMinimumVersion: "16",
-      androidPackageName: "com.codinghub.shuttler.mobile",
-      iOSBundleID: "com.codinghub.shuttler.mobile",
-    );
+    try {
+      await _auth.sendSignInWithEmailLink(
+        email: email,
+        url: _signInWithEmailLinkUrl,
+        androidInstallIfNotAvailable: true,
+        handleCodeInApp: true,
+        androidMinimumVersion: "16",
+        androidPackageName: "com.codinghub.shuttler.mobile",
+        iOSBundleID: "com.codinghub.shuttler.mobile",
+      );
 
-    await prefs.setString(PrefsKey.EMAIL.toString(), email);
+      await prefs.setString(PrefsKey.EMAIL.toString(), email);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   Future<AuthResult> signInWithEmailLink(String email, String link) async {

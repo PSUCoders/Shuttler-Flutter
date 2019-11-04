@@ -3,41 +3,41 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:shuttler/utilities/theme.dart';
 
 typedef FutureVoidCallback = Future<void> Function();
 
-/// Navigation Screen
-class NavigationMaterial extends StatefulWidget {
+/// Map Screen
+class MapLayout extends StatefulWidget {
   final FutureVoidCallback onMyLocationPress;
   final FutureVoidCallback onShuttleLocationPress;
   final Function(GoogleMapController) onMapCreated;
   final Function(LatLng) onMapTap;
   final List<Widget> mapActions;
   final List<LatLng> driverLocations;
+  final bool showNextStop;
 
-  NavigationMaterial({
+  MapLayout({
     this.onMyLocationPress,
     this.onShuttleLocationPress,
     this.onMapTap,
     this.mapActions,
     this.onMapCreated,
     this.driverLocations,
+    this.showNextStop = false,
   });
 
   @override
-  _NavigationMaterialState createState() => _NavigationMaterialState();
+  _MapLayoutState createState() => _MapLayoutState();
 }
 
-class _NavigationMaterialState extends State<NavigationMaterial> {
+class _MapLayoutState extends State<MapLayout> {
   Completer<GoogleMapController> _controller = Completer();
-  var _shuttleIcon;
+  BitmapDescriptor _shuttleIcon;
   bool _hasShuttleIcon = false;
 
   @override
   void initState() {
     super.initState();
-
     _getShuttleIcon();
   }
 
@@ -52,8 +52,8 @@ class _NavigationMaterialState extends State<NavigationMaterial> {
     });
   }
 
-  static final CameraPosition _kPlattsburgh = CameraPosition(
-    target: LatLng(44.7065763, -73.460642),
+  static final CameraPosition _kACC = CameraPosition(
+    target: LatLng(44.692939, -73.466752),
     zoom: 14.151926040649414,
   );
 
@@ -69,10 +69,16 @@ class _NavigationMaterialState extends State<NavigationMaterial> {
                 position: loc,
               ))
           .toSet(),
+      cameraTargetBounds: CameraTargetBounds(
+        LatLngBounds(
+          northeast: LatLng(44.720872, -73.431070),
+          southwest: LatLng(44.675484, -73.510132),
+        ),
+      ),
       mapType: MapType.normal,
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
-      initialCameraPosition: _kPlattsburgh,
+      initialCameraPosition: _kACC,
       onMapCreated: (GoogleMapController controller) {
         try {
           _controller.complete(controller);
@@ -86,7 +92,7 @@ class _NavigationMaterialState extends State<NavigationMaterial> {
 
   Widget _buildActions() {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.only(bottom: 20),
       alignment: Alignment.bottomRight,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -123,7 +129,10 @@ class _NavigationMaterialState extends State<NavigationMaterial> {
             ),
             SizedBox(height: 10),
             // TODO update this asset to be black
-            Image.asset('assets/icons/ic_navigation.png'),
+            Image.asset(
+              'assets/icons/ic_navigation.png',
+              color: Colors.black87,
+            ),
             SizedBox(height: 10),
             Text(
               "Walmart",
@@ -140,16 +149,13 @@ class _NavigationMaterialState extends State<NavigationMaterial> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Map')),
-      body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            _buildGoogleMap(),
-            _buildActions(),
-            _buildNextStop(),
-          ],
-        ),
+    return SafeArea(
+      child: Stack(
+        children: <Widget>[
+          _buildGoogleMap(),
+          _buildActions(),
+          if (widget.showNextStop) _buildNextStop(),
+        ],
       ),
     );
   }

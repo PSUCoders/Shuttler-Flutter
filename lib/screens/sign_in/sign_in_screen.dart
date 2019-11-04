@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
-import 'package:shuttler/screens/sign_in/sign_in_cupertino.dart';
-import 'dart:io' show Platform;
-
-import 'package:shuttler/screens/sign_in/sign_in_material.dart';
+import 'package:shuttler/screens/sign_in/email_verification_screen.dart';
+import 'package:shuttler/screens/sign_in/sign_in_layout.dart';
 import 'package:shuttler/utilities/contants.dart';
-import 'package:shuttler/utilities/theme.dart';
 import 'package:shuttler/utilities/validator.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -21,96 +18,52 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   final _fieldFocusNode = FocusNode();
 
-  void _handleSendEmail() {
+  Future<void> _handleSendEmail() async {
+    // TODO
+    final AuthState authState = Provider.of<AuthState>(context);
+
+    final emailSent =
+        await authState.sendSignInWithEmailLink(_controller.text.trim());
+
+    if (!emailSent) {
+      // TODO handle email sent failed
+      // show something on the UI
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EmailVerificationScreen()),
+    );
+  }
+
+  /// Handle the event of finishing typing the email
+  void _handleEmailSubmit(String text) {
+    _fieldFocusNode.unfocus(); // Close the keyboard
+
     final noError = _formKey.currentState.validate();
 
     if (noError) {
       print('no error');
-      final AuthState authState = Provider.of<AuthState>(context);
-      // TODO
+      _handleSendEmail();
     }
   }
 
-  void _handleFieldSubmitted(String text) {
-    // TODO
-    _fieldFocusNode.unfocus();
-    _handleSendEmail();
-  }
+  String _validateEmail(String email) {
+    if (Validator.isPlattsburghEmail(email)) return null;
 
-  Widget _sendEmailLinkButton({@required Function onPressed}) {
-    return FlatButton(
-      textColor: ShuttlerTheme.of(context).primaryColor,
-      onPressed: onPressed,
-      child: Text("Send"),
-    );
-  }
-
-  Widget _emailInput() {
-    return TextFormField(
-      focusNode: _fieldFocusNode,
-      controller: _controller,
-      keyboardType: TextInputType.emailAddress,
-      validator: (email) =>
-          Validator.isPlattsburghEmail(email) ? null : ErrorMessages.wrongEmail,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.grey[200],
-        prefixIcon: Icon(Icons.email),
-      ),
-      onFieldSubmitted: _handleFieldSubmitted,
-    );
-
-    // return Expanded(
-    //   child: TextFormField(
-    //     focusNode: _fieldFocusNode,
-    //     controller: _controller,
-    //     keyboardType: TextInputType.emailAddress,
-    //     validator: (email) => Validator.isPlattsburghEmail(email)
-    //         ? null
-    //         : ErrorMessages.wrongEmail,
-    //     decoration: InputDecoration(
-    //       filled: true,
-    //       fillColor: Colors.grey[200],
-    //       prefixIcon: Icon(Icons.email),
-    //     ),
-    //     onFieldSubmitted: _handleFieldSubmitted,
-    //   ),
-    // );
+    return ErrorMessages.wrongEmail;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
-      return SignInCupertino(
-        onSendEmailPress: (email) {},
-      );
-    }
-
-    return Material(
-      child: Scaffold(
-        body: SafeArea(
-          child: ListView(
-            children: <Widget>[
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    Image.asset("assets/icons/ic_logo.png"),
-                    _emailInput(),
-                    _sendEmailLinkButton(onPressed: _handleSendEmail),
-                    // Row(
-                    //   children: <Widget>[
-                    //     _emailInput(),
-                    //     _sendEmailLinkButton(onPressed: _handleSendEmail)
-                    //   ],
-                    // )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return SignInLayout(
+      onEmailSubmitted: _handleEmailSubmit,
+      emailValidator: _validateEmail,
+      focusNode: _fieldFocusNode,
+      controller: _controller,
+      onActionButtonPress: _handleSendEmail,
+      formKey: _formKey,
     );
   }
 }

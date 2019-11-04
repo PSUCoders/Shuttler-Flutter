@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shuttler/providers/notification_state.dart';
 import 'package:shuttler/screens/home/home_cupertino.dart';
 import 'package:shuttler/screens/home/home_material.dart';
-import 'package:shuttler/screens/navigation/navigation_screen.dart';
+import 'package:shuttler/screens/navigation/map_screen.dart';
 import 'package:shuttler/screens/notification/notification_screen.dart';
 import 'package:shuttler/screens/setting/setting_screen.dart';
 import 'package:shuttler/providers/map_state.dart';
@@ -58,7 +58,7 @@ class HomeScreen extends StatelessWidget {
       NotificationScreen(),
       ChangeNotifierProvider<MapState>(
         builder: (_) => MapState(),
-        child: NavigationScreen(),
+        child: MapScreen(),
       ),
       SettingScreen(),
     ];
