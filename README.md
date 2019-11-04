@@ -2,7 +2,7 @@
 
 Shuttler is a mobile application, Android and iOS, to help students track the shuttler at SUNY Plattsburgh Users can see the shuttle position in real time displayed on a map.
 
-## Getting Started
+## Getting Started (deprecated)
 
 #### 1. [Setup Flutter](https://flutter.io/setup/)
 
