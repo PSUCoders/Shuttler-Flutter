@@ -8,11 +8,15 @@ import 'package:flutter/material.dart';
 class ShuttlerTheme {
   static ThemeData of(BuildContext context) {
     return Theme.of(context).copyWith(
+      // backgroundColor: Colors.white,
       primaryColor: Colors.pink,
       accentColor: Colors.pink,
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: TextStyle(fontSize: 16, color: Colors.pink),
         hintStyle: TextStyle(fontSize: 16, color: Colors.pink),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: Colors.pink,
       ),
       textTheme: Theme.of(context).textTheme.copyWith(
             headline: TextStyle(

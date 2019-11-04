@@ -2,11 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/device_state.dart';
 import 'package:shuttler/screens/sign_in/pre_sign_in_screen.dart';
-import 'package:shuttler/screens/sign_in/sign_in_screen.dart';
 import 'package:shuttler/utilities/theme.dart';
 import 'package:shuttler/providers/auth_state.dart';
 import 'package:shuttler/screens/home/home_screen.dart';
@@ -29,24 +27,16 @@ class _ShuttlerState extends State<Shuttler> {
     /// TODO show loading screen
     /// may be show Coding Hub logo
 
-    return PlatformApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Shuttler',
-      ios: (_) => CupertinoAppData(
-        theme: ShuttlerTheme.of(context).cupertinoOverrideTheme,
-      ),
-      android: (_) => MaterialAppData(
-        theme: ShuttlerTheme.of(context),
-      ),
+      theme: ShuttlerTheme.of(context),
       home: StreamBuilder<FirebaseUser>(
         stream: authState.authStream(),
         builder: (context, snapshot) {
-          print('snapshot data: ${snapshot.data}');
-
-          if (Platform.isAndroid || Platform.isIOS) {
+          if (Platform.isAndroid) {
             if (snapshot.data == null) {
               return PreSignInScreen();
-              // return SignInScreen();
             }
 
             if (!snapshot.hasData) {
@@ -56,9 +46,6 @@ class _ShuttlerState extends State<Shuttler> {
               );
             }
           }
-
-          print("user id: ${snapshot.data?.uid}");
-
           return HomeScreen();
         },
       ),

@@ -17,7 +17,6 @@ class MapState extends ChangeNotifier {
   /// Must call cancelSubcriptions when finish using
   MapState() {
     // Subscribe to driver stream
-
     _driversSubscription = OnlineDB().driversStream().listen((drivers) {
       _drivers = drivers;
       print('shuttles location updated');
@@ -34,12 +33,7 @@ class MapState extends ChangeNotifier {
 
   // GETTERS //
 
-  bool get hasData {
-    if (drivers != null)
-      return true;
-    else
-      return false;
-  }
+  bool get hasData => drivers != null ? true : false;
 
   // Get all driver objects
   List<Driver> get drivers => _drivers;
@@ -80,7 +74,6 @@ class MapState extends ChangeNotifier {
     print('cancelling all subscriptions...');
     await Future.wait([
       _driversSubscription.cancel(),
-      // _locationSubscription?.cancel(),
     ]);
   }
 

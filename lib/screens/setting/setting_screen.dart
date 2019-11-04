@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/device_state.dart';
-import 'package:shuttler/screens/setting/setting_cupertino.dart';
-import 'package:shuttler/screens/setting/setting_material.dart';
+import 'package:shuttler/screens/setting/setting_layout.dart';
 import 'package:shuttler/utilities/contants.dart';
 import 'package:shuttler/providers/auth_state.dart';
 
@@ -46,32 +44,15 @@ class _SettingScreenState extends State<SettingScreen> {
       return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    return PlatformScaffold(
-      appBar: PlatformAppBar(
-        title: Text('Settings'),
-      ),
-      android: (_) => MaterialScaffoldData(
-        body: SettingMaterialLayout(
-          currentStop: deviceState.shuttleStop,
-          notificationOn: deviceState.isNotificationOn,
-          onCodingHubPress: _handleCodingHubPress,
-          onLogoutPress: authState.logout,
-          onShuttleStopChange: deviceState.changeShuttleStop,
-          onNotificationChange: deviceState.turnNotificationOn,
-        ),
-      ),
-      ios: (_) => CupertinoPageScaffoldData(
-        body: SettingCupertinoLayout(
-          shuttleStop: deviceState.shuttleStop.toString().split(".")[1],
-          notificationOn: deviceState.isNotificationOn,
-          onCodingHubPress: _handleCodingHubPress,
-          onNotificationChange: deviceState.turnNotificationOn,
-          onShuttleStopChange: deviceState.changeShuttleStop,
-          pickerItemHeight: _kDropdownItemHeight,
-          pickerItems: ShuttleStop.values
-              .map((stop) => stop.toString().split('.')[1])
-              .toList(),
-        ),
+    return Scaffold(
+      appBar: AppBar(title: Text('Settings')),
+      body: SettingLayout(
+        currentStop: deviceState.shuttleStop,
+        notificationOn: deviceState.isNotificationOn,
+        onCodingHubPress: _handleCodingHubPress,
+        onLogoutPress: authState.logout,
+        onShuttleStopChange: deviceState.changeShuttleStop,
+        onNotificationChange: deviceState.turnNotificationOn,
       ),
     );
   }

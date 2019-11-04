@@ -1,10 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shuttler/utilities/contants.dart';
 import 'package:shuttler/utilities/theme.dart';
 
-class SettingMaterialLayout extends StatelessWidget {
-  const SettingMaterialLayout({
+class SettingLayout extends StatelessWidget {
+  const SettingLayout({
     Key key,
     @required this.onCodingHubPress,
     this.onLogoutPress,
@@ -34,33 +35,29 @@ class SettingMaterialLayout extends StatelessWidget {
   }
 
   Widget _buildNotifyPicker(context) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: ListTile(
-            title: Text("Shuttle Stop"),
-            subtitle: Text("You will be notified when the shuttle is near"),
-            trailing: DropdownButton<ShuttleStop>(
-              value: this.currentStop,
-              iconSize: 0,
-              elevation: 16,
-              underline: Container(color: Colors.transparent),
-              style: TextStyle(
-                color: ShuttlerTheme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-              onChanged: this.onShuttleStopChange,
-              items: ShuttleStop.values
-                  .map<DropdownMenuItem<ShuttleStop>>((ShuttleStop value) {
-                return DropdownMenuItem<ShuttleStop>(
-                  value: value,
-                  child: Text(value.toString().split(".")[1]),
-                );
-              }).toList(),
-            ),
-          ),
+    return ListTile(
+      title: Text("Shuttle Stop"),
+      subtitle: Text("You will be notified when the shuttle is near"),
+      trailing: DropdownButton<ShuttleStop>(
+        value: this.currentStop,
+        iconSize: 0,
+        elevation: 16,
+        underline: Container(color: Colors.transparent),
+        style: TextStyle(
+          color: ShuttlerTheme.of(context).primaryColor,
+          fontWeight: FontWeight.bold,
         ),
-      ],
+        // disabledHint: Text(describeEnum(this.currentStop)),
+        hint: Text(describeEnum(this.currentStop)),
+        onChanged: this.notificationOn ? this.onShuttleStopChange : null,
+        items: ShuttleStop.values
+            .map<DropdownMenuItem<ShuttleStop>>(
+                (ShuttleStop value) => DropdownMenuItem<ShuttleStop>(
+                      value: value,
+                      child: Text(describeEnum(value).trim()),
+                    ))
+            .toList(),
+      ),
     );
   }
 

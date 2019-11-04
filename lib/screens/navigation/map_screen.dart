@@ -1,42 +1,30 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-
 import 'package:shuttler/models/driver.dart';
 import 'package:shuttler/providers/map_state.dart';
-import 'package:shuttler/screens/navigation/navigation_cupertino.dart';
-import 'package:shuttler/screens/navigation/navigation_material.dart';
-import 'package:shuttler/utilities/theme.dart';
+import 'package:shuttler/screens/navigation/map_layout.dart';
+import 'package:shuttler/widgets/circle_button.dart';
 
 typedef FutureVoidCallback = Future<void> Function();
 
 /// Navigation Screen
-class NavigationScreen extends StatefulWidget {
+class MapScreen extends StatefulWidget {
   @override
-  _NavigationScreenState createState() => _NavigationScreenState();
+  _MapScreenState createState() => _MapScreenState();
 }
 
-class _NavigationScreenState extends State<NavigationScreen>
-    with
-        AutomaticKeepAliveClientMixin<NavigationScreen>,
-        WidgetsBindingObserver {
+class _MapScreenState extends State<MapScreen>
+    with AutomaticKeepAliveClientMixin<MapScreen>, WidgetsBindingObserver {
   Completer<GoogleMapController> _controller = Completer();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    print('nav screen disposing...');
-    super.dispose();
   }
 
   @override
@@ -51,16 +39,6 @@ class _NavigationScreenState extends State<NavigationScreen>
   @override
   // Prevent the map from being killed
   bool get wantKeepAlive => true;
-
-  static final CameraPosition _kPlattsburgh = CameraPosition(
-    target: LatLng(44.7065763, -73.460642),
-    zoom: 14.151926040649414,
-  );
-
-  Future<void> _goToThePlattsburgh() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kPlattsburgh));
-  }
 
   _goToLocation(LatLng latLng) async {
     print('go to location called');
@@ -108,34 +86,14 @@ class _NavigationScreenState extends State<NavigationScreen>
 
     // List of buttons on the map
     List<Widget> _mapActions = [
-      PlatformButton(
-        androidFlat: (_) => MaterialFlatButtonData(
-          // onPressed: () {},
-          color: Colors.white70,
-          padding: EdgeInsets.all(10),
-        ),
+      CircleButton(
         onPressed: () => _goToLocation(mapState.driverLocation),
-        color: Colors.white70,
-        padding: EdgeInsets.all(10),
-        child: Icon(
-          Icons.directions_bus,
-          color: ShuttlerTheme.of(context).accentColor,
-        ),
+        icon: Icons.directions_bus,
       ),
-      PlatformButton(
-        androidFlat: (_) => MaterialFlatButtonData(
-          // onPressed: () {},
-          color: Colors.white70,
-          padding: EdgeInsets.all(10),
-        ),
+      CircleButton(
         onPressed: _goToCurrentLocation,
-        color: Colors.white70,
-        padding: EdgeInsets.all(10),
-        child: Icon(
-          Icons.my_location,
-          color: ShuttlerTheme.of(context).accentColor,
-        ),
-      )
+        icon: Icons.my_location,
+      ),
     ];
 
     super.build(context);
@@ -143,27 +101,27 @@ class _NavigationScreenState extends State<NavigationScreen>
     // Show loading when data is not ready
     if (!mapState.hasData) return Center(child: CircularProgressIndicator());
 
-    return StreamBuilder<Driver>(
-      stream: mapState.getDriverStream(mapState.drivers.first.id),
-      builder: (context, driver) {
-        if (!driver.hasData) return Center(child: CircularProgressIndicator());
+    return Scaffold(
+      appBar: AppBar(title: Text('Map')),
+      body: StreamBuilder<Driver>(
+        stream: mapState.getDriverStream(mapState.drivers.first.id),
+        builder: (context, driver) {
+          if (!driver.hasData)
+            return Center(child: CircularProgressIndicator());
 
-        if (Platform.isIOS) {
-          return NavigationCupertino(
-            onMapCreated: _handleMapCreated,
-            mapActions: _mapActions,
-            goToDriver: () => _goToLocation(driver.data.latLng),
-            driverLocations: [driver.data.latLng],
-            nextStop: mapState.nextStop,
+          if (driver.hasData) {
+            return MapLayout(
+              onMapCreated: _handleMapCreated,
+              mapActions: _mapActions,
+              driverLocations: [driver.data.latLng],
+            );
+          }
+
+          return Center(
+            child: Text("Cannot connect to the server"),
           );
-        }
-
-        return NavigationMaterial(
-          onMapCreated: _handleMapCreated,
-          mapActions: _mapActions,
-          driverLocations: [driver.data.latLng],
-        );
-      },
+        },
+      ),
     );
   }
 }
