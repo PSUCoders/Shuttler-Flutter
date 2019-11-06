@@ -71,7 +71,7 @@ class MapState extends ChangeNotifier {
   getDriverStream(String driverId) => OnlineDB().driverStream(driverId);
 
   Future<void> cancelSubcriptions() async {
-    print('cancelling all subscriptions...');
+    print('cancelling all subscriptions in map state...');
     await Future.wait([
       _driversSubscription.cancel(),
     ]);

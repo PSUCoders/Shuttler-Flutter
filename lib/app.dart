@@ -1,53 +1,49 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:shuttler/providers/device_state.dart';
-import 'package:shuttler/screens/sign_in/pre_sign_in_screen.dart';
-import 'package:shuttler/utilities/theme.dart';
 import 'package:shuttler/providers/auth_state.dart';
+import 'package:shuttler/providers/device_state.dart';
+import 'package:shuttler/providers/notification_state.dart';
+import 'package:shuttler/screens/sign_in/pre_sign_in_screen.dart';
+import 'package:shuttler/screens/splash_screen.dart';
+import 'package:shuttler/utilities/theme.dart';
 import 'package:shuttler/screens/home/home_screen.dart';
 
-class Shuttler extends StatefulWidget {
-  const Shuttler({
+class ShuttlerApp extends StatefulWidget {
+  const ShuttlerApp({
     Key key,
   }) : super(key: key);
 
   @override
-  _ShuttlerState createState() => _ShuttlerState();
+  _ShuttlerAppState createState() => _ShuttlerAppState();
 }
 
-class _ShuttlerState extends State<Shuttler> {
+class _ShuttlerAppState extends State<ShuttlerApp> {
   @override
   Widget build(BuildContext context) {
-    final deviceState = Provider.of<DeviceState>(context);
-    final AuthState authState = Provider.of<AuthState>(context);
+    print('App building...');
 
-    /// TODO show loading screen
-    /// may be show Coding Hub logo
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Shuttler',
-      theme: ShuttlerTheme.of(context),
-      home: StreamBuilder<FirebaseUser>(
-        stream: authState.authStream(),
-        builder: (context, snapshot) {
-          if (Platform.isAndroid) {
-            if (snapshot.data == null) {
-              return PreSignInScreen();
-            }
-
-            if (!snapshot.hasData) {
-              return Container(
-                color: Colors.white,
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-          }
-          return HomeScreen();
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<DeviceState>(
+          builder: (context) => DeviceState(),
+        ),
+        ChangeNotifierProvider<AuthState>(
+          builder: (context) => AuthState(),
+        ),
+        ChangeNotifierProvider<NotificationState>(
+          builder: (context) => NotificationState(),
+        )
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Shuttler',
+        theme: ShuttlerTheme.of(context),
+        routes: {
+          '/': (context) => SplashScreen(),
+          '/home': (context) => HomeScreen(),
+          '/login': (context) => PreSignInScreen(),
         },
+        initialRoute: '/',
       ),
     );
   }

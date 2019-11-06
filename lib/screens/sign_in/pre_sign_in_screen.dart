@@ -1,8 +1,48 @@
-import 'package:flutter/material.dart';
-import 'package:shuttler/screens/sign_in/sign_in_screen.dart';
+import 'dart:async';
 
-class PreSignInScreen extends StatelessWidget {
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shuttler/providers/auth_state.dart';
+import 'package:shuttler/screens/sign_in/sign_in_screen.dart';
+import 'package:shuttler/widgets/shuttler_logo.dart';
+
+Future<bool> checkIfAuthenticated() async {
+  await Future.delayed(Duration(
+      seconds: 5)); // could be a long running task, like a fetch from keychain
+  return true;
+}
+
+class PreSignInScreen extends StatefulWidget {
   const PreSignInScreen({Key key}) : super(key: key);
+
+  @override
+  _PreSignInScreenState createState() => _PreSignInScreenState();
+}
+
+class _PreSignInScreenState extends State<PreSignInScreen> {
+  StreamSubscription<FirebaseUser> _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen to auth status
+    _authSubscription = Provider.of<AuthState>(context, listen: false)
+        .authStream()
+        .listen((user) {
+      if (user != null) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/home', ModalRoute.withName('/home'));
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,26 +56,7 @@ class PreSignInScreen extends StatelessWidget {
               width: double.maxFinite,
               color: Colors.pink,
               child: Center(
-                child: Material(
-                  elevation: 5,
-                  borderRadius: BorderRadius.circular(180),
-                  child: Container(
-                    width: 150,
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(180),
-                      color: Colors.white,
-                    ),
-                    child: Container(
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Image.asset(
-                          "assets/icons/shuttler_logo_labeled.png",
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                child: ShuttlerLogo(),
               ),
             ),
           ),

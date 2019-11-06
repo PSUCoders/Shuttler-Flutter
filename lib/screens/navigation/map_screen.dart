@@ -29,11 +29,21 @@ class _MapScreenState extends State<MapScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    final mapState = Provider.of<MapState>(context, listen: false);
+
     if (state == AppLifecycleState.resumed) {
-      Provider.of<MapState>(context)..resumeSubscriptions();
+      mapState.resumeSubscriptions();
     } else if (state == AppLifecycleState.paused) {
-      Provider.of<MapState>(context)..pauseSubscriptions();
+      mapState.pauseSubscriptions();
     }
+  }
+
+  @override
+  void dispose() {
+    print('MapScreen disposing...');
+    // stop listening to didChangeAppLifecycleState
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -106,8 +116,7 @@ class _MapScreenState extends State<MapScreen>
       body: StreamBuilder<Driver>(
         stream: mapState.getDriverStream(mapState.drivers.first.id),
         builder: (context, driver) {
-          if (!driver.hasData)
-            return Center(child: CircularProgressIndicator());
+          if (!driver.hasData) return Container(color: Colors.white);
 
           if (driver.hasData) {
             return MapLayout(
