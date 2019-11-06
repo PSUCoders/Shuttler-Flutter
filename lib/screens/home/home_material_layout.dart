@@ -3,24 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 /// Home Screen Layout with Material Style for Android devices
-class HomeMaterial extends StatefulWidget {
+class HomeMaterialLayout extends StatefulWidget {
   final List<Widget> pages;
   final List<BottomNavigationBarItem> navBarItems;
   final bool hasUnreadNotification;
 
-  HomeMaterial({
+  HomeMaterialLayout({
     this.pages,
     this.navBarItems,
     this.hasUnreadNotification,
   });
 
   @override
-  _HomeMaterialState createState() => _HomeMaterialState();
+  _HomeMaterialLayoutState createState() => _HomeMaterialLayoutState();
 }
 
-class _HomeMaterialState extends State<HomeMaterial>
+class _HomeMaterialLayoutState extends State<HomeMaterialLayout>
     with SingleTickerProviderStateMixin {
-  GoogleMapController mapController;
   TabController _tabController;
 
   @override

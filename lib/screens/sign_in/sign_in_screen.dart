@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
@@ -20,7 +22,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<void> _handleSendEmail() async {
     // TODO
-    final AuthState authState = Provider.of<AuthState>(context);
+    final AuthState authState = Provider.of<AuthState>(context, listen: false);
 
     final emailSent =
         await authState.sendSignInWithEmailLink(_controller.text.trim());
@@ -38,7 +40,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   /// Handle the event of finishing typing the email
-  void _handleEmailSubmit(String text) {
+  void _handleEmailSubmit([String text]) {
     _fieldFocusNode.unfocus(); // Close the keyboard
 
     final noError = _formKey.currentState.validate();
@@ -62,7 +64,7 @@ class _SignInScreenState extends State<SignInScreen> {
       emailValidator: _validateEmail,
       focusNode: _fieldFocusNode,
       controller: _controller,
-      onActionButtonPress: _handleSendEmail,
+      onActionButtonPress: _handleEmailSubmit,
       formKey: _formKey,
     );
   }

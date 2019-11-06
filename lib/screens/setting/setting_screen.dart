@@ -33,10 +33,15 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
+  _handleLogout() {
+    final authState = Provider.of<AuthState>(context);
+    authState.logout();
+    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceState = Provider.of<DeviceState>(context);
-    final authState = Provider.of<AuthState>(context);
 
     print("current stop: ${deviceState.shuttleStop}");
 
@@ -50,7 +55,7 @@ class _SettingScreenState extends State<SettingScreen> {
         currentStop: deviceState.shuttleStop,
         notificationOn: deviceState.isNotificationOn,
         onCodingHubPress: _handleCodingHubPress,
-        onLogoutPress: authState.logout,
+        onLogoutPress: _handleLogout,
         onShuttleStopChange: deviceState.changeShuttleStop,
         onNotificationChange: deviceState.turnNotificationOn,
       ),
