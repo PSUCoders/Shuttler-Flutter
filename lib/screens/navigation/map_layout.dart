@@ -130,7 +130,6 @@ class _MapLayoutState extends State<MapLayout> {
               style: TextStyle(color: Colors.black54),
             ),
             SizedBox(height: 10),
-            // TODO update this asset to be black
             Image.asset(
               'assets/icons/ic_navigation.png',
               color: Colors.black87,

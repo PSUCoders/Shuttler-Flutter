@@ -29,11 +29,21 @@ class _MapScreenState extends State<MapScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    final mapState = Provider.of<MapState>(context, listen: false);
+
     if (state == AppLifecycleState.resumed) {
-      Provider.of<MapState>(context)..resumeSubscriptions();
+      mapState.resumeSubscriptions();
     } else if (state == AppLifecycleState.paused) {
-      Provider.of<MapState>(context)..pauseSubscriptions();
+      mapState.pauseSubscriptions();
     }
+  }
+
+  @override
+  void dispose() {
+    print('MapScreen disposing...');
+    // stop listening to didChangeAppLifecycleState
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -99,31 +109,8 @@ class _MapScreenState extends State<MapScreen>
     super.build(context);
 
     // Show loading when data is not ready
-    print(mapState.hasData);
     if (!mapState.hasData) return Center(child: CircularProgressIndicator());
 
-//    return Scaffold(
-//      appBar: AppBar(title: Text('Map')),
-//      body: StreamBuilder<Driver>(
-//        stream: mapState.getDriverStream(mapState.drivers.first.id),
-//        builder: (context, driver) {
-//          if (!driver.hasData)
-//            return Center(child: CircularProgressIndicator());
-//
-//          if (driver.hasData) {
-//            return MapLayout(
-//              onMapCreated: _handleMapCreated,
-//              mapActions: _mapActions,
-//              driverLocations: [driver.data.latLng],
-//            );
-//          }
-//
-//          return Center(
-//            child: Text("Cannot connect to the server"),
-//          );
-//        },
-//      ),
-//    );
     List<Driver> driverLocations = mapState.allDriversLocations;
 
     if (driverLocations != null) {
@@ -133,8 +120,7 @@ class _MapScreenState extends State<MapScreen>
             onMapCreated: _handleMapCreated,
             mapActions: _mapActions,
             driverLocations: driverLocations,
-          )
-      );
+          ));
     } else {
       return Center(
         child: Text("Cannot connect to the server"),

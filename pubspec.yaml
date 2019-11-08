@@ -1,6 +1,6 @@
 name: shuttler
 description: A shuttle tracking app.
-version: 1.0.0+1
+version: 0.1.0+1
 
 environment:
   sdk: '>=2.3.0 <3.0.0'
@@ -47,9 +47,6 @@ flutter_icons:
 
 # The following section is specific to Flutter.
 flutter:
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
   assets:
     - assets/

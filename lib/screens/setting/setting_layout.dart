@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -112,7 +114,7 @@ class SettingLayout extends StatelessWidget {
                   children: <Widget>[
                     _buildNotificationToggler(context),
                     _buildNotifyPicker(context),
-                    _buildLogoutButton(),
+                    if (!Platform.isIOS) _buildLogoutButton(),
                   ],
                 ),
               ],

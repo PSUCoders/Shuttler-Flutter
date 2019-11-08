@@ -4,8 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/notification_state.dart';
-import 'package:shuttler/screens/home/home_cupertino.dart';
-import 'package:shuttler/screens/home/home_material.dart';
+import 'package:shuttler/screens/home/home_cupertino_layout.dart';
+import 'package:shuttler/screens/home/home_material_layout.dart';
+
 import 'package:shuttler/screens/navigation/map_screen.dart';
 import 'package:shuttler/screens/notification/notification_screen.dart';
 import 'package:shuttler/screens/setting/setting_screen.dart';
@@ -64,13 +65,13 @@ class HomeScreen extends StatelessWidget {
     ];
 
     if (Platform.isIOS)
-      return HomeCupertino(
+      return HomeCupertinoLayout(
         navBarItems: navBarItems,
         pages: pages,
       );
     else
       // Android Layout
-      return HomeMaterial(
+      return HomeMaterialLayout(
         navBarItems: navBarItems,
         pages: pages,
       );

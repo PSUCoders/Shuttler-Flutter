@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +15,6 @@ final String _signInWithEmailLinkUrl = "https://shuttler.page.link/verifyEmail";
 /// Store all settings to device memory
 class AuthState extends ChangeNotifier {
   bool _hasData;
-  bool _isSignIn;
   bool _emailSent;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -31,30 +31,9 @@ class AuthState extends ChangeNotifier {
 
   bool get hasData => _hasData ?? false;
 
-  bool get isSignIn => _isSignIn ?? false;
-
   bool get emailSent => _emailSent ?? false;
 
-  // METHODS //
-
-  fetchStates() async {
-    print('fetching auth state...');
-    SharedPreferences prefs = await _prefs.future;
-    await prefs.reload();
-
-    final isSignIn = prefs.getBool(PrefsKey.IS_SIGN_IN.toString());
-    _isSignIn = isSignIn ?? false;
-
-    _hasData = true;
-    notifyListeners();
-  }
-
-  authStream() => _auth.onAuthStateChanged;
-
-  logout() async {
-    print('signing out...');
-    await _auth.signOut();
-  }
+  // PRIVATE METHODS //
 
   Future<dynamic> _handleDynamicLinks(
       PendingDynamicLinkData dynamicLink) async {
@@ -66,6 +45,8 @@ class AuthState extends ChangeNotifier {
     if (deepLink != null) {
       final isSignInWithEmailLink =
           await _auth.isSignInWithEmailLink(deepLink.toString());
+
+      print('deeplink is SignInWithEmailLink');
 
       if (isSignInWithEmailLink) {
         try {
@@ -115,6 +96,26 @@ class AuthState extends ChangeNotifier {
     );
   }
 
+  // METHODS //
+
+  Future<void> fetchStates() async {
+    print('fetching auth state...');
+    SharedPreferences prefs = await _prefs.future;
+    await prefs.reload();
+
+    _hasData = true;
+    notifyListeners();
+  }
+
+  Stream<FirebaseUser> authStream() => _auth.onAuthStateChanged;
+
+  Future<void> logout() async {
+    print('signing out...');
+    await _auth.signOut();
+  }
+
+  Future<bool> isSignedIn() async => await _auth.currentUser() != null;
+
   /// If return false: send email to sign in with email link failed
   Future<bool> sendSignInWithEmailLink(String email) async {
     SharedPreferences prefs = await _prefs.future;
@@ -129,6 +130,8 @@ class AuthState extends ChangeNotifier {
         androidPackageName: "com.codinghub.shuttler.mobile",
         iOSBundleID: "com.codinghub.shuttler.mobile",
       );
+
+      print('sign in link sent to $email');
 
       await prefs.setString(PrefsKey.EMAIL.toString(), email);
       return true;
