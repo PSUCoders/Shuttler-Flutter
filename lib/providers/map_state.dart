@@ -14,6 +14,7 @@ class MapState extends ChangeNotifier {
   StreamSubscription<List<Driver>> _driversSubscription;
   List<Driver> _drivers;
   LatLng _currentLocation;
+  int _currentDriver = 0;
 
   /// Must call cancelSubcriptions when finish using
   MapState() {
@@ -31,6 +32,9 @@ class MapState extends ChangeNotifier {
           if (newDriver.latLng.longitude - oldDriver.latLng.longitude == 0) {
             if (newDriver.latLng.latitude - oldDriver.latLng.latitude < 0) {
               newDriver.direction = 180;
+            } else if (newDriver.latLng.latitude - oldDriver.latLng.latitude ==
+                0) {
+              newDriver.direction = oldDriver.direction;
             } else {
               newDriver.direction = 0;
             }
@@ -72,7 +76,13 @@ class MapState extends ChangeNotifier {
 
   bool get hasOneDriver => _drivers.length == 1;
 
-  LatLng get driverLocation => _drivers != null ? _drivers[0].latLng : null;
+  LatLng get focusDriverLocation {
+    _currentDriver += 1;
+    if (_currentDriver == _drivers.length) {
+      _currentDriver = 0;
+    }
+    return _drivers != null ? _drivers[_currentDriver].latLng : null;
+  }
 
   List<Driver> get allDriversLocations => _drivers != null ? _drivers : null;
 
