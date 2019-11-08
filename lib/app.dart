@@ -34,18 +34,18 @@ class _ShuttlerState extends State<Shuttler> {
       home: StreamBuilder<FirebaseUser>(
         stream: authState.authStream(),
         builder: (context, snapshot) {
-          if (Platform.isAndroid) {
-            if (snapshot.data == null) {
-              return PreSignInScreen();
-            }
-
-            if (!snapshot.hasData) {
-              return Container(
-                color: Colors.white,
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-          }
+//          if (Platform.isAndroid) {
+//            if (snapshot.data == null) {
+//              return PreSignInScreen();
+//            }
+//
+//            if (!snapshot.hasData) {
+//              return Container(
+//                color: Colors.white,
+//                child: Center(child: CircularProgressIndicator()),
+//              );
+//            }
+//          }
           return HomeScreen();
         },
       ),

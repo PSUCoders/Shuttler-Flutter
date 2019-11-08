@@ -6,6 +6,7 @@ class Driver {
   String id;
   GeoPoint location;
   bool active;
+  double direction;
 
   Driver.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     this.id = snapshot.documentID;
