@@ -75,6 +75,7 @@ class _MapLayoutState extends State<MapLayout> {
           southwest: LatLng(44.675484, -73.510132),
         ),
       ),
+      minMaxZoomPreference: MinMaxZoomPreference(13, 17),
       mapType: MapType.normal,
       myLocationEnabled: true,
       myLocationButtonEnabled: false,

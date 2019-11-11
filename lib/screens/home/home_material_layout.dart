@@ -1,17 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 /// Home Screen Layout with Material Style for Android devices
 class HomeMaterialLayout extends StatefulWidget {
   final List<Widget> pages;
   final List<BottomNavigationBarItem> navBarItems;
-  final bool hasUnreadNotification;
 
   HomeMaterialLayout({
     this.pages,
     this.navBarItems,
-    this.hasUnreadNotification,
   });
 
   @override
