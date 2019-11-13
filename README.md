@@ -2,52 +2,36 @@
 
 Shuttler is a mobile application, Android and iOS, to help students track the shuttler at SUNY Plattsburgh Users can see the shuttle position in real time displayed on a map.
 
-## Getting Started (deprecated)
+## Getting Started
 
 #### 1. [Setup Flutter](https://flutter.io/setup/)
 
 #### 2. Clone the repo
 
 ```sh
-$ git clone https://github.com/PSUCoders/Shuttler-Flutter.git
-$ cd Shuttler-Flutter/
+$ git clone https://github.com/coding-hub-org/shuttler-flutter.git
+$ cd shuttler-flutter/
 ```
 
-#### 3. Setup the Firebase 
+#### 3. Setup the Firebase
 
-1. You'll need to create a new Firebase project. Follow the instructions at https://console.firebase.google.com.
-2. Once your Firebase instance is created, you need to enable email authentication.
+Contact project owner to get the Firebase config files for Android and iOS.
 
-* Go to the Firebase Console for your new instance.
-* Click "Authentication" in the left-hand menu.
-* Click the "Sign-in method" tab.
-* Click "Email/Password" and enable it.
+- Android: `google-services.json` - place the file in `.\android\app`
 
-3. Create a Realtime Database
-* Click "Database" in the left-hand menu.
-* Click the Realtime Database "Create Database" button.
-* Select "Start in test mode" and "Enable"
+- iOS: `GoogleService-Info.plist` - place the file in `.\ios\Runner`
 
-3. (skip if not running on Android)
+#### 4. Setup build config for Android
 
-* Create an app within your Firebase instance for Android, with package name com.yourcompany.news
-* Run the following command to get your SHA-1 key:
+- Create a file name `key.properties` within `.\android` directory with following content:
 
 ```
-keytool -exportcert -list -v \
--alias androiddebugkey -keystore ~/.android/debug.keystore
+storePassword=foo
+keyPassword=foo
+keyAlias=foo
+storeFile=foo
 ```
 
+- It is required to have a value for build the app (even for debug).
 
-## Dependencies
-
-* [Flutter](https://flutter.io/)
-* [Firebase Core](https://github.com/flutter/plugins/tree/master/packages/firebase_core)
-* [Firebase Auth](https://github.com/flutter/plugins/tree/master/packages/firebase_auth)
-* [Firebase Database](https://github.com/flutter/plugins/tree/master/packages/firebase_database)
-* [Firebase Messaging](https://github.com/flutter/plugins/tree/master/packages/firebase_messaging)
-* [Google_Maps_Flutter](https://github.com/flutter/plugins/tree/master/packages/google_maps_flutter)
-* [Location](https://github.com/Lyokone/flutterlocation)
-* [Permission_Handler](https://pub.dartlang.org/packages/permission_handler)
-* [Flutter_Bloc](https://github.com/felangel/bloc/)
-* [Flutter Shared Preferences](https://github.com/flutter/plugins/tree/master/packages/shared_preferences)
+- When ready for release build, contact the project owner to get correct values for release build.
