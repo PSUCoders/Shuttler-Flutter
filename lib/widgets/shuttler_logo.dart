@@ -12,12 +12,12 @@ class ShuttlerLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       elevation: 5,
-      borderRadius: BorderRadius.circular(180),
+      borderRadius: BorderRadius.circular(360),
       child: Container(
         width: size,
-        padding: EdgeInsets.all(size / 6),
+        padding: EdgeInsets.all(size / 4),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(180),
+          borderRadius: BorderRadius.circular(360),
           color: Colors.white,
         ),
         child: Container(
