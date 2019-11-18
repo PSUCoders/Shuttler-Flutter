@@ -6,12 +6,17 @@ class Driver {
   String id;
   GeoPoint location;
   bool active;
+  DateTime lastUpdate;
   double direction;
+
+  Driver({this.id, this.location, this.active, this.lastUpdate});
 
   Driver.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     this.id = snapshot.documentID;
     this.location = snapshot.data['location'];
     this.active = snapshot.data['active'];
+    Timestamp lastUpdate = snapshot.data['lastUpdate'];
+    this.lastUpdate = lastUpdate?.toDate();
   }
 
   // GETTERS //
@@ -20,13 +25,20 @@ class Driver {
 
   // METHODS //
 
+  bool operator ==(other) {
+    if (other is Driver && this.active != other.active ||
+        this.location != other.location) return false;
+
+    return true;
+  }
+
+  int get hashCode => this.id.hashCode;
+
   toJson() {
     return {
-      'location': GeoPoint(
-        this.location?.latitude,
-        this.location?.longitude,
-      ),
+      'location': this.location,
       'active': this.active,
+      'lastUpdate': Timestamp.fromDate(this.lastUpdate),
     };
   }
 }

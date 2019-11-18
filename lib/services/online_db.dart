@@ -29,7 +29,11 @@ class OnlineDB {
         .collection('drivers')
         .document(driverId)
         .snapshots()
-        .map((document) => Driver.fromDocumentSnapshot(document));
+        .map((document) {
+      if (!document.exists) return null;
+
+      return Driver.fromDocumentSnapshot(document);
+    });
   }
 
   Stream<List<Notification>> notificationsStream() {
@@ -39,5 +43,25 @@ class OnlineDB {
             .toList()
               // Sort newest to oldest
               ..sort((a, b) => b.date.compareTo(a.date)));
+  }
+
+  Future<Driver> getDriver(String driverId) async {
+    return await Firestore.instance
+        .collection('drivers')
+        .document(driverId)
+        .get()
+        .then((snapshot) {
+      if (!snapshot.exists) return null;
+
+      return Driver.fromDocumentSnapshot(snapshot);
+    });
+  }
+
+  Future<void> updateDriver(Driver driver) async {
+    await Firestore.instance.collection("drivers").document(driver.id).setData({
+      'lastUpdate': Timestamp.now(),
+      'location': driver.location,
+      'active': driver.active,
+    });
   }
 }

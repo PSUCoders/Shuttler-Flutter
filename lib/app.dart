@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
 import 'package:shuttler/providers/device_state.dart';
 import 'package:shuttler/providers/notification_state.dart';
+import 'package:shuttler/providers/tracking_state.dart';
+import 'package:shuttler/screens/home/home_driver_screen.dart';
 import 'package:shuttler/screens/sign_in/pre_sign_in_screen.dart';
 import 'package:shuttler/screens/splash_screen.dart';
 import 'package:shuttler/utilities/theme.dart';
@@ -18,6 +20,22 @@ class ShuttlerApp extends StatefulWidget {
 }
 
 class _ShuttlerAppState extends State<ShuttlerApp> {
+  Map<String, Widget Function(BuildContext)> routes;
+
+  @override
+  void initState() {
+    super.initState();
+    routes = {
+      '/': (context) => SplashScreen(),
+      '/home': (context) => HomeScreen(),
+      '/driver': (context) => ChangeNotifierProvider<TrackingState>(
+            builder: (context) => TrackingState(),
+            child: HomeDriverScreen(),
+          ),
+      '/login': (context) => PreSignInScreen(),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     print('App building...');
@@ -38,11 +56,7 @@ class _ShuttlerAppState extends State<ShuttlerApp> {
         debugShowCheckedModeBanner: false,
         title: 'Shuttler',
         theme: ShuttlerTheme.of(context),
-        routes: {
-          '/': (context) => SplashScreen(),
-          '/home': (context) => HomeScreen(),
-          '/login': (context) => PreSignInScreen(),
-        },
+        routes: this.routes,
         initialRoute: '/',
       ),
     );

@@ -69,7 +69,10 @@ class MapState extends ChangeNotifier {
   bool get hasData => _drivers != null ? true : false;
 
   // Get all driver objects
-  List<Driver> get drivers => _drivers;
+  List<Driver> get drivers => _drivers ?? [];
+
+  List<Driver> get activeDrivers =>
+      _drivers.where((driver) => driver.active).toList() ?? [];
 
   // Get location of the device
   LatLng get currentLocation => _currentLocation;
@@ -78,13 +81,17 @@ class MapState extends ChangeNotifier {
 
   LatLng get focusDriverLocation {
     _currentDriver += 1;
-    if (_currentDriver == _drivers.length) {
+    if (_currentDriver == activeDrivers.length) {
       _currentDriver = 0;
     }
-    return _drivers != null ? _drivers[_currentDriver].latLng : null;
+    return activeDrivers != null ? activeDrivers[_currentDriver].latLng : null;
   }
 
   List<Driver> get allDriversLocations => _drivers != null ? _drivers : null;
+
+  bool get hasActiveDriver {
+    return drivers.where((driver) => driver.active).toList().length > 0;
+  }
 
   /// TODO make this dynamic
   String get nextStop => "Walmart";
@@ -107,10 +114,6 @@ class MapState extends ChangeNotifier {
       }
       return null;
     }
-  }
-
-  getDriverStream(String driverId) {
-    var driver = OnlineDB().driverStream(driverId);
   }
 
   Future<void> cancelSubcriptions() async {

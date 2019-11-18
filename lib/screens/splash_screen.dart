@@ -25,6 +25,10 @@ class _SplashScreenState extends State<SplashScreen> {
     final authState = Provider.of<AuthState>(context, listen: false);
 
     if (await authState.isSignedIn()) {
+      if (await authState.isSignedInAsDriver()) {
+        Navigator.pushNamedAndRemoveUntil(context, '/driver', (route) => false);
+        return;
+      }
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     } else {
       // Need this because iOS hasn't had deep link setup yet

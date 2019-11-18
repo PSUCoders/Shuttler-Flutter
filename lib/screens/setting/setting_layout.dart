@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shuttler/utilities/contants.dart';
 import 'package:shuttler/utilities/theme.dart';
 
@@ -28,7 +27,7 @@ class SettingLayout extends StatelessWidget {
     return ListTile(
       title: Text("Notification"),
       subtitle: Text("Enable option to get notification"),
-      trailing: PlatformSwitch(
+      trailing: Switch.adaptive(
         onChanged: this.onNotificationChange,
         value: this.notificationOn,
         activeColor: ShuttlerTheme.of(context).accentColor,

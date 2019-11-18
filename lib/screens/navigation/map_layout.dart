@@ -16,6 +16,7 @@ class MapLayout extends StatefulWidget {
   final List<Widget> mapActions;
   final List<Driver> driverLocations;
   final bool showNextStop;
+  final String nextStop;
 
   MapLayout({
     this.onMyLocationPress,
@@ -25,6 +26,7 @@ class MapLayout extends StatefulWidget {
     this.onMapCreated,
     this.driverLocations,
     this.showNextStop = false,
+    this.nextStop,
   });
 
   @override
@@ -36,16 +38,13 @@ class _MapLayoutState extends State<MapLayout> {
   BitmapDescriptor _shuttleIcon;
   bool _hasShuttleIcon = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _getShuttleIcon();
-  }
+  _getShuttleIcon(context) async {
+    final ImageConfiguration imageConfiguration =
+        createLocalImageConfiguration(context, size: Size(105, 156));
 
-  _getShuttleIcon() async {
     final shuttleIcon = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(size: new Size(200, 200),devicePixelRatio: 3.0),
-      "assets/icons/ic_shuttle.png",
+      imageConfiguration,
+      "assets/icons/3.0x/ic_shuttle.png",
     );
     setState(() {
       _shuttleIcon = shuttleIcon;
@@ -61,8 +60,9 @@ class _MapLayoutState extends State<MapLayout> {
   Widget _buildGoogleMap() {
     return GoogleMap(
       markers: widget.driverLocations
+          .where((driver) => driver.active)
+          .toList()
           .map((driver) => Marker(
-                // TODO fix super small icon
                 icon: _hasShuttleIcon
                     ? _shuttleIcon
                     : BitmapDescriptor.defaultMarker,
@@ -77,6 +77,7 @@ class _MapLayoutState extends State<MapLayout> {
           southwest: LatLng(44.675484, -73.510132),
         ),
       ),
+      minMaxZoomPreference: MinMaxZoomPreference(14, 18),
       mapType: MapType.normal,
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
@@ -136,7 +137,7 @@ class _MapLayoutState extends State<MapLayout> {
             ),
             SizedBox(height: 10),
             Text(
-              "Walmart",
+              this.widget.nextStop ?? "",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black54,
@@ -150,6 +151,8 @@ class _MapLayoutState extends State<MapLayout> {
 
   @override
   Widget build(BuildContext context) {
+    _getShuttleIcon(context);
+
     return SafeArea(
       child: Stack(
         children: <Widget>[

@@ -3,7 +3,12 @@ import 'package:regexed_validator/regexed_validator.dart';
 class Validator {
   static bool isPassword(String password) {
     // return pw.length >= 6 && pw.length <= 30;
-    return validator.password(password);
+    if (password.length < 6)
+      return false;
+    else if (password.length > 30) return false;
+
+    return true;
+    // return validator.password(password);
   }
 
   static bool isEmail(String email) {
@@ -24,6 +29,12 @@ class Validator {
   static bool isPlattsburghEmail(String email) {
     if (isEmail(email) && email.toLowerCase().endsWith("@plattsburgh.edu"))
       return true;
+
+    return false;
+  }
+
+  static bool isDriverEmail(String email) {
+    if (isEmail(email)) return true;
 
     return false;
   }

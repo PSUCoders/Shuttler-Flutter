@@ -97,6 +97,8 @@ PODS:
     - GoogleUtilities/Environment (~> 6.0)
     - GoogleUtilities/UserDefaults (~> 6.0)
   - Flutter (1.0.0)
+  - flutter_background_location (0.0.1):
+    - Flutter
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps
@@ -153,6 +155,8 @@ PODS:
   - leveldb-library (1.22)
   - location (0.0.1):
     - Flutter
+  - location_permissions (2.0.3):
+    - Flutter
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
@@ -176,8 +180,10 @@ DEPENDENCIES:
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
   - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
+  - flutter_background_location (from `.symlinks/plugins/flutter_background_location/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - location (from `.symlinks/plugins/location/ios`)
+  - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
@@ -222,10 +228,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_dynamic_links/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
+  flutter_background_location:
+    :path: ".symlinks/plugins/flutter_background_location/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   location:
     :path: ".symlinks/plugins/location/ios"
+  location_permissions:
+    :path: ".symlinks/plugins/location_permissions/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   url_launcher:
@@ -253,6 +263,7 @@ SPEC CHECKSUMS:
   FirebaseFirestore: 5a9e9a14305336e8d1a4f915a45ecf0f5d6dcaec
   FirebaseInstanceID: 550df9be1f99f751d8fcde3ac342a1e21a0e6c42
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_background_location: b34292a91db78b18e7d7b673ffe7fbe888811182
   google_maps_flutter: 78a52114c898b42ea647919679a4c58b70abe876
   GoogleAppMeasurement: 434cc7be25e71dc04b8d0e3079125127b330e84a
   GoogleDataTransport: 166f9b9f82cbf60a204e8fe2daa9db3e3ec1fb15
@@ -264,6 +275,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
+  location_permissions: 195ff2a1182fa9029ef3f2653156961ee5a1e40b
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   Protobuf: a4dc852ad69c027ca2166ed287b856697814375b
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01

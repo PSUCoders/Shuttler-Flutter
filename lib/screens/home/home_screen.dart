@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:shuttler/providers/notification_state.dart';
 import 'package:shuttler/screens/home/home_cupertino_layout.dart';
 import 'package:shuttler/screens/home/home_material_layout.dart';
-
 import 'package:shuttler/screens/navigation/map_screen.dart';
 import 'package:shuttler/screens/notification/notification_screen.dart';
 import 'package:shuttler/screens/setting/setting_screen.dart';
@@ -17,7 +16,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('home screen build called');
     final notificationState = Provider.of<NotificationState>(context);
 
     final List<BottomNavigationBarItem> navBarItems = <BottomNavigationBarItem>[
