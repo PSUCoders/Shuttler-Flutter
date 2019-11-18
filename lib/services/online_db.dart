@@ -20,7 +20,8 @@ class OnlineDB {
     return Firestore.instance.collection('drivers').snapshots().map(
         (querySnapshot) => querySnapshot.documents
             .map((document) => Driver.fromDocumentSnapshot(document))
-            .toList());
+            .toList()
+              ..sort((a, b) => a.id.compareTo(b.id)));
   }
 
   Stream<Driver> driverStream(String driverId) {

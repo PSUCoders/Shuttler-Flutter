@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:core';
-import 'package:flutter/services.dart';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:shuttler/models/driver.dart';
@@ -13,11 +14,43 @@ class MapState extends ChangeNotifier {
   StreamSubscription<List<Driver>> _driversSubscription;
   List<Driver> _drivers;
   LatLng _currentLocation;
+  int _currentDriver = 0;
 
   /// Must call cancelSubcriptions when finish using
   MapState() {
     // Subscribe to driver stream
     _driversSubscription = OnlineDB().driversStream().listen((drivers) {
+      print('driver');
+      print(drivers);
+      drivers.forEach((newDriver) {
+        Driver oldDriver;
+        oldDriver = _drivers == null
+            ? null
+            : _drivers.firstWhere((driver) => driver.id == newDriver.id,
+                orElse: () => null);
+        if (oldDriver != null) {
+          if (newDriver.latLng.longitude - oldDriver.latLng.longitude == 0) {
+            if (newDriver.latLng.latitude - oldDriver.latLng.latitude < 0) {
+              newDriver.direction = 180;
+            } else if (newDriver.latLng.latitude - oldDriver.latLng.latitude ==
+                0) {
+              newDriver.direction = oldDriver.direction;
+            } else {
+              newDriver.direction = 0;
+            }
+          } else {
+            newDriver.direction = atan((newDriver.latLng.longitude -
+                        oldDriver.latLng.longitude) /
+                    (newDriver.latLng.latitude - oldDriver.latLng.latitude)) /
+                pi *
+                180;
+          }
+        } else {
+          newDriver.direction = 90;
+        }
+        print(newDriver.direction);
+        print(newDriver.id);
+      });
       _drivers = drivers;
       print('shuttles location updated');
       notifyListeners();
@@ -33,7 +66,7 @@ class MapState extends ChangeNotifier {
 
   // GETTERS //
 
-  bool get hasData => drivers != null ? true : false;
+  bool get hasData => _drivers != null ? true : false;
 
   // Get all driver objects
   List<Driver> get drivers => _drivers;
@@ -43,7 +76,15 @@ class MapState extends ChangeNotifier {
 
   bool get hasOneDriver => _drivers.length == 1;
 
-  LatLng get driverLocation => _drivers != null ? _drivers[0].latLng : null;
+  LatLng get focusDriverLocation {
+    _currentDriver += 1;
+    if (_currentDriver == _drivers.length) {
+      _currentDriver = 0;
+    }
+    return _drivers != null ? _drivers[_currentDriver].latLng : null;
+  }
+
+  List<Driver> get allDriversLocations => _drivers != null ? _drivers : null;
 
   /// TODO make this dynamic
   String get nextStop => "Walmart";
@@ -68,10 +109,12 @@ class MapState extends ChangeNotifier {
     }
   }
 
-  getDriverStream(String driverId) => OnlineDB().driverStream(driverId);
+  getDriverStream(String driverId) {
+    var driver = OnlineDB().driverStream(driverId);
+  }
 
   Future<void> cancelSubcriptions() async {
-    print('cancelling all subscriptions in map state...');
+    print('cancelling all subscriptions...');
     await Future.wait([
       _driversSubscription.cancel(),
     ]);
