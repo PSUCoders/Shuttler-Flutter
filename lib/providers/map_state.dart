@@ -69,7 +69,7 @@ class MapState extends ChangeNotifier {
   bool get hasData => _drivers != null ? true : false;
 
   // Get all driver objects
-  List<Driver> get drivers => _drivers;
+  List<Driver> get drivers => _drivers ?? [];
 
   // Get location of the device
   LatLng get currentLocation => _currentLocation;
@@ -85,6 +85,12 @@ class MapState extends ChangeNotifier {
   }
 
   List<Driver> get allDriversLocations => _drivers != null ? _drivers : null;
+
+  bool get hasActiveDriver {
+    print('active list ${drivers.where((driver) => driver.active).toList()}');
+
+    return drivers.where((driver) => driver.active).toList().length > 0;
+  }
 
   /// TODO make this dynamic
   String get nextStop => "Walmart";

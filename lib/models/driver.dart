@@ -16,7 +16,7 @@ class Driver {
     this.location = snapshot.data['location'];
     this.active = snapshot.data['active'];
     Timestamp lastUpdate = snapshot.data['lastUpdate'];
-    this.lastUpdate = lastUpdate.toDate();
+    this.lastUpdate = lastUpdate?.toDate();
   }
 
   // GETTERS //

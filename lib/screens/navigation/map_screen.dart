@@ -116,11 +116,13 @@ class _MapScreenState extends State<MapScreen>
     if (driverLocations != null) {
       return Scaffold(
         appBar: AppBar(title: Text('Map')),
-        body: MapLayout(
-          onMapCreated: _handleMapCreated,
-          mapActions: _mapActions,
-          driverLocations: driverLocations,
-        ),
+        body: mapState.hasActiveDriver
+            ? MapLayout(
+                onMapCreated: _handleMapCreated,
+                mapActions: _mapActions,
+                driverLocations: driverLocations,
+              )
+            : Center(child: Text("No shuttle is currently being tracked")),
       );
     } else {
       return Center(

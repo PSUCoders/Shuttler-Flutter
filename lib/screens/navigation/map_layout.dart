@@ -61,6 +61,8 @@ class _MapLayoutState extends State<MapLayout> {
   Widget _buildGoogleMap() {
     return GoogleMap(
       markers: widget.driverLocations
+          .where((driver) => driver.active)
+          .toList()
           .map((driver) => Marker(
                 // TODO fix super small icon
                 icon: _hasShuttleIcon

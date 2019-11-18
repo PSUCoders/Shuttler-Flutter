@@ -97,13 +97,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Widget _buildNoNotification() {
-    return Center(
-      child: _controller.value.initialized
-          ? AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
-            )
-          : Container(),
+    return Stack(
+      children: <Widget>[
+        Center(
+          child: _controller.value.initialized
+              ? AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                )
+              : Container(),
+        ),
+        Positioned(
+          bottom: 50,
+          right: 10,
+          left: 10,
+          child: Text(
+            "No notification",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+      ],
     );
   }
 
@@ -111,14 +125,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     print('building notification screen...');
     final notificationState = Provider.of<NotificationState>(context);
-    final notifications = notificationState.notifications ?? [];
+    final notifications = notificationState.notifications;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Nofitications'),
-      ),
+      appBar: AppBar(title: Text('Nofitications')),
       backgroundColor: Color.fromRGBO(255, 254, 255, 1),
       body: Container(
+        width: double.maxFinite,
+        height: double.maxFinite,
         child: notifications.isEmpty
             ? _buildNoNotification()
             : _buildNotificationList(notifications),
