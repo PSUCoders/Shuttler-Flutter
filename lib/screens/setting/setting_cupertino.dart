@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shuttler/utilities/contants.dart';
 import 'package:shuttler/utilities/theme.dart';
 
@@ -62,7 +61,7 @@ class SettingCupertinoLayout extends StatelessWidget {
       child: ListTile(
         title: Text("Notification"),
         subtitle: Text("Enable option to get notification"),
-        trailing: PlatformSwitch(
+        trailing: CupertinoSwitch(
           onChanged: this.onNotificationChange,
           value: this.notificationOn,
         ),
