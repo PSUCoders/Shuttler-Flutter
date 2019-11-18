@@ -87,8 +87,6 @@ class MapState extends ChangeNotifier {
   List<Driver> get allDriversLocations => _drivers != null ? _drivers : null;
 
   bool get hasActiveDriver {
-    print('active list ${drivers.where((driver) => driver.active).toList()}');
-
     return drivers.where((driver) => driver.active).toList().length > 0;
   }
 

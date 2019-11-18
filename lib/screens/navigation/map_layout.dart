@@ -44,7 +44,7 @@ class _MapLayoutState extends State<MapLayout> {
 
   _getShuttleIcon() async {
     final shuttleIcon = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
+      ImageConfiguration(size: new Size(200, 200), devicePixelRatio: 3.0),
       "assets/icons/ic_shuttle.png",
     );
     setState(() {
