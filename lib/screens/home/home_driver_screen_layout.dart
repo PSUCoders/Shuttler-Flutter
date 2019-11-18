@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomeDriverLayout extends StatelessWidget {
   HomeDriverLayout({
@@ -16,6 +17,27 @@ class HomeDriverLayout extends StatelessWidget {
   final String driverMessage;
   final VoidCallback onOpenSettings;
 
+  static final CameraPosition _kACC = CameraPosition(
+    target: LatLng(44.692939, -73.466752),
+    zoom: 14.151926040649414,
+  );
+
+  Widget _buildGoogleMap() {
+    return GoogleMap(
+      cameraTargetBounds: CameraTargetBounds(
+        LatLngBounds(
+          northeast: LatLng(44.720872, -73.431070),
+          southwest: LatLng(44.675484, -73.510132),
+        ),
+      ),
+      minMaxZoomPreference: MinMaxZoomPreference(14, 18),
+      mapType: MapType.normal,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: true,
+      initialCameraPosition: HomeDriverLayout._kACC,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,41 +49,51 @@ class HomeDriverLayout extends StatelessWidget {
               value: this.isTracking,
               title: Text("Tracking"),
             ),
+            Divider(thickness: 1, height: 1),
             Expanded(
               child: Container(
-                // height: MediaQuery.of(context).size.height * 0.8,
-                padding: EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Center(
+                  child: Text(
+                    this.driverMessage,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                color: Colors.black,
+                width: MediaQuery.of(context).size.width,
+                child: Stack(
                   children: <Widget>[
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          this.driverMessage,
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 20,
+                    _buildGoogleMap(),
+                    if (!this.isTracking) ...[
+                      Container(color: Colors.black26),
+                      Center(
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.red[300],
+                            borderRadius: BorderRadius.circular(360),
+                          ),
+                          child: Text(
+                            'Tracking off',
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
-                    ),
+                    ]
                   ],
                 ),
               ),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: 20),
-            //   child: FlatButton(
-            //     onPressed: this.onOpenSettings,
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(360),
-            //     ),
-            //     color: Theme.of(context).primaryColor,
-            //     child: Text("Open Setting"),
-            //   ),
-            // ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 20),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: FlatButton(
                 onPressed: this.onLogoutTap,
                 shape: RoundedRectangleBorder(
