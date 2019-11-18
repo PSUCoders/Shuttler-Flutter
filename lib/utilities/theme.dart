@@ -11,6 +11,11 @@ class ShuttlerTheme {
       // backgroundColor: Colors.white,
       primaryColor: Colors.pink,
       accentColor: Colors.pink,
+      accentTextTheme: TextTheme(
+        button: TextStyle(
+          color: Colors.white,
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: TextStyle(fontSize: 16, color: Colors.pink),
         hintStyle: TextStyle(fontSize: 16, color: Colors.pink),
@@ -18,17 +23,25 @@ class ShuttlerTheme {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: Colors.pink,
       ),
+
+      dialogTheme: Theme.of(context).dialogTheme.copyWith(),
+      buttonTheme: Theme.of(context).buttonTheme.copyWith(
+            textTheme: ButtonTextTheme.primary,
+            buttonColor: Colors.green,
+            focusColor: Colors.purple,
+          ),
+      buttonColor: Colors.pink,
       textTheme: Theme.of(context).textTheme.copyWith(
+            button: TextStyle(color: Colors.white),
             headline: TextStyle(
               color: Colors.black87,
               fontSize: 18,
               fontWeight: FontWeight.w500,
             ),
-            // Used for displaying dates
-            display1: TextStyle(
-              color: Colors.black54,
-              fontSize: 12,
-            ),
+            // Showing dates
+            display1: TextStyle(color: Colors.black54, fontSize: 12),
+            // Error message
+            display2: TextStyle(color: Colors.red, fontSize: 16),
           ),
       cupertinoOverrideTheme: CupertinoThemeData(
         barBackgroundColor: Colors.white12,

@@ -97,6 +97,8 @@ PODS:
     - GoogleUtilities/Environment (~> 6.0)
     - GoogleUtilities/UserDefaults (~> 6.0)
   - Flutter (1.0.0)
+  - flutter_background_location (0.0.1):
+    - Flutter
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps
@@ -176,6 +178,7 @@ DEPENDENCIES:
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
   - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
+  - flutter_background_location (from `.symlinks/plugins/flutter_background_location/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - location (from `.symlinks/plugins/location/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -222,6 +225,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_dynamic_links/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
+  flutter_background_location:
+    :path: ".symlinks/plugins/flutter_background_location/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   location:
@@ -253,6 +258,7 @@ SPEC CHECKSUMS:
   FirebaseFirestore: 5a9e9a14305336e8d1a4f915a45ecf0f5d6dcaec
   FirebaseInstanceID: 550df9be1f99f751d8fcde3ac342a1e21a0e6c42
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_background_location: b34292a91db78b18e7d7b673ffe7fbe888811182
   google_maps_flutter: 78a52114c898b42ea647919679a4c58b70abe876
   GoogleAppMeasurement: 434cc7be25e71dc04b8d0e3079125127b330e84a
   GoogleDataTransport: 166f9b9f82cbf60a204e8fe2daa9db3e3ec1fb15

@@ -16,6 +16,7 @@ final String _signInWithEmailLinkUrl = "https://shuttler.page.link/verifyEmail";
 class AuthState extends ChangeNotifier {
   bool _hasData;
   bool _emailSent;
+  bool _isDriver;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Completer<SharedPreferences> _prefs = Completer();
@@ -32,6 +33,8 @@ class AuthState extends ChangeNotifier {
   bool get hasData => _hasData ?? false;
 
   bool get emailSent => _emailSent ?? false;
+
+  bool get isDriver => _isDriver ?? false;
 
   // PRIVATE METHODS //
 
@@ -116,6 +119,11 @@ class AuthState extends ChangeNotifier {
 
   Future<bool> isSignedIn() async => await _auth.currentUser() != null;
 
+  Future<bool> isSignedInAsDriver() async {
+    final user = await _auth.currentUser();
+    return user != null && !user.isAnonymous;
+  }
+
   /// If return false: send email to sign in with email link failed
   Future<bool> sendSignInWithEmailLink(String email) async {
     SharedPreferences prefs = await _prefs.future;
@@ -142,5 +150,15 @@ class AuthState extends ChangeNotifier {
 
   Future<AuthResult> signInWithEmailLink(String email, String link) async {
     return _auth.signInWithEmailAndLink(email: email, link: link);
+  }
+
+  Future<AuthResult> signInAsDriver(String email, String password) async {
+    final result = await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
+
+    _isDriver = true;
+    notifyListeners();
+
+    return result;
   }
 }

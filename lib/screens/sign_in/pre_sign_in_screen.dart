@@ -1,17 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
+import 'package:shuttler/screens/sign_in/sign_in_driver_screen.dart';
 import 'package:shuttler/screens/sign_in/sign_in_screen.dart';
 import 'package:shuttler/widgets/shuttler_logo.dart';
-
-Future<bool> checkIfAuthenticated() async {
-  await Future.delayed(Duration(
-      seconds: 5)); // could be a long running task, like a fetch from keychain
-  return true;
-}
 
 class PreSignInScreen extends StatefulWidget {
   const PreSignInScreen({Key key}) : super(key: key);
@@ -30,18 +26,35 @@ class _PreSignInScreenState extends State<PreSignInScreen> {
     // Listen to auth status
     _authSubscription = Provider.of<AuthState>(context, listen: false)
         .authStream()
-        .listen((user) {
-      if (user != null) {
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/home', ModalRoute.withName('/home'));
-      }
-    });
+        .listen(_handleAuthChange);
   }
 
   @override
   void dispose() {
     _authSubscription.cancel();
     super.dispose();
+  }
+
+  void _handleAuthChange(FirebaseUser user) {
+    if (user != null && user.isAnonymous) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/home', ModalRoute.withName('/home'));
+    }
+  }
+
+  void _handleGetStartedTap() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignInScreen()),
+    );
+  }
+
+  void _handleDriverTap() {
+    // TODO
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignInDriverScreen()),
+    );
   }
 
   @override
@@ -52,21 +65,32 @@ class _PreSignInScreenState extends State<PreSignInScreen> {
         children: <Widget>[
           Expanded(
             flex: 3,
-            child: Container(
-              width: double.maxFinite,
-              color: Colors.pink,
-              child: Center(
-                child: ShuttlerLogo(),
-              ),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  width: double.maxFinite,
+                  color: Colors.pink,
+                  child: Center(
+                    child: ShuttlerLogo(),
+                  ),
+                ),
+                Positioned(
+                  right: 20,
+                  top: 40,
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(45),
+                    ),
+                    color: Colors.grey[800],
+                    onPressed: _handleDriverTap,
+                    child: Text('I am a driver'),
+                  ),
+                )
+              ],
             ),
           ),
           GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SignInScreen()),
-              );
-            },
+            onTap: _handleGetStartedTap,
             child: Container(
               color: Colors.white,
               width: double.maxFinite,
