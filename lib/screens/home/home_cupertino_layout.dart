@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 /// Home Screen Layout with Cupertino Style for iOS devices
 class HomeCupertinoLayout extends StatefulWidget {

@@ -108,7 +108,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               : Container(),
         ),
         Positioned(
-          bottom: 50,
+          bottom: MediaQuery.of(context).size.height / 5,
           right: 10,
           left: 10,
           child: Text(

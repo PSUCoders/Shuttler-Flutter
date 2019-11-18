@@ -71,14 +71,12 @@ class _MapScreenState extends State<MapScreen>
     final GoogleMapController controller = await _controller.future;
     final location = await Provider.of<MapState>(context).getCurrentLocation();
 
+    print('location $location');
     if (location != null) {
-      print('location $location');
       controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: location,
-        zoom: 14.151926040649414,
+        zoom: 14,
       )));
-    } else {
-      print('location is null');
     }
   }
 

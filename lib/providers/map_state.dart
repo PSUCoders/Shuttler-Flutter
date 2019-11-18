@@ -71,6 +71,9 @@ class MapState extends ChangeNotifier {
   // Get all driver objects
   List<Driver> get drivers => _drivers ?? [];
 
+  List<Driver> get activeDrivers =>
+      _drivers.where((driver) => driver.active).toList() ?? [];
+
   // Get location of the device
   LatLng get currentLocation => _currentLocation;
 
@@ -78,10 +81,10 @@ class MapState extends ChangeNotifier {
 
   LatLng get focusDriverLocation {
     _currentDriver += 1;
-    if (_currentDriver == _drivers.length) {
+    if (_currentDriver == activeDrivers.length) {
       _currentDriver = 0;
     }
-    return _drivers != null ? _drivers[_currentDriver].latLng : null;
+    return activeDrivers != null ? activeDrivers[_currentDriver].latLng : null;
   }
 
   List<Driver> get allDriversLocations => _drivers != null ? _drivers : null;
