@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
 import 'package:shuttler/providers/tracking_state.dart';
@@ -16,6 +17,18 @@ class HomeDriverScreen extends StatefulWidget {
 }
 
 class _HomeDriverScreenState extends State<HomeDriverScreen> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+    super.dispose();
+  }
+
   void _handleLogoutTap() async {
     await Provider.of<AuthState>(context).logout();
 
@@ -63,11 +76,6 @@ class _HomeDriverScreenState extends State<HomeDriverScreen> {
   @override
   Widget build(BuildContext context) {
     TrackingState state = Provider.of<TrackingState>(context);
-
-    if (state.isPermissionDenied) {
-      //
-      _openSettings();
-    }
 
     return HomeDriverLayout(
       onLogoutTap: _handleLogoutTap,

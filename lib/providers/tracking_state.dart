@@ -12,9 +12,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shuttler/models/driver.dart';
 import 'package:shuttler/services/online_db.dart';
 
-Duration _locationUpdateInterval = Duration(seconds: 5);
+double _filterDistance = 50.0;
+int _updateInterval = Duration(seconds: 5).inMilliseconds;
 
-/// Store all settings to device memory
+/// Tracking shuttle business logic
 class TrackingState extends ChangeNotifier {
   Completer<SharedPreferences> _prefs = Completer();
   Location _location = Location();
@@ -23,9 +24,7 @@ class TrackingState extends ChangeNotifier {
   Driver _driver;
   StreamSubscription<Driver> _driverSubscription;
   StreamSubscription<LocationData> _locationSubcription;
-  Timer _timer;
   bool _permissionDenied;
-  DateTime _lastTime = DateTime.now();
 
   TrackingState() {
     // Get SharedPreferences instance
@@ -50,23 +49,16 @@ class TrackingState extends ChangeNotifier {
 
   bool get isPermissionDenied => _permissionDenied ?? false;
 
-  Driver get driver => _driver;
-
   // PRIVATE METHODS //
 
   void _locationChangeHandler(LocationData currentLocation) async {
     print('_locationChangeHandler fired');
-    print('difference ${DateTime.now().difference(_lastTime).inSeconds}');
 
-    print(await LocationPermissions().checkServiceStatus());
-
-    if (DateTime.now().difference(_lastTime).inSeconds <
-        _locationUpdateInterval.inSeconds) return;
+    print('heading ${currentLocation.heading.toInt()}');
+    print('accuracy ${currentLocation.accuracy.toInt()}');
 
     if (isTracking) {
-      _lastTime = DateTime.now();
-
-      print('currentLocation $currentLocation');
+      print('currentLocation not null ${currentLocation != null}');
 
       if (currentLocation != null) {
         final newLocation = GeoPoint(
@@ -74,32 +66,13 @@ class TrackingState extends ChangeNotifier {
           currentLocation.longitude,
         );
 
-        print('same location ${newLocation == _driver.location}');
-
-        // If there is no changes then stop updating
-        // TODO upgrade to check minor changes rather than no changes
-        if (newLocation == _driver.location) return;
-
         _driver.location = newLocation;
 
         await OnlineDB.instance.updateDriver(_driver);
 
         print('location updated');
-        _lastTime = DateTime.now();
       }
     }
-  }
-
-  /// Start periodic timer that fires _handleTimer every _locationUpdateInterval
-  void _startTimer() {
-    print('starting timer...');
-    _timer = Timer.periodic(
-        _locationUpdateInterval, (timer) => _lastTime = DateTime.now());
-  }
-
-  void _cancelTimer() {
-    print('canceling timer...');
-    _timer?.cancel();
   }
 
   // PUBLIC METHODS //
@@ -114,12 +87,27 @@ class TrackingState extends ChangeNotifier {
       return;
     }
 
-    _driver = await OnlineDB.instance.getDriver(user.uid) ??
-        Driver(active: false, id: user.uid);
+    _driver = await OnlineDB.instance.getDriver(user.uid);
 
+    // First time this driver login and turn on tracking
+    if (_driver == null) {
+      final firstLocation = await _location.getLocation();
+
+      _driver = Driver(
+        active: false,
+        id: user.uid,
+        location: GeoPoint(
+          firstLocation.latitude,
+          firstLocation.longitude,
+        ),
+      );
+    }
+
+    await _location.changeSettings(
+      distanceFilter: _filterDistance,
+      interval: _updateInterval,
+    );
     _location.onLocationChanged().listen(_locationChangeHandler);
-
-    if (_driver.active) _startTimer();
 
     notifyListeners();
   }
@@ -128,36 +116,33 @@ class TrackingState extends ChangeNotifier {
     print('switching tracking to ${!isTracking}...');
 
     if (isTracking) {
-      _cancelTimer();
+      await OnlineDB.instance
+          .updateDriver(_driver.copyWith(active: !isTracking));
+      _driver.active = !isTracking;
       FlutterBackgroundLocation.stopLocationService();
     } else {
       final status = await LocationPermissions().checkPermissionStatus();
 
       if (status == PermissionStatus.granted) {
-        _startTimer();
+        await OnlineDB.instance
+            .updateDriver(_driver.copyWith(active: !isTracking));
+        _driver.active = !isTracking;
         FlutterBackgroundLocation.startLocationService();
       } else if (status == PermissionStatus.denied) {
         _permissionDenied = true;
-        notifyListeners();
-        return;
       } else {
         final newStatus = await LocationPermissions().requestPermissions();
         if (newStatus != PermissionStatus.granted) {
           //
           print('user did not allow location');
-          return;
         }
       }
     }
-
-    _driver.active = !isTracking;
-    await OnlineDB.instance.updateDriver(_driver);
     notifyListeners();
   }
 
   void cancelServices() {
     _driverSubscription?.cancel();
     _locationSubcription?.cancel();
-    _cancelTimer();
   }
 }

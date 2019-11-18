@@ -23,6 +23,10 @@ class Driver {
 
   LatLng get latLng => LatLng(this.location.latitude, this.location.longitude);
 
+  double get latitude => this.location?.latitude;
+
+  double get longitude => this.location?.longitude;
+
   // METHODS //
 
   bool operator ==(other) {
@@ -34,7 +38,21 @@ class Driver {
 
   int get hashCode => this.id.hashCode;
 
-  toJson() {
+  Driver copyWith({
+    String id,
+    bool active,
+    DateTime lastUpdate,
+    GeoPoint location,
+  }) {
+    return Driver(
+      active: active ?? this.active,
+      id: id ?? this.id,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
+      location: location ?? this.location,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'location': this.location,
       'active': this.active,
