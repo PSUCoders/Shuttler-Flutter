@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttler/models/driver.dart';
 
 typedef FutureVoidCallback = Future<void> Function();
 
@@ -13,7 +14,7 @@ class MapLayout extends StatefulWidget {
   final Function(GoogleMapController) onMapCreated;
   final Function(LatLng) onMapTap;
   final List<Widget> mapActions;
-  final List<LatLng> driverLocations;
+  final List<Driver> driverLocations;
   final bool showNextStop;
 
   MapLayout({
@@ -60,13 +61,14 @@ class _MapLayoutState extends State<MapLayout> {
   Widget _buildGoogleMap() {
     return GoogleMap(
       markers: widget.driverLocations
-          .map((loc) => Marker(
+          .map((driver) => Marker(
                 // TODO fix super small icon
                 icon: _hasShuttleIcon
                     ? _shuttleIcon
                     : BitmapDescriptor.defaultMarker,
-                markerId: MarkerId(this.hashCode.toString()),
-                position: loc,
+                markerId: MarkerId(driver.id),
+                position: driver.latLng,
+                rotation: driver.direction,
               ))
           .toSet(),
       cameraTargetBounds: CameraTargetBounds(

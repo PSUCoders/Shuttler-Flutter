@@ -7,6 +7,7 @@ class Driver {
   GeoPoint location;
   bool active;
   DateTime lastUpdate;
+  double direction;
 
   Driver({this.id, this.location, this.active, this.lastUpdate});
 

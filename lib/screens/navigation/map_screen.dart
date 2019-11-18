@@ -58,7 +58,7 @@ class _MapScreenState extends State<MapScreen>
       await controller
           .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: latLng,
-        zoom: 14.151926040649414,
+        zoom: 15,
       )));
     } else {
       print('latLng is null');
@@ -97,7 +97,7 @@ class _MapScreenState extends State<MapScreen>
     // List of buttons on the map
     List<Widget> _mapActions = [
       CircleButton(
-        onPressed: () => _goToLocation(mapState.driverLocation),
+        onPressed: () => _goToLocation(mapState.focusDriverLocation),
         icon: Icons.directions_bus,
       ),
       CircleButton(
@@ -111,26 +111,21 @@ class _MapScreenState extends State<MapScreen>
     // Show loading when data is not ready
     if (!mapState.hasData) return Center(child: CircularProgressIndicator());
 
-    return Scaffold(
-      appBar: AppBar(title: Text('Map')),
-      body: StreamBuilder<Driver>(
-        stream: mapState.getDriverStream(mapState.drivers.first.id),
-        builder: (context, driver) {
-          if (!driver.hasData) return Container(color: Colors.white);
+    List<Driver> driverLocations = mapState.allDriversLocations;
 
-          if (driver.hasData) {
-            return MapLayout(
-              onMapCreated: _handleMapCreated,
-              mapActions: _mapActions,
-              driverLocations: [driver.data.latLng],
-            );
-          }
-
-          return Center(
-            child: Text("Cannot connect to the server"),
-          );
-        },
-      ),
-    );
+    if (driverLocations != null) {
+      return Scaffold(
+        appBar: AppBar(title: Text('Map')),
+        body: MapLayout(
+          onMapCreated: _handleMapCreated,
+          mapActions: _mapActions,
+          driverLocations: driverLocations,
+        ),
+      );
+    } else {
+      return Center(
+        child: Text("Cannot connect to the server"),
+      );
+    }
   }
 }
