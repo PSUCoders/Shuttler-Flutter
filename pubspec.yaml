@@ -52,8 +52,6 @@ flutter:
   assets:
     - assets/
     - assets/icons/
-    - assets/icons/2.0x/
-    - assets/icons/3.0x/
     - assets/animations/no-notification.mp4
   # To add assets to your application, add an assets section, like this:
   # assets:
