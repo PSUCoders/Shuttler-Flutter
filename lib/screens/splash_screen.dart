@@ -44,11 +44,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Center(child: ShuttlerLogo(size: 100)),
-      ),
-    );
+    return Container(color: Colors.white);
   }
 }

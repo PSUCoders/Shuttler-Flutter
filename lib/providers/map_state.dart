@@ -13,48 +13,13 @@ class MapState extends ChangeNotifier {
   // PRIVATE VARIABLES //
   StreamSubscription<List<Driver>> _driversSubscription;
   List<Driver> _drivers;
-  LatLng _currentLocation;
   int _currentDriver = 0;
 
   /// Must call cancelSubcriptions when finish using
   MapState() {
     // Subscribe to driver stream
-    _driversSubscription = OnlineDB().driversStream().listen((drivers) {
-      print('driver');
-      print(drivers);
-      drivers.forEach((newDriver) {
-        Driver oldDriver;
-        oldDriver = _drivers == null
-            ? null
-            : _drivers.firstWhere((driver) => driver.id == newDriver.id,
-                orElse: () => null);
-        if (oldDriver != null) {
-          if (newDriver.latLng.longitude - oldDriver.latLng.longitude == 0) {
-            if (newDriver.latLng.latitude - oldDriver.latLng.latitude < 0) {
-              newDriver.direction = 180;
-            } else if (newDriver.latLng.latitude - oldDriver.latLng.latitude ==
-                0) {
-              newDriver.direction = oldDriver.direction;
-            } else {
-              newDriver.direction = 0;
-            }
-          } else {
-            newDriver.direction = atan((newDriver.latLng.longitude -
-                        oldDriver.latLng.longitude) /
-                    (newDriver.latLng.latitude - oldDriver.latLng.latitude)) /
-                pi *
-                180;
-          }
-        } else {
-          newDriver.direction = 90;
-        }
-        print(newDriver.direction);
-        print(newDriver.id);
-      });
-      _drivers = drivers;
-      print('shuttles location updated');
-      notifyListeners();
-    });
+    _driversSubscription =
+        OnlineDB().driversStream().listen(_driversSubscriptionHandler);
   }
 
   @override
@@ -74,17 +39,14 @@ class MapState extends ChangeNotifier {
   List<Driver> get activeDrivers =>
       _drivers.where((driver) => driver.active).toList() ?? [];
 
-  // Get location of the device
-  LatLng get currentLocation => _currentLocation;
-
   bool get hasOneDriver => _drivers.length == 1;
 
   LatLng get focusDriverLocation {
-    _currentDriver += 1;
-    if (_currentDriver == activeDrivers.length) {
-      _currentDriver = 0;
-    }
-    return activeDrivers != null ? activeDrivers[_currentDriver].latLng : null;
+    if (activeDrivers.length == 0) return null;
+
+    _currentDriver = (_currentDriver + 1) % activeDrivers.length;
+
+    return activeDrivers[_currentDriver].latLng;
   }
 
   List<Driver> get allDriversLocations => _drivers != null ? _drivers : null;
@@ -96,7 +58,51 @@ class MapState extends ChangeNotifier {
   /// TODO make this dynamic
   String get nextStop => "Walmart";
 
-  // METHODS //
+  // PRIVATE METHODS //
+
+  void _driversSubscriptionHandler(drivers) {
+    drivers.forEach((newDriver) {
+      Driver oldDriver = this.drivers.firstWhere(
+          (driver) => driver.id == newDriver.id,
+          orElse: () => null);
+
+      final direction = _getDirection(oldDriver, newDriver);
+      newDriver.direction = direction;
+    });
+
+    _drivers = drivers;
+    print('shuttles location updated');
+    notifyListeners();
+  }
+
+  double _getDirection(Driver oldDriver, Driver newDriver) {
+    double direction = 0;
+
+    if (oldDriver != null) {
+      if (newDriver.longitude - oldDriver.longitude == 0) {
+        if (newDriver.latitude - oldDriver.latitude < 0) {
+          direction = 180;
+        } else if (newDriver.latitude - oldDriver.latitude == 0) {
+          direction = oldDriver.direction;
+        } else {
+          direction = 0;
+        }
+      } else {
+        direction = atan((newDriver.longitude - oldDriver.longitude) /
+                (newDriver.latitude - oldDriver.latitude)) /
+            pi *
+            180;
+
+        if (newDriver.latitude - oldDriver.latitude < 0) direction += 180;
+      }
+    } else {
+      direction = 90;
+    }
+
+    return direction;
+  }
+
+  // PUBLIC METHODS //
 
   Future<LatLng> getCurrentLocation() async {
     final location = Location();
@@ -123,12 +129,12 @@ class MapState extends ChangeNotifier {
     ]);
   }
 
-  pauseSubscriptions() {
+  void pauseSubscriptions() {
     _driversSubscription.pause();
     print("MapState subsription paused");
   }
 
-  resumeSubscriptions() {
+  void resumeSubscriptions() {
     _driversSubscription.resume();
     print("MapState subsription resumed");
   }

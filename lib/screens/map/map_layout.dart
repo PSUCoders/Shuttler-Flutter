@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -36,20 +39,21 @@ class MapLayout extends StatefulWidget {
 class _MapLayoutState extends State<MapLayout> {
   Completer<GoogleMapController> _controller = Completer();
   BitmapDescriptor _shuttleIcon;
-  bool _hasShuttleIcon = false;
 
   _getShuttleIcon(context) async {
     final ImageConfiguration imageConfiguration =
-        createLocalImageConfiguration(context, size: Size(105, 156));
+        createLocalImageConfiguration(context);
 
     final shuttleIcon = await BitmapDescriptor.fromAssetImage(
       imageConfiguration,
       "assets/icons/3.0x/ic_shuttle.png",
     );
-    setState(() {
-      _shuttleIcon = shuttleIcon;
-      _hasShuttleIcon = true;
-    });
+
+    if (this.mounted) {
+      setState(() {
+        _shuttleIcon = shuttleIcon;
+      });
+    }
   }
 
   static final CameraPosition _kACC = CameraPosition(
@@ -59,16 +63,21 @@ class _MapLayoutState extends State<MapLayout> {
 
   Widget _buildGoogleMap() {
     return GoogleMap(
+      tiltGesturesEnabled: false,
+      minMaxZoomPreference: MinMaxZoomPreference(14, 18),
+      mapType: MapType.normal,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: false,
+      initialCameraPosition: _kACC,
       markers: widget.driverLocations
           .where((driver) => driver.active)
           .toList()
           .map((driver) => Marker(
-                icon: _hasShuttleIcon
-                    ? _shuttleIcon
-                    : BitmapDescriptor.defaultMarker,
+                icon: _shuttleIcon,
                 markerId: MarkerId(driver.id),
                 position: driver.latLng,
                 rotation: driver.direction,
+                anchor: Offset(0.5, 0.5),
               ))
           .toSet(),
       cameraTargetBounds: CameraTargetBounds(
@@ -77,11 +86,6 @@ class _MapLayoutState extends State<MapLayout> {
           southwest: LatLng(44.675484, -73.510132),
         ),
       ),
-      minMaxZoomPreference: MinMaxZoomPreference(14, 18),
-      mapType: MapType.normal,
-      myLocationEnabled: true,
-      myLocationButtonEnabled: false,
-      initialCameraPosition: _kACC,
       onMapCreated: (GoogleMapController controller) {
         try {
           _controller.complete(controller);

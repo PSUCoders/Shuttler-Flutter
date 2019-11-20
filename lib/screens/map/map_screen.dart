@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/models/driver.dart';
 import 'package:shuttler/providers/map_state.dart';
-import 'package:shuttler/screens/navigation/map_layout.dart';
+import 'package:shuttler/screens/map/map_layout.dart';
 import 'package:shuttler/widgets/circle_button.dart';
 
 typedef FutureVoidCallback = Future<void> Function();
@@ -17,8 +17,7 @@ class MapScreen extends StatefulWidget {
   _MapScreenState createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen>
-    with AutomaticKeepAliveClientMixin<MapScreen>, WidgetsBindingObserver {
+class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   Completer<GoogleMapController> _controller = Completer();
 
   @override
@@ -28,8 +27,16 @@ class _MapScreenState extends State<MapScreen>
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final mapState = Provider.of<MapState>(context, listen: false);
+
+    print('state $state');
 
     if (state == AppLifecycleState.resumed) {
       mapState.resumeSubscriptions();
@@ -38,28 +45,17 @@ class _MapScreenState extends State<MapScreen>
     }
   }
 
-  @override
-  void dispose() {
-    print('MapScreen disposing...');
-    // stop listening to didChangeAppLifecycleState
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  // Prevent the map from being killed
-  bool get wantKeepAlive => true;
-
   _goToLocation(LatLng latLng) async {
     print('go to location called');
     print(latLng);
     final GoogleMapController controller = await _controller.future;
     if (latLng != null) {
-      await controller
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: latLng,
-        zoom: 15,
-      )));
+      await controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: latLng,
+          zoom: 15,
+        ),
+      ));
     } else {
       print('latLng is null');
     }
@@ -73,10 +69,12 @@ class _MapScreenState extends State<MapScreen>
 
     print('location $location');
     if (location != null) {
-      controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: location,
-        zoom: 14,
-      )));
+      controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: location,
+          zoom: 15,
+        ),
+      ));
     }
   }
 
@@ -87,13 +85,11 @@ class _MapScreenState extends State<MapScreen>
     } catch (error) {}
   }
 
-  @override
-  Widget build(BuildContext context) {
-    print('nav screen rebuild...');
+  // List of buttons on the map
+  List<Widget> _buildMapActions() {
     final mapState = Provider.of<MapState>(context);
 
-    // List of buttons on the map
-    List<Widget> _mapActions = [
+    return [
       CircleButton(
         onPressed: () => _goToLocation(mapState.focusDriverLocation),
         icon: Icons.directions_bus,
@@ -103,21 +99,25 @@ class _MapScreenState extends State<MapScreen>
         icon: Icons.my_location,
       ),
     ];
+  }
 
-    super.build(context);
+  @override
+  Widget build(BuildContext context) {
+    print('nav screen building...');
+    final mapState = Provider.of<MapState>(context);
 
     // Show loading when data is not ready
-    if (!mapState.hasData) return Center(child: CircularProgressIndicator());
+    // if (!mapState.hasData) return Center(child: CircularProgressIndicator());
 
     List<Driver> driverLocations = mapState.allDriversLocations;
 
-    if (driverLocations != null) {
+    if ([] != null) {
       return Scaffold(
         appBar: AppBar(title: Text('Map')),
         body: mapState.hasActiveDriver
             ? MapLayout(
                 onMapCreated: _handleMapCreated,
-                mapActions: _mapActions,
+                mapActions: _buildMapActions(),
                 driverLocations: driverLocations,
               )
             : Center(child: Text("No shuttle is currently being tracked")),
