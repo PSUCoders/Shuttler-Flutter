@@ -10,6 +10,8 @@ import 'package:video_player/video_player.dart';
 
 /// Notification Screen
 class NotificationScreen extends StatefulWidget {
+  NotificationScreen({Key key}) : super(key: key);
+
   @override
   _NotificationScreenState createState() => _NotificationScreenState();
 }
@@ -32,7 +34,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             _controller.setLooping(true);
 
             // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-            setState(() {});
+            if (this.mounted) setState(() {});
           });
   }
 

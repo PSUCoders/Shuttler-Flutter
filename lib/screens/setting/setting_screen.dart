@@ -11,6 +11,8 @@ const double _kDropdownItemHeight = 30.0;
 
 /// Setting Screen
 class SettingScreen extends StatefulWidget {
+  SettingScreen({Key key}) : super(key: key);
+
   @override
   _SettingScreenState createState() => _SettingScreenState();
 }

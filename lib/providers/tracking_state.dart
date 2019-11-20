@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shuttler/models/driver.dart';
 import 'package:shuttler/services/online_db.dart';
 
-double _filterDistance = 50.0;
+double _filterDistance = 10.0;
 int _updateInterval = Duration(seconds: 5).inMilliseconds;
 
 /// Tracking shuttle business logic

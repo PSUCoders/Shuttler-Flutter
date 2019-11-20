@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
 import 'package:shuttler/providers/tracking_state.dart';
 
-import 'package:shuttler/screens/home/home_driver_screen_layout.dart';
+import 'package:shuttler/screens/home/home_driver_layout.dart';
 import 'package:shuttler/utilities/contants.dart';
 import 'package:location_permissions/location_permissions.dart';
 

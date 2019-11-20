@@ -1,59 +1,37 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/notification_state.dart';
-import 'package:shuttler/screens/home/home_cupertino_layout.dart';
-import 'package:shuttler/screens/home/home_material_layout.dart';
-import 'package:shuttler/screens/navigation/map_screen.dart';
+import 'package:shuttler/screens/home/home_layout.dart';
+import 'package:shuttler/screens/map/map_screen.dart';
 import 'package:shuttler/screens/notification/notification_screen.dart';
 import 'package:shuttler/screens/setting/setting_screen.dart';
 import 'package:shuttler/providers/map_state.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final notificationState = Provider.of<NotificationState>(context);
+  _HomeScreenState createState() => _HomeScreenState();
+}
 
-    final List<BottomNavigationBarItem> navBarItems = <BottomNavigationBarItem>[
-      // TODO might need to update icons
-      BottomNavigationBarItem(
-        icon: Stack(
-          children: <Widget>[
-            Icon(
-              Icons.notifications,
-            ),
-            if (notificationState.hasUnreadNotification)
-              Positioned(
-                right: 2,
-                top: 0,
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        title: Text('Notification'),
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.map),
-        title: Text('Map'),
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.settings),
-        title: Text('Settings'),
-      ),
-    ];
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  List<Widget> pages;
+  CupertinoTabController _tabController;
 
-    final List<Widget> pages = [
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = CupertinoTabController(initialIndex: 1);
+
+    pages = [
       NotificationScreen(),
       ChangeNotifierProvider<MapState>(
         builder: (_) => MapState(),
@@ -61,17 +39,16 @@ class HomeScreen extends StatelessWidget {
       ),
       SettingScreen(),
     ];
+  }
 
-    if (Platform.isIOS)
-      return HomeCupertinoLayout(
-        navBarItems: navBarItems,
-        pages: pages,
-      );
-    else
-      // Android Layout
-      return HomeMaterialLayout(
-        navBarItems: navBarItems,
-        pages: pages,
-      );
+  @override
+  Widget build(BuildContext context) {
+    final notificationState = Provider.of<NotificationState>(context);
+
+    return HomeLayout(
+      pages: pages,
+      hasUnreadNotification: notificationState.hasUnreadNotification,
+      tabController: _tabController,
+    );
   }
 }
