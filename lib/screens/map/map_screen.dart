@@ -17,7 +17,8 @@ class MapScreen extends StatefulWidget {
   _MapScreenState createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
+class _MapScreenState extends State<MapScreen>
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin<MapScreen> {
   Completer<GoogleMapController> _controller = Completer();
 
   @override
@@ -31,6 +32,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
