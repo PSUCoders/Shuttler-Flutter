@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
@@ -59,6 +60,25 @@ class _PreSignInScreenState extends State<PreSignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthState authState = Provider.of<AuthState>(context);
+
+    if (authState.errorMessage.isNotEmpty) {
+      // Show error message
+      Future.delayed(Duration(milliseconds: 1), () {
+        Flushbar(
+          icon: Icon(
+            Icons.info_outline,
+            size: 28.0,
+            color: Colors.red[400],
+          ),
+          message: authState.errorMessage,
+          margin: EdgeInsets.all(8),
+          borderRadius: 8,
+        )..show(context);
+        authState.removeError();
+      });
+    }
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

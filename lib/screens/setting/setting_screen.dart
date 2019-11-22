@@ -35,9 +35,10 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
-  _handleLogout() {
+  Future<void> _handleLogout() async {
     final authState = Provider.of<AuthState>(context);
-    authState.logout();
+    await authState.logout();
+
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
 

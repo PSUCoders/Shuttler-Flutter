@@ -25,6 +25,7 @@ dependencies:
   rect_getter: ^0.0.1
   video_player: ^0.10.2+5
   regexed_validator: ^1.0.2
+  flushbar: ^1.9.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

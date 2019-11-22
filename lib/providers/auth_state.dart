@@ -17,6 +17,7 @@ class AuthState extends ChangeNotifier {
   bool _hasData;
   bool _emailSent;
   bool _isDriver;
+  String _errorMessage;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Completer<SharedPreferences> _prefs = Completer();
@@ -36,6 +37,8 @@ class AuthState extends ChangeNotifier {
 
   bool get isDriver => _isDriver ?? false;
 
+  String get errorMessage => _errorMessage ?? "";
+
   // PRIVATE METHODS //
 
   Future<dynamic> _handleDynamicLinks(
@@ -49,18 +52,22 @@ class AuthState extends ChangeNotifier {
       final isSignInWithEmailLink =
           await _auth.isSignInWithEmailLink(deepLink.toString());
 
-      print('deeplink is SignInWithEmailLink');
+      print('deeplink is SignInWithEmailLink $isSignInWithEmailLink');
 
       if (isSignInWithEmailLink) {
+        print('here');
         try {
+          print('here2');
           // check user email match local storage
           final email = prefs.getString(PrefsKey.EMAIL.toString());
 
-          if (email == null) {
-            // TODO handle
-            return;
-          }
+          print('here3');
+          // if (email == null) {
+          //   // TODO handle
+          //   return;
+          // }
 
+          print('signing with email link...');
           final tempAuthResult = await _auth.signInWithEmailAndLink(
             email: email,
             link: deepLink.toString(),
@@ -77,7 +84,15 @@ class AuthState extends ChangeNotifier {
         } on PlatformException catch (error) {
           // TODO
           print('Cannot sign in with email link');
+          print(error.code);
+          if (error.code == "ERROR_INVALID_ACTION_CODE") {
+            _errorMessage = "The link is expired or it's an invalid link";
+            notifyListeners();
+          }
           print(error.message);
+        } catch (error) {
+          print('Unhandled error');
+          print(error);
         }
       }
     }
@@ -101,6 +116,11 @@ class AuthState extends ChangeNotifier {
 
   // METHODS //
 
+  // UI will call this method when it shows the error
+  void removeError() {
+    _errorMessage = null;
+  }
+
   Future<void> fetchStates() async {
     print('fetching auth state...');
     SharedPreferences prefs = await _prefs.future;
@@ -115,6 +135,9 @@ class AuthState extends ChangeNotifier {
   Future<void> logout() async {
     print('signing out...');
     await _auth.signOut();
+    await _auth.currentUser().then((user) {
+      print('user $user');
+    });
   }
 
   Future<bool> isSignedIn() async => await _auth.currentUser() != null;

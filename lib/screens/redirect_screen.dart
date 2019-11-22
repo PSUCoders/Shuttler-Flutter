@@ -1,19 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
-import 'package:shuttler/widgets/shuttler_logo.dart';
 
 /// This screen decides which route to go to when launch the app
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key key}) : super(key: key);
+class RedirectScreen extends StatefulWidget {
+  const RedirectScreen({Key key}) : super(key: key);
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  _RedirectScreenState createState() => _RedirectScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _RedirectScreenState extends State<RedirectScreen> {
   @override
   void initState() {
     super.initState();
@@ -24,20 +21,12 @@ class _SplashScreenState extends State<SplashScreen> {
   _navigate() async {
     final authState = Provider.of<AuthState>(context, listen: false);
 
-    if (await authState.isSignedIn()) {
-      if (await authState.isSignedInAsDriver()) {
-        Navigator.pushNamedAndRemoveUntil(context, '/driver', (route) => false);
-        return;
-      }
+    if (await authState.isSignedInAsDriver()) {
+      Navigator.pushNamedAndRemoveUntil(context, '/driver', (route) => false);
+      return;
+    } else if (await authState.isSignedIn()) {
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     } else {
-      // Need this because iOS hasn't had deep link setup yet
-      if (Platform.isIOS) {
-        print('ios');
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-        return;
-      }
-
       Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
     }
   }
