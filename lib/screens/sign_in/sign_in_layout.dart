@@ -45,9 +45,7 @@ class SignInLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Sign In"),
-      ),
+      appBar: AppBar(title: Text("Sign In")),
       floatingActionButton: FloatingActionButton(
         onPressed: onActionButtonPress,
         child: Icon(

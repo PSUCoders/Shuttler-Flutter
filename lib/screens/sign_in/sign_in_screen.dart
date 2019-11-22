@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
@@ -21,16 +22,22 @@ class _SignInScreenState extends State<SignInScreen> {
   final _fieldFocusNode = FocusNode();
 
   Future<void> _handleSendEmail() async {
-    // TODO
     final AuthState authState = Provider.of<AuthState>(context, listen: false);
 
     final emailSent =
         await authState.sendSignInWithEmailLink(_controller.text.trim());
 
     if (!emailSent) {
-      // TODO handle email sent failed
-      // show something on the UI
-      return;
+      Flushbar(
+        icon: Icon(
+          Icons.info_outline,
+          size: 28.0,
+          color: Colors.red[400],
+        ),
+        message: "Unable to send sign in email",
+        margin: EdgeInsets.all(8),
+        borderRadius: 8,
+      )..show(context);
     }
 
     Navigator.push(

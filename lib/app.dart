@@ -6,7 +6,7 @@ import 'package:shuttler/providers/notification_state.dart';
 import 'package:shuttler/providers/tracking_state.dart';
 import 'package:shuttler/screens/home/home_driver_screen.dart';
 import 'package:shuttler/screens/sign_in/pre_sign_in_screen.dart';
-import 'package:shuttler/screens/splash_screen.dart';
+import 'package:shuttler/screens/redirect_screen.dart';
 import 'package:shuttler/utilities/theme.dart';
 import 'package:shuttler/screens/home/home_screen.dart';
 
@@ -26,7 +26,7 @@ class _ShuttlerAppState extends State<ShuttlerApp> {
   void initState() {
     super.initState();
     routes = {
-      '/': (context) => SplashScreen(),
+      '/': (context) => RedirectScreen(),
       '/home': (context) => HomeScreen(),
       '/driver': (context) => ChangeNotifierProvider<TrackingState>(
             builder: (context) => TrackingState(),

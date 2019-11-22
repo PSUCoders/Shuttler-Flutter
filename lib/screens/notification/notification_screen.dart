@@ -30,8 +30,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
     _controller =
         VideoPlayerController.asset('assets/animations/no-notification.mp4')
           ..initialize().then((_) {
-            _controller.play();
             _controller.setLooping(true);
+            _controller.play();
 
             // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
             if (this.mounted) setState(() {});

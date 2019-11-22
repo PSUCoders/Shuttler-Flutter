@@ -18,7 +18,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   List<Widget> pages;
-  CupertinoTabController _tabController;
+  TabController _tabController;
+  int _currentIndex = 1;
 
   @override
   void dispose() {
@@ -29,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = CupertinoTabController(initialIndex: 1);
 
     pages = [
       NotificationScreen(),
@@ -39,6 +39,20 @@ class _HomeScreenState extends State<HomeScreen>
       ),
       SettingScreen(),
     ];
+
+    _tabController = TabController(
+      initialIndex: _currentIndex,
+      length: pages.length,
+      vsync: this,
+    );
+  }
+
+  void _handleNavBarTap(int index) {
+    _tabController.animateTo(index);
+
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
   @override
@@ -49,6 +63,8 @@ class _HomeScreenState extends State<HomeScreen>
       pages: pages,
       hasUnreadNotification: notificationState.hasUnreadNotification,
       tabController: _tabController,
+      currentIndex: _currentIndex,
+      onNavBarTap: _handleNavBarTap,
     );
   }
 }

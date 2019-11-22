@@ -30,7 +30,7 @@ class SettingLayout extends StatelessWidget {
       trailing: Switch.adaptive(
         onChanged: this.onNotificationChange,
         value: this.notificationOn,
-        activeColor: ShuttlerTheme.of(context).accentColor,
+        activeColor: Theme.of(context).accentColor,
       ),
     );
   }
@@ -113,7 +113,7 @@ class SettingLayout extends StatelessWidget {
                   children: <Widget>[
                     _buildNotificationToggler(context),
                     _buildNotifyPicker(context),
-                    if (!Platform.isIOS) _buildLogoutButton(),
+                    _buildLogoutButton(),
                   ],
                 ),
               ],

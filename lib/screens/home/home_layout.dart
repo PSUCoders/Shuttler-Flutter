@@ -7,14 +7,16 @@ import 'package:flutter/material.dart';
 class HomeLayout extends StatelessWidget {
   final List<Widget> pages;
   final bool hasUnreadNotification;
-  final CupertinoTabController tabController;
-  final Function(int) onTabBarTab;
+  final Function(int) onNavBarTap;
+  final TabController tabController;
+  final int currentIndex;
 
   HomeLayout({
     this.pages,
     this.hasUnreadNotification,
+    this.onNavBarTap,
     this.tabController,
-    this.onTabBarTab,
+    this.currentIndex,
   });
 
   List<BottomNavigationBarItem> _buildTabBarItems() {
@@ -54,17 +56,17 @@ class HomeLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      controller: this.tabController,
-      tabBar: CupertinoTabBar(
-        onTap: this.onTabBarTab,
+    return Scaffold(
+      body: TabBarView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: tabController,
+        children: this.pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: this.onNavBarTap,
+        currentIndex: this.currentIndex,
         items: _buildTabBarItems(),
       ),
-      tabBuilder: (BuildContext context, int index) {
-        return CupertinoTabView(
-          builder: (BuildContext context) => this.pages[index],
-        );
-      },
     );
   }
 }
