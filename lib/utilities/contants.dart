@@ -12,6 +12,8 @@ enum PrefsKey {
   SHUTTLE_STOP,
   EMAIL,
   IS_SIGN_IN,
+  IS_DRIVER,
+  IS_TESTER,
 
   /// List of read notification ids
   SEEN_NOTIFICATION
@@ -19,6 +21,8 @@ enum PrefsKey {
 
 class ErrorMessages {
   static String get wrongEmail => "Please provide a SUNY Plattsburgh email";
+
+  static String get wrongPassword => "Please provide a correct password";
 
   static String get wrongDriverPassword =>
       "Please provide a correct driver password";
@@ -34,3 +38,7 @@ final String kDriverHomeMessage = """Dear driver,
 please switch tracking on if you are on duty.
 
 Dont' forget to switch tracking off when your are out of duty.""";
+
+class ENV {
+  static String testerEmail = "TESTER_EMAIL";
+}

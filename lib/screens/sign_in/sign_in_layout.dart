@@ -3,27 +3,48 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shuttler/utilities/theme.dart';
 
-typedef String EmailValidator(String email);
+typedef String TextValidator(String text);
 
+/// A passwordless sign in layout with password field
+///
+/// To show password field, provide [passwordController],
+/// [passwordFocusNode], [passwordValidator], [onPasswordSubmitted]
 class SignInLayout extends StatelessWidget {
   SignInLayout({
     Key key,
     @required this.onEmailSubmitted,
     @required this.emailValidator,
+    this.passwordController,
+    this.passwordFocusNode,
+    this.passwordValidator,
+    this.onPasswordSubmitted,
     @required this.controller,
     @required this.focusNode,
     @required this.onActionButtonPress,
     @required this.formKey,
     this.showLoading = false,
+    this.showPasswordField = false,
   }) : super(key: key);
 
   final Function(String email) onEmailSubmitted;
-  final EmailValidator emailValidator;
+  final Function(String password) onPasswordSubmitted;
+  final TextValidator emailValidator;
+  final TextValidator passwordValidator;
   final TextEditingController controller;
+  final TextEditingController passwordController;
   final FocusNode focusNode;
+  final FocusNode passwordFocusNode;
   final VoidCallback onActionButtonPress;
   final GlobalKey<FormState> formKey;
   final bool showLoading;
+  final bool showPasswordField;
+
+  bool get showPassword =>
+      this.showPasswordField &&
+      this.passwordController != null &&
+      this.passwordFocusNode != null &&
+      this.passwordValidator != null &&
+      this.onPasswordSubmitted != null;
 
   Widget _emailInput() {
     return TextFormField(
@@ -31,14 +52,31 @@ class SignInLayout extends StatelessWidget {
       controller: controller,
       keyboardType: TextInputType.emailAddress,
       validator: emailValidator,
+      onFieldSubmitted: onEmailSubmitted,
+      autofocus: true,
       decoration: InputDecoration(
         filled: false,
         prefixIcon: Icon(Icons.email),
         hintText: "Example: jdoe011@plattsburgh.edu",
         hintStyle: TextStyle(color: Colors.black45),
       ),
-      onFieldSubmitted: onEmailSubmitted,
+    );
+  }
+
+  Widget _passwordInput() {
+    return TextFormField(
+      focusNode: passwordFocusNode,
+      controller: passwordController,
+      keyboardType: TextInputType.visiblePassword,
+      validator: passwordValidator,
+      onFieldSubmitted: onPasswordSubmitted,
       autofocus: true,
+      obscureText: true,
+      decoration: InputDecoration(
+        filled: false,
+        prefixIcon: Icon(Icons.vpn_key),
+        hintStyle: TextStyle(color: Colors.black45),
+      ),
     );
   }
 
@@ -71,6 +109,7 @@ class SignInLayout extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   _emailInput(),
+                  if (showPassword) _passwordInput(),
                 ],
               ),
             ),
