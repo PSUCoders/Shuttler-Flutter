@@ -12,6 +12,8 @@ class DeviceState extends ChangeNotifier {
   ShuttleStop _shuttleStop;
   String _email;
   bool _isSignIn;
+  bool _isDriver;
+  bool _isTester;
   bool _hasData;
   List<String> _readNotifications;
   Completer<SharedPreferences> _prefs = Completer();
@@ -29,6 +31,10 @@ class DeviceState extends ChangeNotifier {
   bool get isNotificationOn => _isNotificationOn ?? false;
 
   bool get isSignIn => _isSignIn ?? false;
+
+  bool get isDriver => _isDriver ?? false;
+
+  bool get isTester => _isTester ?? false;
 
   /// The email the user use to sign in to the app
   String get email => _email;
@@ -59,7 +65,6 @@ class DeviceState extends ChangeNotifier {
                 prefs.getInt(PrefsKey.SHUTTLE_STOP.toString()) ?? 0;
 
             _shuttleStop = ShuttleStop.values[stopIndex];
-
             break;
           }
         case PrefsKey.IS_SIGN_IN:
@@ -73,6 +78,14 @@ class DeviceState extends ChangeNotifier {
             break;
           }
         case PrefsKey.SEEN_NOTIFICATION:
+          break;
+        case PrefsKey.IS_DRIVER:
+          _isDriver = prefs.getBool(key.toString());
+          break;
+        case PrefsKey.IS_DRIVER:
+          _isTester = prefs.getBool(key.toString());
+          break;
+        default:
           break;
       }
     });

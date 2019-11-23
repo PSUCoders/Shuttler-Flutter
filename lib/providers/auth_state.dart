@@ -55,13 +55,10 @@ class AuthState extends ChangeNotifier {
       print('deeplink is SignInWithEmailLink $isSignInWithEmailLink');
 
       if (isSignInWithEmailLink) {
-        print('here');
         try {
-          print('here2');
           // check user email match local storage
           final email = prefs.getString(PrefsKey.EMAIL.toString());
 
-          print('here3');
           // if (email == null) {
           //   // TODO handle
           //   return;
@@ -133,18 +130,26 @@ class AuthState extends ChangeNotifier {
   Stream<FirebaseUser> authStream() => _auth.onAuthStateChanged;
 
   Future<void> logout() async {
-    print('signing out...');
-    await _auth.signOut();
-    await _auth.currentUser().then((user) {
-      print('user $user');
-    });
+    try {
+      SharedPreferences prefs = await _prefs.future;
+      print('signing out...');
+
+      final future1 = _auth.signOut();
+      final future2 = prefs.setBool(PrefsKey.IS_DRIVER.toString(), false);
+      final future3 = prefs.setBool(PrefsKey.IS_TESTER.toString(), false);
+      final future4 = prefs.setBool(PrefsKey.IS_SIGN_IN.toString(), false);
+      await Future.wait([future1, future2, future3, future4]);
+    } catch (error) {
+      print('An error occur when signing out');
+    }
   }
 
   Future<bool> isSignedIn() async => await _auth.currentUser() != null;
 
   Future<bool> isSignedInAsDriver() async {
-    final user = await _auth.currentUser();
-    return user != null && !user.isAnonymous;
+    SharedPreferences prefs = await _prefs.future;
+    final isDriver = prefs.getBool(PrefsKey.IS_DRIVER.toString()) ?? false;
+    return isDriver;
   }
 
   /// If return false: send email to sign in with email link failed
@@ -172,14 +177,39 @@ class AuthState extends ChangeNotifier {
   }
 
   Future<AuthResult> signInWithEmailLink(String email, String link) async {
-    return _auth.signInWithEmailAndLink(email: email, link: link);
+    return await _auth.signInWithEmailAndLink(email: email, link: link);
+  }
+
+  Future<AuthResult> signInWithEmailPassword(
+      String email, String password) async {
+    try {
+      return await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on PlatformException catch (error) {
+      // TODO
+      print('Cannot signInWithEmailPassword');
+      print(error.code);
+      print(error.message);
+      _errorMessage = error.message;
+      notifyListeners();
+    } catch (error) {
+      print('Unhandled error');
+      print(error);
+    }
+
+    return null;
   }
 
   Future<AuthResult> signInAsDriver(String email, String password) async {
+    SharedPreferences prefs = await _prefs.future;
     final result = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
 
     _isDriver = true;
+    await prefs.setBool(PrefsKey.IS_TESTER.toString(), true);
+
     notifyListeners();
 
     return result;

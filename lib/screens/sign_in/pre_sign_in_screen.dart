@@ -58,25 +58,31 @@ class _PreSignInScreenState extends State<PreSignInScreen> {
     );
   }
 
+  void _handleError(String errorMessage, Function callback) {
+    Future.delayed(Duration(milliseconds: 1), () {
+      Flushbar(
+        icon: Icon(
+          Icons.info_outline,
+          size: 28.0,
+          color: Colors.red[400],
+        ),
+        message: errorMessage,
+        margin: EdgeInsets.all(8),
+        borderRadius: 8,
+        duration: Duration(seconds: 3),
+      )..show(context);
+
+      callback();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final AuthState authState = Provider.of<AuthState>(context);
 
     if (authState.errorMessage.isNotEmpty) {
       // Show error message
-      Future.delayed(Duration(milliseconds: 1), () {
-        Flushbar(
-          icon: Icon(
-            Icons.info_outline,
-            size: 28.0,
-            color: Colors.red[400],
-          ),
-          message: authState.errorMessage,
-          margin: EdgeInsets.all(8),
-          borderRadius: 8,
-        )..show(context);
-        authState.removeError();
-      });
+      _handleError(authState.errorMessage, authState.removeError);
     }
 
     return Scaffold(
