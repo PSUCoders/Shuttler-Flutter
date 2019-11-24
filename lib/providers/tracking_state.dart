@@ -96,6 +96,7 @@ class TrackingState extends ChangeNotifier {
       _driver = Driver(
         active: false,
         id: user.uid,
+        email: user.email,
         location: GeoPoint(
           firstLocation.latitude,
           firstLocation.longitude,

@@ -8,11 +8,13 @@ class Driver {
   bool active;
   DateTime lastUpdate;
   double direction;
+  String email;
 
-  Driver({this.id, this.location, this.active, this.lastUpdate});
+  Driver({this.id, this.location, this.active, this.lastUpdate, this.email});
 
   Driver.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     this.id = snapshot.documentID;
+    this.email = snapshot.data['email'];
     this.location = snapshot.data['location'];
     this.active = snapshot.data['active'];
     Timestamp lastUpdate = snapshot.data['lastUpdate'];
@@ -40,6 +42,7 @@ class Driver {
 
   Driver copyWith({
     String id,
+    String email,
     bool active,
     DateTime lastUpdate,
     GeoPoint location,
@@ -47,6 +50,7 @@ class Driver {
     return Driver(
       active: active ?? this.active,
       id: id ?? this.id,
+      email: email ?? this.email,
       lastUpdate: lastUpdate ?? this.lastUpdate,
       location: location ?? this.location,
     );
@@ -54,6 +58,7 @@ class Driver {
 
   Map<String, dynamic> toJson() {
     return {
+      'email': this.email,
       'location': this.location,
       'active': this.active,
       'lastUpdate': Timestamp.fromDate(this.lastUpdate),
