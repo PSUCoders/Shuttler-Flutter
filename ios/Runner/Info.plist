@@ -65,9 +65,5 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<true/> 
-	<key>ITSEncryptionExportComplianceCode</key>
-	<string>1aa92c4d-6194-4d7d-b70a-16b48256b87e</string> 
 </dict>
 </plist>

@@ -160,10 +160,11 @@ class AuthState extends ChangeNotifier {
 
     try {
       final isDriver = prefs.getBool(PrefsKey.IS_DRIVER.toString()) ?? false;
+
       final user = await _auth.currentUser();
       final isSignedIn = user != null;
 
-      if (!isSignedIn)
+      if (!isSignedIn || !isDriver)
         return false;
       else {
         final configValue =
@@ -173,7 +174,6 @@ class AuthState extends ChangeNotifier {
             DriverConfig.fromRemoteConfig(configValue);
 
         if (!driverConfig.emails.contains(user.email)) {
-          //
           print(
               "Cannot login with this email anymore. This driver email might be removed from Firebase Remote Config");
 

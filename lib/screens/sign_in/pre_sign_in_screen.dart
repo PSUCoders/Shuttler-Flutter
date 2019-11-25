@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
@@ -51,7 +50,6 @@ class _PreSignInScreenState extends State<PreSignInScreen> {
   }
 
   void _handleDriverTap() {
-    // TODO
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SignInDriverScreen()),
@@ -110,7 +108,7 @@ class _PreSignInScreenState extends State<PreSignInScreen> {
                     ),
                     color: Colors.grey[800],
                     onPressed: _handleDriverTap,
-                    child: Text('I am a driver'),
+                    child: Text('Sign in as a driver'),
                   ),
                 )
               ],

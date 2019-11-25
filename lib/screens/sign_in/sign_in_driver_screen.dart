@@ -1,7 +1,6 @@
 import 'dart:async';
-import 'package:flushbar/flushbar.dart';
-import 'package:flutter/services.dart';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
