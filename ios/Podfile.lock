@@ -28,6 +28,9 @@ PODS:
   - Firebase/Firestore (6.10.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 1.6.0)
+  - Firebase/RemoteConfig (6.10.0):
+    - Firebase/CoreOnly
+    - FirebaseRemoteConfig (~> 4.4.2)
   - firebase_auth (0.0.1):
     - Firebase/Auth (~> 6.0)
     - Firebase/Core
@@ -41,6 +44,13 @@ PODS:
   - firebase_dynamic_links (0.1.0):
     - Firebase/DynamicLinks
     - Flutter
+  - firebase_remote_config (0.0.1):
+    - Firebase/RemoteConfig
+    - Flutter
+  - FirebaseABTesting (3.1.2):
+    - FirebaseAnalyticsInterop (~> 1.3)
+    - FirebaseCore (~> 6.1)
+    - Protobuf (>= 3.9.2, ~> 3.9)
   - FirebaseAnalytics (6.1.3):
     - FirebaseCore (~> 6.3)
     - FirebaseInstanceID (~> 4.2)
@@ -96,6 +106,14 @@ PODS:
     - FirebaseCore (~> 6.0)
     - GoogleUtilities/Environment (~> 6.0)
     - GoogleUtilities/UserDefaults (~> 6.0)
+  - FirebaseRemoteConfig (4.4.5):
+    - FirebaseABTesting (~> 3.1)
+    - FirebaseAnalyticsInterop (~> 1.4)
+    - FirebaseCore (~> 6.2)
+    - FirebaseInstanceID (~> 4.2)
+    - GoogleUtilities/Environment (~> 6.2)
+    - "GoogleUtilities/NSData+zlib (~> 6.2)"
+    - Protobuf (>= 3.9.2, ~> 3.9)
   - Flutter (1.0.0)
   - flutter_background_location (0.0.1):
     - Flutter
@@ -179,7 +197,8 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
   - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
-  - Flutter (from `.symlinks/flutter/ios`)
+  - firebase_remote_config (from `.symlinks/plugins/firebase_remote_config/ios`)
+  - Flutter (from `.symlinks/flutter/ios-release`)
   - flutter_background_location (from `.symlinks/plugins/flutter_background_location/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - location (from `.symlinks/plugins/location/ios`)
@@ -192,6 +211,7 @@ SPEC REPOS:
   trunk:
     - BoringSSL-GRPC
     - Firebase
+    - FirebaseABTesting
     - FirebaseAnalytics
     - FirebaseAnalyticsInterop
     - FirebaseAuth
@@ -203,6 +223,7 @@ SPEC REPOS:
     - FirebaseDynamicLinks
     - FirebaseFirestore
     - FirebaseInstanceID
+    - FirebaseRemoteConfig
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
@@ -226,8 +247,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_database/ios"
   firebase_dynamic_links:
     :path: ".symlinks/plugins/firebase_dynamic_links/ios"
+  firebase_remote_config:
+    :path: ".symlinks/plugins/firebase_remote_config/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: ".symlinks/flutter/ios-release"
   flutter_background_location:
     :path: ".symlinks/plugins/flutter_background_location/ios"
   google_maps_flutter:
@@ -251,6 +274,8 @@ SPEC CHECKSUMS:
   firebase_core: ae55ea92448ec8675d325da4db22cf3b4d58a54d
   firebase_database: d4f066a1b01f309676d0d2678ec600d6af18ad97
   firebase_dynamic_links: 8d74d4ad9b2ee776887354d2e72734b281869f53
+  firebase_remote_config: aca16c8db963bba3c789d89cd0f69fc64d888118
+  FirebaseABTesting: 0d10f3cdc3fa00f3f175b5b56c1003c8e888299f
   FirebaseAnalytics: 0e3ecff2c5d86070f7d4325e21f1edabfbd558dc
   FirebaseAnalyticsInterop: d48b6ab67bcf016a05e55b71fc39c61c0cb6b7f3
   FirebaseAuth: c66e990f79d1d3429165391f6cd70ace6143c25e
@@ -262,6 +287,7 @@ SPEC CHECKSUMS:
   FirebaseDynamicLinks: db62e9da4788f9c5ebce2028dab933a0c158cfe2
   FirebaseFirestore: 5a9e9a14305336e8d1a4f915a45ecf0f5d6dcaec
   FirebaseInstanceID: 550df9be1f99f751d8fcde3ac342a1e21a0e6c42
+  FirebaseRemoteConfig: 6ad68503c04701b8d9d709240711bc0bf6edaf94
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_background_location: b34292a91db78b18e7d7b673ffe7fbe888811182
   google_maps_flutter: 78a52114c898b42ea647919679a4c58b70abe876
