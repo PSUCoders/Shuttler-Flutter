@@ -38,7 +38,7 @@ class _HomeDriverScreenState extends State<HomeDriverScreen> {
   void _handleToggleTracking(value) async {
     // TODO
     TrackingState state = Provider.of<TrackingState>(context, listen: false);
-    state.toggleTracking();
+    state.toggleTracking(value);
   }
 
   void _openSettings() {

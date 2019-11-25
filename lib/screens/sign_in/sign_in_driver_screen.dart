@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
@@ -36,6 +37,8 @@ class _SignInDriverScreenState extends State<SignInDriverScreen> {
       final result = await authState.signInAsDriver(
           _emailController.text, _passwordController.text);
 
+      if (result == null) return;
+
       print('signed in as ${result.user.email}');
 
       Navigator.pushNamedAndRemoveUntil(context, '/driver', (route) => false);
@@ -57,7 +60,7 @@ class _SignInDriverScreenState extends State<SignInDriverScreen> {
     setState(() => _errorMessage = "");
 
     if (noError) {
-      print('no error');
+      print('form has no error');
       _signInAsDriver();
     }
   }

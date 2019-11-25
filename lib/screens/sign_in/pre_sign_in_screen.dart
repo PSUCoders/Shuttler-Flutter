@@ -70,6 +70,7 @@ class _PreSignInScreenState extends State<PreSignInScreen> {
         margin: EdgeInsets.all(8),
         borderRadius: 8,
         duration: Duration(seconds: 3),
+        animationDuration: Duration(milliseconds: 200),
       )..show(context);
 
       callback();

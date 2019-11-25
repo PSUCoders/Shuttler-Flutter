@@ -27,7 +27,10 @@ class _ShuttlerAppState extends State<ShuttlerApp> {
     super.initState();
     routes = {
       '/': (context) => RedirectScreen(),
-      '/home': (context) => HomeScreen(),
+      '/home': (context) => ChangeNotifierProvider<NotificationState>(
+            builder: (context) => NotificationState(),
+            child: HomeScreen(),
+          ),
       '/driver': (context) => ChangeNotifierProvider<TrackingState>(
             builder: (context) => TrackingState(),
             child: HomeDriverScreen(),
@@ -48,9 +51,6 @@ class _ShuttlerAppState extends State<ShuttlerApp> {
         ChangeNotifierProvider<AuthState>(
           builder: (context) => AuthState(),
         ),
-        ChangeNotifierProvider<NotificationState>(
-          builder: (context) => NotificationState(),
-        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
