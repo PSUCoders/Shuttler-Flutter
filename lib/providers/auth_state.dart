@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:core';
 
 import 'package:flutter/cupertino.dart';
@@ -7,7 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shuttler/models/driver_config.dart';
 import 'package:shuttler/utilities/contants.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 /// CONSTANTS
 final String _signInWithEmailLinkUrl = "https://shuttler.page.link/verifyEmail";
@@ -21,10 +24,15 @@ class AuthState extends ChangeNotifier {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Completer<SharedPreferences> _prefs = Completer();
+  Completer<RemoteConfig> _remoteConfigs = Completer();
 
   AuthState() {
     // Get SharedPreferences instance
     SharedPreferences.getInstance().then((prefs) => _prefs.complete(prefs));
+
+    // Get RemoteConfigs
+    RemoteConfig.instance.then((configs) => _remoteConfigs.complete(configs));
+
     fetchStates();
     _initDynamicLinks();
   }
@@ -148,8 +156,39 @@ class AuthState extends ChangeNotifier {
 
   Future<bool> isSignedInAsDriver() async {
     SharedPreferences prefs = await _prefs.future;
-    final isDriver = prefs.getBool(PrefsKey.IS_DRIVER.toString()) ?? false;
-    return isDriver;
+    RemoteConfig configs = await _remoteConfigs.future;
+
+    try {
+      final isDriver = prefs.getBool(PrefsKey.IS_DRIVER.toString()) ?? false;
+      final user = await _auth.currentUser();
+      final isSignedIn = user != null;
+
+      if (!isSignedIn)
+        return false;
+      else {
+        final configValue =
+            configs.getValue(describeEnum(ConfigParams.DriverConfig));
+
+        final DriverConfig driverConfig =
+            DriverConfig.fromRemoteConfig(configValue);
+
+        if (!driverConfig.emails.contains(user.email)) {
+          //
+          print(
+              "Cannot login with this email anymore. This driver email might be removed from Firebase Remote Config");
+
+          await logout();
+
+          return false;
+        }
+      }
+
+      return isDriver && isSignedIn;
+    } catch (error) {
+      print('error at isSignedInAsDriver');
+      print(error);
+      return false;
+    }
   }
 
   /// If return false: send email to sign in with email link failed
@@ -204,11 +243,30 @@ class AuthState extends ChangeNotifier {
 
   Future<AuthResult> signInAsDriver(String email, String password) async {
     SharedPreferences prefs = await _prefs.future;
+    RemoteConfig configs = await _remoteConfigs.future;
+
+    final configValue =
+        configs.getValue(describeEnum(ConfigParams.DriverConfig));
+
+    final DriverConfig driverConfig =
+        DriverConfig.fromRemoteConfig(configValue);
+
+    // This email is not allowed to sign in as a driver
+    if (!driverConfig.emails.contains(email)) {
+      print('This email is not allowed to sign in as a driver');
+      _errorMessage = "This email is not allowed to sign in as a driver";
+      notifyListeners();
+      return null;
+    }
+
     final result = await _auth.signInWithEmailAndPassword(
-        email: email, password: password);
+      email: email,
+      password: password,
+    );
 
     _isDriver = true;
-    await prefs.setBool(PrefsKey.IS_TESTER.toString(), true);
+
+    await prefs.setBool(PrefsKey.IS_DRIVER.toString(), true);
 
     notifyListeners();
 

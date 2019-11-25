@@ -42,3 +42,5 @@ Dont' forget to switch tracking off when your are out of duty.""";
 class ENV {
   static String testerEmail = "TESTER_EMAIL";
 }
+
+enum ConfigParams { DriverConfig }
