@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +12,9 @@ import 'package:flutter_background_location/flutter_background_location.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shuttler/models/driver.dart';
+import 'package:shuttler/services/firebase_remote_config.dart';
 import 'package:shuttler/services/online_db.dart';
+import 'package:shuttler/utilities/contants.dart';
 
 double _filterDistance = 10.0;
 int _updateInterval = Duration(seconds: 5).inMilliseconds;
@@ -26,8 +29,18 @@ class TrackingState extends ChangeNotifier {
   StreamSubscription<Driver> _driverSubscription;
   StreamSubscription<LocationData> _locationSubcription;
   bool _permissionDenied;
+  OnlineDB _db;
+  FirebaseAuth _auth;
 
   TrackingState() {
+    //
+    // _db = OnlineDB(appName: FirebaseAppName.cas);
+    // _auth = FirebaseAuth.fromApp(FirebaseApp(name: FirebaseAppName.cas) ??
+    //     FirebaseApp(name: FirebaseApp.defaultAppName));
+
+    _db = OnlineDB.instance;
+    _auth = FirebaseAuth.instance;
+
     // Get SharedPreferences instance
     SharedPreferences.getInstance().then((prefs) => _prefs.complete(prefs));
     loadData();
@@ -81,7 +94,7 @@ class TrackingState extends ChangeNotifier {
             currentLocation.longitude,
           );
 
-          await OnlineDB.instance.updateDriver(
+          await _db.updateDriver(
             _driver.copyWith(location: newLocation),
           );
 
@@ -90,7 +103,7 @@ class TrackingState extends ChangeNotifier {
       }
     } on PlatformException catch (error) {
       print('error $error');
-      await OnlineDB.instance.writeDriverLog(_driver.id, error);
+      await _db.writeDriverLog(_driver.id, error);
     }
   }
 
@@ -99,7 +112,7 @@ class TrackingState extends ChangeNotifier {
   Future<void> loadData() async {
     print('Tracking State is loading data...');
 
-    final user = await FirebaseAuth.instance.currentUser();
+    final user = await _auth.currentUser();
 
     if (user == null) {
       _hasData = true;
@@ -108,7 +121,9 @@ class TrackingState extends ChangeNotifier {
       return;
     }
 
-    _driver = await OnlineDB.instance.getDriver(user.uid);
+    _driver = await _db.getDriver(user.uid);
+
+    print('driver id ${_driver?.id}');
 
     // First time this driver login and turn on tracking
     if (_driver == null) {
@@ -126,6 +141,9 @@ class TrackingState extends ChangeNotifier {
       );
     }
 
+    // Test remote config
+    FirebaseRemoteConfig.instance.getLocations();
+
     await _location.changeSettings(
       distanceFilter: _filterDistance,
       interval: _updateInterval,
@@ -133,9 +151,8 @@ class TrackingState extends ChangeNotifier {
     _locationSubcription =
         _location.onLocationChanged().listen(_locationSubscriptionHandler);
 
-    _driverSubscription = OnlineDB.instance
-        .driverStream(_driver.id)
-        .listen(_driverSubscriptionHandler);
+    _driverSubscription =
+        _db.driverStream(_driver.id).listen(_driverSubscriptionHandler);
 
     notifyListeners();
   }
@@ -146,15 +163,13 @@ class TrackingState extends ChangeNotifier {
     try {
       if (!tracking) {
         _driver.active = tracking;
-        await OnlineDB.instance
-            .updateDriver(_driver.copyWith(active: tracking));
+        await _db.updateDriver(_driver.copyWith(active: tracking));
         FlutterBackgroundLocation.stopLocationService();
       } else {
         final status = await LocationPermissions().checkPermissionStatus();
 
         if (status == PermissionStatus.granted) {
-          await OnlineDB.instance
-              .updateDriver(_driver.copyWith(active: tracking));
+          await _db.updateDriver(_driver.copyWith(active: tracking));
           _driver.active = tracking;
           FlutterBackgroundLocation.startLocationService();
         } else if (status == PermissionStatus.denied) {
@@ -170,7 +185,7 @@ class TrackingState extends ChangeNotifier {
       notifyListeners();
     } on PlatformException catch (error) {
       print('error $error');
-      await OnlineDB.instance.writeDriverLog(_driver.id, error);
+      await _db.writeDriverLog(_driver.id, error);
     }
   }
 

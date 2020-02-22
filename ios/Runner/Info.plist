@@ -65,5 +65,17 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>reverse_client_id</string>
+				<string>com.googleusercontent.apps.932816794115-hmssdrbcthnemuo7e19q0lh2msipmk5g</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

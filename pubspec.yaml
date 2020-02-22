@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  firebase_core: ^0.4.0+9
+  firebase_core: ^0.4.2+1
   firebase_auth: ^0.14.0+5
   firebase_database: ^3.0.7
   cloud_firestore: ^0.12.9+5
@@ -54,6 +54,7 @@ flutter:
   uses-material-design: true
   assets:
     - .env
+    - .cas.env
     - assets/
     - assets/icons/
     - assets/animations/no-notification.mp4

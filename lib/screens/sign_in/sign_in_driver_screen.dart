@@ -42,6 +42,7 @@ class _SignInDriverScreenState extends State<SignInDriverScreen> {
 
       Navigator.pushNamedAndRemoveUntil(context, '/driver', (route) => false);
     } on PlatformException catch (error) {
+      print('Error $error');
       setState(() {
         _errorMessage = error.message;
       });

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -22,11 +23,25 @@ class AuthState extends ChangeNotifier {
   bool _isDriver;
   String _errorMessage;
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseAuth _auth;
   Completer<SharedPreferences> _prefs = Completer();
   Completer<RemoteConfig> _remoteConfigs = Completer();
 
-  AuthState() {
+  AuthState({String appName}) {
+    // Configure Firebase App
+    // if (appName == null) {
+    //   _auth = FirebaseAuth.instance;
+    // } else {
+    //   _auth = FirebaseAuth.fromApp(
+    //       firebaseApp ?? FirebaseApp(name: FirebaseApp.defaultAppName));
+    // }
+    // _auth = FirebaseAuth.instance;
+    _auth = FirebaseAuth.fromApp(FirebaseApp(name: FirebaseApp.defaultAppName));
+    print('Auth State app name ${_auth.app.name}');
+    // _auth.app.options.then((options) {
+    //   print('Auth State FirebaseApp options $options');
+    // });
+
     // Get SharedPreferences instance
     SharedPreferences.getInstance().then((prefs) => _prefs.complete(prefs));
 
@@ -135,6 +150,10 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> getTesterEmails() async {
+    //
+  }
+
   Stream<FirebaseUser> authStream() => _auth.onAuthStateChanged;
 
   Future<void> logout() async {
@@ -172,6 +191,8 @@ class AuthState extends ChangeNotifier {
 
         final DriverConfig driverConfig =
             DriverConfig.fromRemoteConfig(configValue);
+
+        print('driver list ${driverConfig.emails}');
 
         if (!driverConfig.emails.contains(user.email)) {
           print(
@@ -251,6 +272,8 @@ class AuthState extends ChangeNotifier {
     final DriverConfig driverConfig =
         DriverConfig.fromRemoteConfig(configValue);
 
+    print('driver list: ${driverConfig.emails}');
+
     // This email is not allowed to sign in as a driver
     if (!driverConfig.emails.contains(email)) {
       print('This email is not allowed to sign in as a driver');
@@ -259,10 +282,15 @@ class AuthState extends ChangeNotifier {
       return null;
     }
 
-    final result = await _auth.signInWithEmailAndPassword(
+    final result = await _auth
+        .signInWithEmailAndPassword(
       email: email,
       password: password,
-    );
+    )
+        .catchError((error) {
+      print(error);
+      return null;
+    });
 
     _isDriver = true;
 

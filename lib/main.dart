@@ -4,7 +4,7 @@ import 'package:shuttler/app.dart';
 
 void main() async {
   // Load environment variables
-  await DotEnv().load('.env');
+  await DotEnv().load('.cas.env');
 
   runApp(ShuttlerApp());
 }

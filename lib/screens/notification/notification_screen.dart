@@ -130,7 +130,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final notifications = notificationState.notifications;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Nofitications')),
+      appBar: AppBar(title: Text('Notifications')),
       backgroundColor: Color.fromRGBO(255, 254, 255, 1),
       body: Container(
         width: double.maxFinite,

@@ -43,4 +43,9 @@ class ENV {
   static String testerEmail = "TESTER_EMAIL";
 }
 
-enum ConfigParams { DriverConfig }
+enum ConfigParams { DriverConfig, LocationConfig }
+
+class FirebaseAppName {
+  static String cas = "Shuttler CAS";
+  static String codinghub = "Shuttler Coding Hub";
+}

@@ -5,18 +5,18 @@ import 'package:provider/provider.dart';
 import 'package:shuttler/providers/auth_state.dart';
 import 'package:shuttler/providers/tracking_state.dart';
 
-import 'package:shuttler/screens/home/home_driver_layout.dart';
+import 'package:shuttler/screens/driver/driver_layout.dart';
 import 'package:shuttler/utilities/contants.dart';
 import 'package:location_permissions/location_permissions.dart';
 
-class HomeDriverScreen extends StatefulWidget {
-  HomeDriverScreen({Key key}) : super(key: key);
+class DriverScreen extends StatefulWidget {
+  DriverScreen({Key key}) : super(key: key);
 
   @override
-  _HomeDriverScreenState createState() => _HomeDriverScreenState();
+  _DriverScreenState createState() => _DriverScreenState();
 }
 
-class _HomeDriverScreenState extends State<HomeDriverScreen> {
+class _DriverScreenState extends State<DriverScreen> {
   @override
   void initState() {
     super.initState();
@@ -77,12 +77,13 @@ class _HomeDriverScreenState extends State<HomeDriverScreen> {
   Widget build(BuildContext context) {
     TrackingState state = Provider.of<TrackingState>(context);
 
-    return HomeDriverLayout(
+    return DriverLayout(
       onLogoutTap: _handleLogoutTap,
       onToggleTracking: _handleToggleTracking,
       driverMessage: kDriverHomeMessage,
       isTracking: state.isTracking,
       onOpenSettings: _openSettings,
+      loadFailed: state.loadFailed,
     );
   }
 }
